@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(32, 46, 63);
+    background-color: rgb(79, 95, 114);
     color: white;
 }
 
@@ -13,7 +13,7 @@ body {
 
 .title-block {
     position: absolute;
-    top: 15em;
+    top: 13em;
     width: 100%;
 }
 
