@@ -1,7 +1,6 @@
 body {
     background-color: rgb(32, 46, 63);
     color: white;
-    /* font-family: 'Fira Sans', sans-serif; */
 }
 
 
@@ -14,7 +13,7 @@ body {
 
 .title-block {
     position: absolute;
-    top: 12em;
+    top: 15em;
     width: 100%;
 }
 
