@@ -1,0 +1,17 @@
+.header-item {
+    background-color: rgb(198, 197, 197);
+    height: 3.6em;
+    border: 0;
+}
+
+.social-icon {
+    height: 1em;
+    width: 1em;
+    margin: 0.2em;
+    float: right;
+}
+
+.nopadding {
+    padding: 0 !important;
+    margin: 0 !important;
+}
