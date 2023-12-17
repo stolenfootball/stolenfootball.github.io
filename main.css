@@ -1,5 +1,7 @@
 body {
     background-color: rgb(32, 46, 63);
+    color: white;
+    /* font-family: 'Fira Sans', sans-serif; */
 }
 
 
@@ -10,16 +12,11 @@ body {
 }
 
 
-.row-full {
-    margin-left: 0;
-    margin-right: 0;
-    padding-right: 0;
-    padding-left: 0;
-    > [class^="col"] {
-      padding-left: 0;
-      padding-right: 0;
-    }
-  }
+.title-block {
+    position: absolute;
+    top: 12em;
+    width: 100%;
+}
 
 .social-icon {
     height: 1em;
