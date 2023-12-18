@@ -18,5 +18,5 @@ if (headerBar.classList.contains('home-header')) {
 }
 
 
-const postSummaries = document.getElementById('recent-blog-posts');
+const postSummaries = document.getElementById('recent-blog-posts', 5);
 renderMostRecentPosts(postSummaries);

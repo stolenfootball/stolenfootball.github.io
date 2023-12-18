@@ -1,14 +1,15 @@
 
-export async function renderMostRecentPosts(element) {
-    const postsToRender = 5;
+export async function renderMostRecentPosts(element, postsToRender) {
 
     const response = await fetch('../directory.json');
     const posts = await response.json();
 
-    const toRender = Object.keys(posts).slice(Object.keys(posts).length - postsToRender).reduce((acc, key) => {
-        acc.push(posts[key]);
-        return acc;
-    }, []);
+    const toRender = Object.keys(posts).slice(Object.keys(posts).length - postsToRender)
+                                       .sort((a, b) => posts[a].date < posts[b].date)
+                                       .reduce((acc, key) => {
+                                                    acc.push(posts[key]);
+                                                    return acc;
+                                                }, []);
 
     toRender.forEach(post => {
         const postElement = document.createElement('div');
