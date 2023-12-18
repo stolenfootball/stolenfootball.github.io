@@ -12,9 +12,8 @@ body {
 
 
 .title-block {
-    position: absolute;
     width: 100%;
-    height: 40%;
+    height: 40vh;
     text-align: center;
     background: url('./images/ghidra-background.png');
     background-repeat: no-repeat !important;
@@ -38,3 +37,11 @@ body {
     opacity: 0.9;
 }
 
+.post-summary {
+    text-align: center;
+    color: black;
+    size: 36px;
+    background-color: rgb(198, 197, 197);
+    border: 0;
+    vertical-align: middle;
+}

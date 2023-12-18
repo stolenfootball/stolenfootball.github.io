@@ -1,4 +1,5 @@
 import { addLargeHeaderBar, addSmallHeaderBar } from './scripts/header-bar.js';
+import { renderMostRecentPosts } from './scripts/post-summaries.js';
 
 const headerBar = document.getElementById('header-bar');
 
@@ -15,3 +16,7 @@ if (headerBar.classList.contains('blog-header')) {
 if (headerBar.classList.contains('home-header')) {
     document.getElementById('home-button').classList.add('active');
 }
+
+
+const postSummaries = document.getElementById('recent-blog-posts');
+renderMostRecentPosts(postSummaries);
