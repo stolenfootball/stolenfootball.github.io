@@ -9,10 +9,10 @@ export function addLargeHeaderBar(element) {
             <nav class="navbar navbar-default header-item">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="#">stolenfootball.dev</a>
+                        <a class="navbar-brand" href="./index.html">stolenfootball.dev</a>
                     </div>
                     <ul class="nav navbar-nav">
-                        <li id="home-button"><a href="#">Home</a></li>
+                        <li id="home-button"><a href="./index.html">Home</a></li>
                         <li id="blog-button"><a href="#">Blog</a></li>
                         <li id="about-button"><a href='#'>About</a></li>
                         <li id="contact-button"><a href='#'>Contact</a></li>
