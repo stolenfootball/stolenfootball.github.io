@@ -43,7 +43,7 @@ export function addSmallHeaderBar(element) {
                     <a class="navbar-brand dropdown-toggle" data-toggle="dropdown" href="#">stolenfootball.dev
                     <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li id="home-button"><a href="#">Home</a></li>
+                        <li id="home-button"><a href="./index.html">Home</a></li>
                         <li id="blog-button"><a href="#">Blog</a></li>
                         <li id="about-button"><a href='#'>About</a></li>
                         <li id="contact-button"><a href='#'>Contact</a></li>
