@@ -44,3 +44,16 @@ body {
     size: 36px;
     background-color: rgb(198, 197, 197);
 }
+
+.hljs {
+    white-space: pre;
+    overflow-x: auto;
+    background: rgb(57, 69, 84);
+    color: #bbd5d8;
+}
+
+pre {
+    background-color: rgb(57, 69, 84);
+    color: #bbd5d8;
+    padding: 0;
+}
