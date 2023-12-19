@@ -13,7 +13,7 @@ export function addLargeHeaderBar(element) {
                     </div>
                     <ul class="nav navbar-nav">
                         <li id="home-button"><a href="./index.html">Home</a></li>
-                        <li id="blog-button"><a href="#">Blog</a></li>
+                        <li id="blog-button"><a href="./blog.html">Blog</a></li>
                         <li id="about-button"><a href='#'>About</a></li>
                         <li id="contact-button"><a href='#'>Contact</a></li>
                     </ul>
@@ -44,7 +44,7 @@ export function addSmallHeaderBar(element) {
                     <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li id="home-button"><a href="./index.html">Home</a></li>
-                        <li id="blog-button"><a href="#">Blog</a></li>
+                        <li id="blog-button"><a href="./blog.html">Blog</a></li>
                         <li id="about-button"><a href='#'>About</a></li>
                         <li id="contact-button"><a href='#'>Contact</a></li>
                     </ul>
