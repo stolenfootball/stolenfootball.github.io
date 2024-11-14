@@ -3,7 +3,7 @@ languageCode = 'en-us'
 title = "Jeremy's Blog"
 theme = 'hermit-v2'
 
-enableEmoji = true
+# enableEmoji = true
 
 [frontmatter]
 date = ["date", "publishDate", "lastmod"]
@@ -40,15 +40,15 @@ expiryDate = ["expiryDate"]
   # bgImg = ""
 #   gitUrl = "https://github.com/1bl4z3r/hermit-V2/tree/staging"
 
-  justifyContent = false
+#   justifyContent = false
 
-  relatedPosts = true
+#   relatedPosts = true
   code_copy_button = true
 
   homeSubtitlePrinter = true
-  scrollToTop = true 
-  global_mathjax = false
-  readTime = true
+#   scrollToTop = true 
+#   global_mathjax = false
+#   readTime = true
 #   readTimeSeparator = "CHANGE ME READ TIME"
 #   legacyLayout = false
   shareSocial = true
