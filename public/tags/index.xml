@@ -6,6 +6,21 @@
     <description>Recent content in Tags on Jeremy&#39;s Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
+    <lastBuildDate>Tue, 17 Oct 2023 11:23:50 -0500</lastBuildDate>
     <atom:link href="https://stolenfootball.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Dfir</title>
+      <link>https://stolenfootball.github.io/tags/dfir/</link>
+      <pubDate>Tue, 17 Oct 2023 11:23:50 -0500</pubDate>
+      <guid>https://stolenfootball.github.io/tags/dfir/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Writeups</title>
+      <link>https://stolenfootball.github.io/tags/writeups/</link>
+      <pubDate>Tue, 17 Oct 2023 11:23:50 -0500</pubDate>
+      <guid>https://stolenfootball.github.io/tags/writeups/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>
