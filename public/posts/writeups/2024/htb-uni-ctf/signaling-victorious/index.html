@@ -1,0 +1,555 @@
+
+
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge"><meta name="robots" content="index, follow"><link rel="author" href="/humans.txt">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="msapplication-TileImage" content="/mstile-144x144.png">
+<meta name="theme-color" content="#494f5c">
+<meta name="msapplication-TileColor" content="#494f5c">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#494f5c"><meta name="author" content="Jeremy Dunn">
+
+  <meta itemprop="name" content="HackTheBox Binary Badlands 2024 - Signaling Victorious">
+  <meta itemprop="description" content="This challenge came with two files - an encrypted 7-zip file named backup.7z and a memory dump named win10_memdump.elf. There was also a docker container available online running Starkiller, which is a front-end management app for the post exploitation framework PowerShell Empire. When I visited the site, there was a login page requesting a username and password to access Starkiller, but no username and password were provided with the challenge.">
+  <meta itemprop="datePublished" content="2024-12-17T11:23:50-05:00">
+  <meta itemprop="dateModified" content="2024-12-17T11:23:50-05:00">
+  <meta itemprop="wordCount" content="3425">
+  <meta itemprop="keywords" content="Writeups,Dfir"><meta property="og:url" content="http://localhost:1313/posts/writeups/2024/htb-uni-ctf/signaling-victorious/">
+  <meta property="og:site_name" content="Jeremy&#39;s Blog">
+  <meta property="og:title" content="HackTheBox Binary Badlands 2024 - Signaling Victorious">
+  <meta property="og:description" content="This challenge came with two files - an encrypted 7-zip file named backup.7z and a memory dump named win10_memdump.elf. There was also a docker container available online running Starkiller, which is a front-end management app for the post exploitation framework PowerShell Empire. When I visited the site, there was a login page requesting a username and password to access Starkiller, but no username and password were provided with the challenge.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="HackTheBox Binary Badlands 2024 - Signaling Victorious">
+  <meta name="twitter:description" content="This challenge came with two files - an encrypted 7-zip file named backup.7z and a memory dump named win10_memdump.elf. There was also a docker container available online running Starkiller, which is a front-end management app for the post exploitation framework PowerShell Empire. When I visited the site, there was a login page requesting a username and password to access Starkiller, but no username and password were provided with the challenge.">
+<title>HackTheBox Binary Badlands 2024 - Signaling Victorious</title>
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/posts/writeups/2024/htb-uni-ctf/signaling-victorious/index.xml" title="HackTheBox Binary Badlands 2024 - Signaling Victorious" />
+<link rel="stylesheet dns-prefetch preconnect preload prefetch" as="style" href="http://localhost:1313/css/style.min.2e296f7531e030aa9a11d5bdd8654e3637eaffbb46b17a3de02e189529efc520.css" integrity="sha256-LilvdTHgMKqaEdW92GVONjfq/7tGsXo94C4YlSnvxSA=" crossorigin="anonymous"></head>
+<body id="page">
+	<header id="site-header">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="http://localhost:1313/">Jeremy&#39;s Blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile"><a href="http://localhost:1313/posts/">Posts</a><a href="http://localhost:1313/about/">About</a></nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<span class="hdr-links hide-in-mobile"><a href="mailto:jeremy.dunn315@gmail.com" target="_blank" rel="noopener me" title="Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+   <polyline points="22,6 12,13 2,6"></polyline>
+</svg></a><a href="https://github.com/stolenfootball" target="_blank" rel="noopener me" title="Github"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path
+      d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+   </path>
+</svg></a><a href="https://www.linkedin.com/in/jeremy-dunn-a0b945172/" target="_blank" rel="noopener me" title="Linkedin"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+   <rect x="2" y="9" width="4" height="12"></rect>
+   <circle cx="4" cy="4" r="2"></circle>
+</svg></a><a href="https://discordapp.com/users/stolenfootball#3265" target="_blank" rel="noopener me" title="Discord"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke-linecap="round" stroke-linejoin="round">
+   <path
+      d="M8.82889 11.203C7.86239 11.203 7.09937 12.0508 7.09937 13.0852C7.09937 14.1195 7.87935 14.9673 8.82889 14.9673C9.79538 14.9673 10.5584 14.1195 10.5584 13.0852C10.5754 12.0508 9.79538 11.203 8.82889 11.203ZM15.0178 11.203C14.0514 11.203 13.2883 12.0508 13.2883 13.0852C13.2883 14.1195 14.0683 14.9673 15.0178 14.9673C15.9843 14.9673 16.7474 14.1195 16.7474 13.0852C16.7474 12.0508 15.9843 11.203 15.0178 11.203Z"
+      fill="currentColor" />
+   <path
+      d="M14.8477 18.3649C14.8874 18.4483 14.9381 18.5296 15.0005 18.6075C15.3663 19.0644 15.7387 19.5135 15.8832 19.687C16.1242 19.9764 16.4855 20.1329 16.8553 20.117C20.6839 19.9522 22.4053 17.6063 22.7126 17.1342C22.8526 16.919 22.9029 16.6887 22.9023 16.4867C22.8862 11.0873 20.6126 6.69288 20.3618 6.22299C20.2686 6.04849 20.1448 5.9213 20.0223 5.83024C17.6324 4.05442 15.3398 3.89258 14.7987 3.87945C14.4248 3.87037 14.1018 4.039 13.8908 4.28019C13.7833 4.40298 13.7069 4.53817 13.659 4.67843C12.4808 4.5498 11.3488 4.5684 10.3271 4.681C10.2848 4.54257 10.2137 4.40813 10.1111 4.28494C9.90289 4.03513 9.58304 3.87239 9.22517 3.87894C8.72884 3.88801 6.40341 4.02781 3.9777 5.83024C3.85516 5.9213 3.73139 6.04849 3.63825 6.22299C3.38742 6.69289 1.11365 11.0876 1.09774 16.4873C1.09715 16.6871 1.14634 16.9155 1.28416 17.1296C1.58866 17.6027 3.29601 19.9515 7.12649 20.1169C7.50079 20.1331 7.86486 19.9726 8.10512 19.6794C8.2521 19.5 8.63516 19.0311 9.00416 18.5683C9.06865 18.4874 9.12057 18.4028 9.16075 18.316C9.32759 18.3546 9.49869 18.391 9.67405 18.4248L9.67405 18.4248L9.68004 18.426C11.0465 18.681 12.6626 18.7747 14.4312 18.4443C14.5698 18.4206 14.7086 18.3942 14.8477 18.3649Z"
+      stroke="currentColor" stroke-width="2" />
+</svg></a></span><button id="share-btn" class="hdr-btn" title=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share-2">
+      <circle cx="18" cy="5" r="3"></circle>
+      <circle cx="6" cy="12" r="3"></circle>
+      <circle cx="18" cy="19" r="3"></circle>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+   </svg></button>
+ 
+<div id="share-links" class="animated fast">
+    
+    
+    
+    
+    <ul>
+        <li>
+            <a href="https://twitter.com/intent/tweet?hashtags=hermit2&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2f&amp;text=Posts" target="_blank" rel="noopener" aria-label="Share on X"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path class="st0" d="m21.3 21.1 -11.4 -18.2h-7.2l11.4 18.2zm-18.6 0 7.2 -6.6m4.2 -5 7.2 -6.6" />
+</svg></a>
+        </li>
+        <li>
+            <a href="https://facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fposts%2f" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+</svg></a>
+        </li>
+        <li>
+            <a href="mailto:?subject=Posts&amp;body=http%3a%2f%2flocalhost%3a1313%2fposts%2f" target="_self" rel="noopener" aria-label="Share on Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+   <polyline points="22,6 12,13 2,6"></polyline>
+</svg></a>
+        </li>
+        <li>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http%3a%2f%2flocalhost%3a1313%2fposts%2f&amp;source=http%3a%2f%2flocalhost%3a1313%2f&amp;title=Posts&amp;summary=Posts%2c%20by%20Jeremy%20Dunn%0a%0a%3cnil%3e%0a" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+   <rect x="2" y="9" width="4" height="12"></rect>
+   <circle cx="4" cy="4" r="2"></circle>
+</svg></a>
+        </li>
+        <li>
+            <a href="#" onclick="linkShare(&#34;Posts&#34;,&#34;http://localhost:1313/posts/&#34;,&#34;Posts, by Jeremy Dunn\n\n\u003cnil\u003e\n&#34;); return false;" target="_self" rel="noopener" aria-label="Copy Link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+   </svg></a>
+        </li>
+    </ul>
+</div><button id="menu-btn" class="hdr-btn" title=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+   </svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="http://localhost:1313/posts/">Posts</a></li>
+			<li><a href="http://localhost:1313/about/">About</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner thin animated fadeIn faster">
+		<h1>HackTheBox Binary Badlands 2024 - Signaling Victorious</h1>
+		<div class="content">
+			<p>This challenge came with two files - an encrypted 7-zip file named <code>backup.7z</code> and a memory dump named <code>win10_memdump.elf</code>. There was also a docker container available online running <a href="https://github.com/bc-security/starkiller">Starkiller</a>, which is a front-end management app for the post exploitation framework <a href="https://github.com/EmpireProject/Empire">PowerShell Empire</a>. When I visited the site, there was a login page requesting a username and password to access Starkiller, but no username and password were provided with the challenge.</p>
+<p><img src="./images/1_starkiller.png" alt="Starkiller Login"></p>
+<h2 id="accessing-the-backup">Accessing the backup</h2>
+<p>The first thing I decided to do was attempt to decrypt the backup file. I tried a couple of basic passwords, but nothing worked. Next, I began to look through the memory dump using <a href="https://github.com/volatilityfoundation/volatility3">Volatility3</a>.</p>
+<p>When scanning the processes that were active when the memory image was taken, I noticed two things. First, Signal was actively running. This stuck out at me, since the challenge was called <em>Signaling Victorious</em>, and I took note of it for later. The other process that jumped out was <code>backuper.exe</code>. Given the weird spelling and the fact that it was at the end of the process list (which usually indicates user-started processes), I figured it may be a custom backup application.</p>
+<p><img src="./images/2_vol-pslist.png" alt="Volatility process scan"></p>
+<p>Next I did a file scan looking for the <code>backuper.exe</code> application, and found it on the user&rsquo;s Desktop.</p>
+<p><img src="./images/3_vol-filescan.png" alt="Volatility file scan"></p>
+<p>I dumped the file using the <code>windows.dumpfiles.DumpFiles</code> plugin, and opened the executable in <a href="https://binary.ninja/">Binary Ninja</a>. I searched for strings, and found the command: <code>7z.exe a -t7z backup.7z \&quot;C:\\Users\\\&quot; -p%ws</code>, then found the function that utilizes that string in the XREFs. The pseudo-c (cleaned up a bit) of the function is below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    LSA_HANDLE LsaHandle <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    wchar16 <span style="color:#66d9ef">const</span><span style="color:#f92672">*</span> <span style="color:#66d9ef">const</span> OfflineBackupKey <span style="color:#f92672">=</span> u<span style="color:#e6db74">&#34;OfflineBackupKey&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> command;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">memset</span>(<span style="color:#f92672">&amp;</span>command, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0xc8</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">struct</span> _OBJECT_ATTRIBUTES ObjectAttributes;
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">memset</span>(<span style="color:#f92672">&amp;</span>ObjectAttributes, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0x30</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    NTSTATUS Status;
+</span></span><span style="display:flex;"><span>    Status <span style="color:#f92672">=</span> <span style="color:#a6e22e">LsaOpenPolicy</span>(nullptr, <span style="color:#f92672">&amp;</span>ObjectAttributes, <span style="color:#ae81ff">0x20</span>, <span style="color:#f92672">&amp;</span>LsaHandle);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int64_t</span> result;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>Status)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">struct</span> LSA_UNICODE_STRING<span style="color:#f92672">*</span> LsaUnicodeString <span style="color:#f92672">=</span> nullptr;
+</span></span><span style="display:flex;"><span>        NTSTATUS Status_1 <span style="color:#f92672">=</span> <span style="color:#a6e22e">LsaRetrievePrivateData</span>(LsaHandle, <span style="color:#f92672">&amp;</span>KeyName, <span style="color:#f92672">&amp;</span>LsaUnicodeString);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>Status_1)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">sprintf</span>(<span style="color:#f92672">&amp;</span>command, <span style="color:#ae81ff">0xc8</span>, <span style="color:#e6db74">&#34;7z.exe a -t7z backup.7z </span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">C:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Users</span><span style="color:#ae81ff">\\\&#34;</span><span style="color:#e6db74"> -p%ws&#34;</span>, LsaUnicodeString<span style="color:#f92672">-&gt;</span>Buffer);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">execute</span>(<span style="color:#f92672">&amp;</span>command);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">memset</span>(LsaUnicodeString, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">8</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">memset</span>(<span style="color:#f92672">&amp;</span>command, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0xc8</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">LsaFree</span>(LsaUnicodeString);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">LsaClose</span>(LsaHandle);
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">dbgPrint</span>(<span style="color:#e6db74">&#34;LsaRetrievePrivateData failed, e…&#34;</span>, <span style="color:#a6e22e">LsaNtStatusToWinError</span>(Status_1));
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">LsaClose</span>(LsaHandle);
+</span></span><span style="display:flex;"><span>            result <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">dbgPrint</span>(<span style="color:#e6db74">&#34;LsaOpenPolicy failed, error: 0x%…&#34;</span>, <span style="color:#a6e22e">LsaNtStatusToWinError</span>(Status));
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The function retrieves the value <code>OfflineBackupKey</code> from the Windows Local Security Authority (LSA) and uses it as the password to encrypt the backup when it is zipped. The LSA is a common place within a Windows system that sensitive information such as passwords are stored, and it&rsquo;s contents can usually be retrieved if you have a memory dump.</p>
+<p>I ran the <code>windows.lsadump.Lsadump</code> Volatility plugin, and retrieved the following:</p>
+<p><img src="./images/4_vol-lsadump.png" alt="Volatility Lsadump"></p>
+<p>The offline backup key is stored as a <code>UNICODE_STRING</code> , which is a common structure for storing strings in Windows programs. A <code>UNICODE_STRING</code> is defined as follows, with the actual string buffer stored in <code>UTF-16LE</code> format (again, incredibly common for Windows strings).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> _UNICODE_STRING {
+</span></span><span style="display:flex;"><span>  USHORT Length;
+</span></span><span style="display:flex;"><span>  USHORT MaximumLength;
+</span></span><span style="display:flex;"><span>  PWSTR  Buffer;
+</span></span><span style="display:flex;"><span>} UNICODE_STRING, <span style="color:#f92672">*</span>PUNICODE_STRING;
+</span></span></code></pre></div><p>Which means the key is:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>OfflineBackupKey {
+</span></span><span style="display:flex;"><span>  Length: <span style="color:#ae81ff">0x28</span>
+</span></span><span style="display:flex;"><span>  MaximumLength: UNDEFINED
+</span></span><span style="display:flex;"><span>  Buffer: <span style="color:#e6db74">&#34;yYj8g5Pk6h!-K3pBMSxF&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I used 7-zip and the key to decrypt the <code>backup.7z</code> file, and found a copy of the <code>C:\Users</code> directory of the computer.</p>
+<p><img src="./images/5_backup-folder.png" alt="Users directory from backup"></p>
+<h2 id="signal-messaging">Signal Messaging</h2>
+<p>Given that the challenge was called <em>Signaling Victorious</em>, as well as the fact that Signal was one of the only user space applications running on the device, I figured the point of the challenge was to retrieve the Signal messages.</p>
+<p>After some quick research, I found that the Signal Windows app stores its messages in the <code>%APPDATA%\Roaming\Signal\sql\db.sqlite</code> file. This is a SQL-Cipher encrypted database, and sure enough, the one on this device was encrypted.</p>
+<p>This is where it got interesting. Apparently Signal used to store the key for this database in plaintext in <code>%APPDATA%\Roaming\Signal\config.json</code>. This obviously wasn&rsquo;t great (because <code>%APPDATA%\Roaming</code> is fairly accessible by default), but the person who broke this was apparently Elon Musk?</p>
+<p><img src="./images/6_musk-tweet.png" alt="Musk tweet"></p>
+<p>In a strange turn of events, Musk was absolutely right, I have no idea what was going on with the community note. Any user or program with access to the <code>%APPDATA%</code> folder could read all Signal messages, and this was a known issue in Signal since 2018 that was in fact not being addressed.</p>
+<p><img src="./images/7_twilight-zone.gif" alt="Twilight zone gif"></p>
+<p>Anyways, after all of the publicity that came in the aftermath of Musk&rsquo;s tweet, Signal decided fix the problem, and began to use device-native solutions to store all of its encryption keys. In Linux, this meant the keyring, on Mac, this means keychain, and on Windows, this means DPAPI.</p>
+<h2 id="a-brief-aside---dpapi">A Brief Aside - DPAPI</h2>
+<p>DPAPI is the Windows Data Protection API. Application developers can use the API through the <code>CryptProtectData</code> and <code>CryptUnprotectData</code> functions. <code>CryptProtectData</code> takes plaintext and returns a <code>DPAPI_BLOB</code> structure, which contains the encrypted data and metadata regarding the encryption. <code>CryptUnprotectData</code> takes a <code>DPAPI_BLOB</code>, and returns plaintext.</p>
+<p>Under the hood DPAPI (when encrypting secrets for a specific user) uses a 64 byte &ldquo;Master Key&rdquo; during encryption, which is saved in the <code>%APPDATA\Roaming\Microsoft\Protect\[USER_SID]</code> folder. The Master Key is combined with the SHA1 hash of the user&rsquo;s password, the user&rsquo;s SID, and some metadata stored in the <code>DPAPI_BLOB</code> to derive the encryption key used to encrypt the plaintext.</p>
+<p>The end result of all of this is that an application developer can store serialized <code>DPAPI_BLOB</code> structures on the disk and have a degree of assurance that they cannot be decrypted without the user&rsquo;s password.</p>
+<p>For a more detailed discussion of DPAPI internals, I highly recommend the blog post I linked below. It does a great job of making a complex topic clear, and provides a lot of detail.</p>
+<p><a href="https://www.insecurity.be/blog/2020/12/24/dpapi-in-depth-with-tooling-standalone-dpapi/">https://www.insecurity.be/blog/2020/12/24/dpapi-in-depth-with-tooling-standalone-dpapi/</a></p>
+<h2 id="back-to-it">Back to it</h2>
+<p>Theoretically, according to Signal, not much was changed in the actual storage of the database key after the update - they just replaced the <code>key</code> field in <code>config.json</code> with <code>encryptedKey</code>, which was encrypted using DPAPI. Below are examples of the previous &ldquo;plaintext&rdquo; config file and the new &ldquo;encrypted&rdquo; one after the update.</p>
+<p>Old Version:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;key&#34;</span>: <span style="color:#e6db74">&#34;d07de8ee1be42b41d040cf9090a31115671cfe812a6305d0517a2da88bf5c7fc&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;mediaPermissions&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;mediaCameraPermissions&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>New Version:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;encryptedKey&#34;</span>: <span style="color:#e6db74">&#34;763130cc1843cbf3949e872b373031e89c85f8e8d6e9ec3bd9340bb9c6fd844ca424d7e666feac3663f6c2810d6ddbdfb82f7faa4456eda119bacd2709fc2404eeeb74e69b2b3f2f71e765b74a068c5549a1871559d537de08a25c700a97cd&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The problem is, this encrypted key is clearly not a DPAPI blob. Using the DPAPI blob parser built into <a href="https://github.com/skelsec/pypykatz">pypykatz</a>, we can see that.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jeremydunn@Jeremys-MacBook-Pro % pypykatz dpapi describe blob 763130cc1843cbf3949e872b373031e89c85f8e8d6e9ec3bd9340bb9c6fd844ca424d7e666feac3663f6c2810d6ddbdfb82f7faa4456eda119bacd2709fc2404eeeb74e69b2b3f2f71e765b74a068c5549a1871559d537de08a25c700a97cd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> DPAPI_BLOB <span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>version: <span style="color:#ae81ff">3425710454</span>
+</span></span><span style="display:flex;"><span>credential_guid: b<span style="color:#e6db74">&#39;\x18C\xcb\xf3\x94\x9e\x87+701\xe8\x9c\x85\xf8\xe8&#39;</span>
+</span></span><span style="display:flex;"><span>masterkey_version: <span style="color:#ae81ff">1005382102</span>
+</span></span><span style="display:flex;"><span>masterkey_guid: b90b34d9-fdc6-4c84-a424-d7e666feac36
+</span></span><span style="display:flex;"><span>flags: <span style="color:#ae81ff">2177037923</span>
+</span></span><span style="display:flex;"><span>description_length: <span style="color:#ae81ff">3755699469</span>
+</span></span><span style="display:flex;"><span>description: b<span style="color:#e6db74">&#34;\xb8/\x7f\xaaDV\xed\xa1\x19\xba\xcd&#39;\t\xfc</span>$<span style="color:#e6db74">\x04\xee\xebt\xe6\x9b+?/q\xe7e\xb7J\x06\x8cUI\xa1\x87\x15Y\xd57\xde\x08\xa2\\p\n\x97\xcd&#34;</span>
+</span></span><span style="display:flex;"><span>crypto_algorithm: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>crypto_algorithm_length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>salt_length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>salt: b<span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>HMAC_key_length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>HMAC_key: b<span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>hash_algorithm: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>HMAC: b<span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>data_length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>data: b<span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>signature_length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>signature: b<span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>hash_algorithm_length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>HMAC_length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>to_sign: b<span style="color:#e6db74">&#34;\xd6\xe9\xec;\xd94\x0b\xb9\xc6\xfd\x84L\xa4</span>$<span style="color:#e6db74">\xd7\xe6f\xfe\xac6c\xf6\xc2\x81\rm\xdb\xdf\xb8/\x7f\xaaDV\xed\xa1\x19\xba\xcd&#39;\t\xfc</span>$<span style="color:#e6db74">\x04\xee\xebt\xe6\x9b+?/q\xe7e\xb7J\x06\x8cUI\xa1\x87\x15Y\xd57\xde\x08\xa2\\p\n\x97\xcd&#34;</span>
+</span></span></code></pre></div><p>None of the fields populate, and the ones that do are clearly incorrect.</p>
+<p>So where is the actual DPAPI blob?</p>
+<h2 id="a-breakthrough">A Breakthrough</h2>
+<p>Figuring this out took a lot longer than I care to admit. If I&rsquo;d been smart, I probably could have just grepped for the GUID of the data provider used for DPAPI (which is always the same and is a part of every valid blob), but I didn&rsquo;t think of that until days later.</p>
+<p>What I did eventually do (after much trial and error) is find an open-source <a href="https://github.com/bepaald/signalbackup-tools">Signal backup tool</a> which is still in active development. Since they have to decrypt the data in order to back it up, I figured they&rsquo;d know where the DPAPI blob with the key was stored on the disk.</p>
+<p>I searched through the Github repo for the string &ldquo;DPAPI&rdquo;, and came across <a href="https://github.com/bepaald/signalbackup-tools/blob/82ee591f5115576210ab8ddc1c01d1d1ec5ff2d4/desktopdatabase/getkeyfromencrypted_win.cc#L85">getkeyfromencrypted_win.cc</a>.</p>
+<p>From this tool, I learned a couple of important things.</p>
+<p>First, Signal appends the string &ldquo;DPAPI&rdquo; in ASCII to the front of the blob after it gets returned from <code>CryptProtectData</code>, and then strips it off again before sending it to <code>CryptUnprotectData</code>. I can&rsquo;t even begin to guess why, <code>DPAPI_BLOB</code> structures already have a unique signature in the form of the provider GUID, so it&rsquo;s not like another magic number is necessary. Maybe someone&rsquo;s bonus was attached to the number of lines of code they wrote?</p>
+<p>The relevant code from <code>getkeyfromencrypted_win.cc</code> is here:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>  <span style="color:#75715e">// the encrypted key starts with &#39;D&#39; &#39;P&#39; &#39;A&#39; &#39;P&#39; &#39;I&#39; {0x44, 0x50, 0x41, 0x50, 0x41}, skip this...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  DATA_BLOB encrypted_encryptedkey_key_blob{static_cast<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span><span style="color:#f92672">&gt;</span>(encrypted_encryptedkey_key.second <span style="color:#f92672">-</span> <span style="color:#a6e22e">STRLEN</span>(<span style="color:#e6db74">&#34;DPAPI&#34;</span>)), encrypted_encryptedkey_key.first <span style="color:#f92672">+</span> <span style="color:#a6e22e">STRLEN</span>(<span style="color:#e6db74">&#34;DPAPI&#34;</span>)};
+</span></span></code></pre></div><p>Second, the blob is stored under the json key <code>encrypted_key</code>, not <code>encryptedKey</code> as seen in <code>config.json</code> (snake case supremacy yet again). Unfortunately, <code>getkeyfromencrypted_win.cc</code> seems to be getting the key by doing a regex search of the <code>%APPDATA%\Roaming\Signal\Local State</code> file for <code>encrypted_key</code> and pulling the blob out of the regex.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// 2. get the key to decrypt the encrypted key
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//*****  2a. get the base64 encoded encrypted key to decrypt the encrypted key ******//
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>std<span style="color:#f92672">::</span>fstream <span style="color:#a6e22e">localstate</span>(d_configdir <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/Local State&#34;</span>, std<span style="color:#f92672">::</span>ios_base<span style="color:#f92672">::</span>in <span style="color:#f92672">|</span> std<span style="color:#f92672">::</span>ios_base<span style="color:#f92672">::</span>binary);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>localstate.<span style="color:#a6e22e">is_open</span>())
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  Logger<span style="color:#f92672">::</span><span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#34;Failed to open input: &#34;</span>, d_configdir, <span style="color:#e6db74">&#34;/Local State&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>string line;
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>regex <span style="color:#a6e22e">keyregex</span>(<span style="color:#e6db74">&#34;.*</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">encrypted_key</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">:</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">s*</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">([^</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">]*)</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">.*&#34;</span>);
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>smatch m;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> found <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">while</span> (std<span style="color:#f92672">::</span><span style="color:#a6e22e">getline</span>(localstate, line))
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">//std::cout &lt;&lt; &#34;Line: &#34; &lt;&lt; line &lt;&lt; std::endl;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span> (std<span style="color:#f92672">::</span><span style="color:#a6e22e">regex_match</span>(line, m, keyregex))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (m.<span style="color:#a6e22e">size</span>() <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span>) <span style="color:#75715e">// m[0] is full match, m[1] is first submatch (which we want)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    {
+</span></span><span style="display:flex;"><span>      found <span style="color:#f92672">=</span> true;
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>found)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  Logger<span style="color:#f92672">::</span><span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#34;Failed to read key from Local State&#34;</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>I can&rsquo;t hate on this codebase too much since they provided my major breakthrough for the challenge, but for the love of all that is good in this world people json parsers were invented for a reason.</p>
+<p>Also, as a side note - why does <code>Local State</code> not have a file extension? Why is there a space? Who at Signal is doing code review?</p>
+<p>Regardless, in the <code>Local State</code> file, we finally have what we are looking for:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;os_crypt&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;audit_enabled&#34;</span>: <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;encrypted_key&#34;</span>: <span style="color:#e6db74">&#34;RFBBUEkBAAAA0Iyd3wEV0RGMegDAT8KX6wEAAAD8tnGruNB7TaoSbs4Z/xkXEAAAABIAAABDAGgAcgBvAG0AaQB1AG0AAAAQZgAAAAEAACAAAACKakPvCWDeRdef30ik+0RfHTUXhQrfAdfcEOuzfv8sDQAAAAAOgAAAAAIAACAAAAAad9BHSVFuYmI0D8QG9924xL4pzewU1LemGmaTlTzcOjAAAAAg0SNGW/NP4egaKEv0Tgl9JE3d0tFQpx6G6lMcoOlF3EyR/dr0hbbBbQksTEkECcxAAAAAHaurRLkbh4yTcD+/hxG67Vfa0zLEIJpQOAWw6BIDUw+jRHY3AuIU0wdyxy5lv6CZEYmIQqUbyJSXzPIPpqYn6w==&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>After decoding the Base64 and stripping the incredibly necessary &ldquo;DPAPI&rdquo; from the front, we can use <code>pypykatz</code> to decode the <code>DPAPI_BLOB</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jeremydunn@Jeremys-MacBook-Pro % pypykatz dpapi describe blob 01000000d08c9ddf0115d1118c7a00c04fc297eb01000000fcb671abb8d07b4daa126ece19ff191710000000120000004300680072006f006d00690075006d0000001066000000010000200000008a6a43ef0960de45d79fdf48a4fb445f1d3517850adf01d7dc10ebb37eff2c0d000000000e80000000020000200000001a77d04749516e6262340fc406f7ddb8c4be29cdec14d4b7a61a6693953cdc3a3000000020d123465bf34fe1e81a284bf44e097d244dddd2d150a71e86ea531ca0e945dc4c91fddaf485b6c16d092c4c490409cc400000001dabab44b91b878c93703fbf8711baed57dad332c4209a503805b0e81203530fa344763702e214d30772c72e65bfa09911898842a51bc89497ccf20fa6a627eb
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> DPAPI_BLOB <span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>version: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>credential_guid: b<span style="color:#e6db74">&#39;\xd0\x8c\x9d\xdf\x01\x15\xd1\x11\x8cz\x00\xc0O\xc2\x97\xeb&#39;</span>
+</span></span><span style="display:flex;"><span>masterkey_version: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>masterkey_guid: ab71b6fc-d0b8-4d7b-aa12-6ece19ff1917
+</span></span><span style="display:flex;"><span>flags: <span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>description_length: <span style="color:#ae81ff">18</span>
+</span></span><span style="display:flex;"><span>description: b<span style="color:#e6db74">&#39;C\x00h\x00r\x00o\x00m\x00i\x00u\x00m\x00\x00\x00&#39;</span>
+</span></span><span style="display:flex;"><span>crypto_algorithm: <span style="color:#ae81ff">26128</span>
+</span></span><span style="display:flex;"><span>crypto_algorithm_length: <span style="color:#ae81ff">256</span>
+</span></span><span style="display:flex;"><span>salt_length: <span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>salt: b<span style="color:#e6db74">&#39;\x8ajC\xef\t`\xdeE\xd7\x9f\xdfH\xa4\xfbD_\x1d5\x17\x85\n\xdf\x01\xd7\xdc\x10\xeb\xb3~\xff,\r&#39;</span>
+</span></span><span style="display:flex;"><span>HMAC_key_length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>HMAC_key: b<span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>hash_algorithm: <span style="color:#ae81ff">32782</span>
+</span></span><span style="display:flex;"><span>HMAC: b<span style="color:#e6db74">&#39;\x1aw\xd0GIQnbb4\x0f\xc4\x06\xf7\xdd\xb8\xc4\xbe)\xcd\xec\x14\xd4\xb7\xa6\x1af\x93\x95&lt;\xdc:&#39;</span>
+</span></span><span style="display:flex;"><span>data_length: <span style="color:#ae81ff">48</span>
+</span></span><span style="display:flex;"><span>data: b<span style="color:#e6db74">&#39; \xd1#F[\xf3O\xe1\xe8\x1a(K\xf4N\t}$M\xdd\xd2\xd1P\xa7\x1e\x86\xeaS\x1c\xa0\xe9E\xdcL\x91\xfd\xda\xf4\x85\xb6\xc1m\t,LI\x04\t\xcc&#39;</span>
+</span></span><span style="display:flex;"><span>signature_length: <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>signature: b<span style="color:#e6db74">&#34;\x1d\xab\xabD\xb9\x1b\x87\x8c\x93p?\xbf\x87\x11\xba\xedW\xda\xd32\xc4 \x9aP8\x05\xb0\xe8\x12\x03S\x0f\xa3Dv7\x02\xe2\x14\xd3\x07r\xc7.e\xbf\xa0\x99\x11\x89\x88B\xa5\x1b\xc8\x94\x97\xcc\xf2\x0f\xa6\xa6&#39;\xeb&#34;</span>
+</span></span><span style="display:flex;"><span>hash_algorithm_length: <span style="color:#ae81ff">512</span>
+</span></span><span style="display:flex;"><span>HMAC_length: <span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>to_sign: b<span style="color:#e6db74">&#39;\x01\x00\x00\x00\xfc\xb6q\xab\xb8\xd0{M\xaa\x12n\xce\x19\xff\x19\x17\x10\x00\x00\x00\x12\x00\x00\x00C\x00h\x00r\x00o\x00m\x00i\x00u\x00m\x00\x00\x00\x10f\x00\x00\x00\x01\x00\x00 \x00\x00\x00\x8ajC\xef\t`\xdeE\xd7\x9f\xdfH\xa4\xfbD_\x1d5\x17\x85\n\xdf\x01\xd7\xdc\x10\xeb\xb3~\xff,\r\x00\x00\x00\x00\x0e\x80\x00\x00\x00\x02\x00\x00 \x00\x00\x00\x1aw\xd0GIQnbb4\x0f\xc4\x06\xf7\xdd\xb8\xc4\xbe)\xcd\xec\x14\xd4\xb7\xa6\x1af\x93\x95&lt;\xdc:0\x00\x00\x00 \xd1#F[\xf3O\xe1\xe8\x1a(K\xf4N\t}$M\xdd\xd2\xd1P\xa7\x1e\x86\xeaS\x1c\xa0\xe9E\xdcL\x91\xfd\xda\xf4\x85\xb6\xc1m\t,LI\x04\t\xcc&#39;</span>
+</span></span></code></pre></div><p>Yay, data.</p>
+<h2 id="decrypting-the-blob">Decrypting the blob</h2>
+<p>Now we have the our encrypted <code>DPAPI_BLOB</code>, but we still need the master key to retrieve it.</p>
+<p>If you read the earlier bit about <a href="#a-brief-aside---dpapi">DPAPI</a>, you&rsquo;ll know that the master key seed is stored in the <code>%APPDATA\Roaming\Microsoft\Protect\[USER_SID]</code> folder in a file with the same name as the GUID of the master key. In this case, we know from the blob that we are looking for a master key with a GUID of <code>ab71b6fc-d0b8-4d7b-aa12-6ece19ff1917</code>, so we know exactly what file we&rsquo;re looking for. It&rsquo;s contents are here, decoded once again by <code>pypykatz</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jeremydunn@Jeremys-MacBook-Pro % pypykatz dpapi describe masterkey backup/Users/frontier-user-01/AppData/Roaming/Microsoft/Protect/S-1-5-21-1208348762-991206961-812773293-1001/ab71b6fc-d0b8-4d7b-aa12-6ece19ff1917
+</span></span><span style="display:flex;"><span><span style="color:#f92672">==</span> MasterKeyFile <span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>version: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>unk1: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>unk2: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>guid: ab71b6fc-d0b8-4d7b-aa12-6ece19ff1917
+</span></span><span style="display:flex;"><span>unk3: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>policy: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>flags: <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>masterkey_length: <span style="color:#ae81ff">176</span>
+</span></span><span style="display:flex;"><span>backupkey_length: <span style="color:#ae81ff">144</span>
+</span></span><span style="display:flex;"><span>credhist_length: <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>domainkey_length: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>masterkey: <span style="color:#f92672">==</span> MasterKey <span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>version: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>salt: b<span style="color:#e6db74">&#39;\x95T\xd8\xdb\r\r\xaa:\x93\x93\x1f\xaf?Z_\x9b&#39;</span>
+</span></span><span style="display:flex;"><span>iteration_count: <span style="color:#ae81ff">8000</span>
+</span></span><span style="display:flex;"><span>hash_algorithm: <span style="color:#ae81ff">32782</span>
+</span></span><span style="display:flex;"><span>crypto_algorithm: <span style="color:#ae81ff">26128</span>
+</span></span><span style="display:flex;"><span>data: b<span style="color:#e6db74">&#39;^x\x0c\xe9\x94,\xff\xe5\x9e\xa2\xcb\x82\xb2\xed[\x82-\x848&gt;\xbe3\x10c\x83.{\xab\xd1\xf5\xb7\xf5\xda\xff`\x9e\xe5\xac\xbf6L\xdc\xc0\xec\xeb\x9c\xf0\xa6\x8bI=\xf9\xbeLh\xf5=\x14X\xadM\xb7-\xeeY\xbd\xff\x12D\xa3\xeb\x18,v\x8e\x11\x02\xd9\xcf\x19\x80\x9d\xab\x04B\xe3\xb0\xa9\xbd!N\xd6\x1d\xf3?\x1eR\xff\x906\xab\tm\x19J\xb8\nA\xe5a\x0b\x92\xcd\x06-}\xa7\xac\n\xac\xae\x1e7\xb1\xbe\xad]\xb6\xe7\x14r.\xb10\x9b*?\x08\xdf/,\x1b89&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>backupkey: <span style="color:#f92672">==</span> MasterKey <span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>version: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>salt: b<span style="color:#e6db74">&#39;q\xb0\xcc\\b[\x8d&lt;\xc8\xdf\xc8\xa5\xdfh;\x83&#39;</span>
+</span></span><span style="display:flex;"><span>iteration_count: <span style="color:#ae81ff">8000</span>
+</span></span><span style="display:flex;"><span>hash_algorithm: <span style="color:#ae81ff">32782</span>
+</span></span><span style="display:flex;"><span>crypto_algorithm: <span style="color:#ae81ff">26128</span>
+</span></span><span style="display:flex;"><span>data: b<span style="color:#e6db74">&#39;\xe1tq~I\xe1m\xf6&#34;\x02R\xc0\x81~h\xcfAzA\x85\xe8\x0b\xdaP\xee_\xfa\xb6\xca\xfa\x05\xa9e\xf8\x1et\xf4\x89\xf4B\x1d\xd8\x9c\xbf\xbc\xfc\x90t\xb4\x8a\x83$\xe4E\x80\x038\x8f6M\xe1\x98@\xd7\xe7\x1aYU\x87\xa4q)\x7f\n\x0c\xa7&gt;,\xb1gU\xfeK\x86)N\xc3/\xaa\xea\x7f\xa8\xc4\xf8\xf7\x1f\xe0\xd3\xb8\xab\x0b\xe1\xfaY\x9e\xc8\x0f\xcd#\x83I\xf9&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>credhist: <span style="color:#f92672">==</span> CredHist <span style="color:#f92672">==</span>
+</span></span><span style="display:flex;"><span>version: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>guid: b<span style="color:#e6db74">&#39;\x1c\xfe\xf2\x8fg~\xe0C\xa3\xbf8\xde#\x87p\xb5&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>domainkey: None
+</span></span></code></pre></div><p>Great, now all we need are the user&rsquo;s SID and a SHA1 hash of the user&rsquo;s password. We have the SID obviously (it&rsquo;s the folder name) but how can we get the SHA1 hash?</p>
+<p>Fortunately for us, the SHA1 hash of the user&rsquo;s password is yet another thing that is stored in the LSA. There are any number of ways to parse this out of the memory dump, but the cleanest one I found was this very nice <a href="https://github.com/skelsec/pypykatz-volatility3">pypykatz Volatility3 plugin</a>. Just run the plugin, and we get:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jeremydunn@Jeremys-MacBook-Pro % vol -f win10_memdump.elf -p pypykatz-volatility3 pypykatz
+</span></span><span style="display:flex;"><span>Volatility <span style="color:#ae81ff">3</span> Framework 2.8.0
+</span></span><span style="display:flex;"><span>credtype	domainname	username	NThash	LMHash	SHAHash	masterkey	masterkey<span style="color:#f92672">(</span>sha1<span style="color:#f92672">)</span>	key_guid	password
+</span></span><span style="display:flex;"><span>msv	DESKTOP-6MBJBAP	frontier-user-01	1d3e3e030ba1a179e1281406efd980bf		ded871d3a3992be2179840890d061c9f30a59a77
+</span></span><span style="display:flex;"><span>dpapi						791ca70e650987684b043745c6f4b1c0f97eb2369317302c6c60f9cda19e1b4864fbece48341141501606d8d359ff7f54ee71e4a2b821d3df69582927742809f	8d53efa8456b9ba43206f4c3a6dc1c957d26105a	ab71b6fc-d0b8-4d7b-aa12-6ece19ff1917
+</span></span><span style="display:flex;"><span>msv	DESKTOP-6MBJBAP	frontier-user-01	1d3e3e030ba1a179e1281406efd980bf		ded871d3a3992be2179840890d061c9f30a59a77
+</span></span></code></pre></div><p>(Incidentally, yes, the calculated master key is also in the LSA. Doing the extra steps to derive it from the raw key is more interesting though)</p>
+<p>Now, we can use pypykatz to generate some prekeys that will be used for master key decryption:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jeremydunn@Jeremys-MacBook-Pro % pypykatz dpapi prekey sha1 S-1-5-21-1208348762-991206961-812773293-1001 ded871d3a3992be2179840890d061c9f30a59a77
+</span></span><span style="display:flex;"><span>d63766f8e020781d1b9c694b19af724aed16284b
+</span></span><span style="display:flex;"><span>ded871d3a3992be2179840890d061c9f30a59a77
+</span></span></code></pre></div><p>And use those prekeys to calculate the correct master key.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jeremydunn@Jeremys-MacBook-Pro % pypykatz dpapi masterkey ./backup/Users/frontier-user-01/AppData/Roaming/Microsoft/Protect/S-1-5-21-1208348762-991206961-812773293-1001/ab71b6fc-d0b8-4d7b-aa12-6ece19ff1917 prekeys.txt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>GUID<span style="color:#f92672">]</span> ab71b6fc-d0b8-4d7b-aa12-6ece19ff1917
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>MASTERKEY<span style="color:#f92672">]</span> 791ca70e650987684b043745c6f4b1c0f97eb2369317302c6c60f9cda19e1b4864fbece48341141501606d8d359ff7f54ee71e4a2b821d3df69582927742809f
+</span></span></code></pre></div><p>Note that the master key does match the one pulled directly out of the memory dump.</p>
+<p>Now, all we have to do is run the <code>DPAPI_BLOB</code> earlier through <code>pypykatz</code> with our new master key!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jeremydunn@Jeremys-MacBook-Pro % pypykatz dpapi blob masterkey_decrypted.json 01000000d08c9ddf0115d1118c7a00c04fc297eb01000000fcb671abb8d07b4daa126ece19ff191710000000120000004300680072006f006d00690075006d0000001066000000010000200000008a6a43ef0960de45d79fdf48a4fb445f1d3517850adf01d7dc10ebb37eff2c0d000000000e80000000020000200000001a77d04749516e6262340fc406f7ddb8c4be29cdec14d4b7a61a6693953cdc3a3000000020d123465bf34fe1e81a284bf44e097d244dddd2d150a71e86ea531ca0e945dc4c91fddaf485b6c16d092c4c490409cc400000001dabab44b91b878c93703fbf8711baed57dad332c4209a503805b0e81203530fa344763702e214d30772c72e65bfa09911898842a51bc89497ccf20fa6a627eb
+</span></span><span style="display:flex;"><span>HEX: 7582f084a7d00872eebe919c2c02da0a8f4d8e67e648bb55805e8994a8a165ef
+</span></span><span style="display:flex;"><span>STR: 艵蓰킧爈뻮鲑Ȭ૚䶏枎䣦喻庀钉ꆨ
+</span></span></code></pre></div><h2 id="decrypting-the-database">Decrypting the database</h2>
+<p>This looks a lot like a raw database encryption key! Unfortunately, using it to try to open the SQL-Cipher file doesn&rsquo;t work. What&rsquo;s going on?</p>
+<p>At this point, I reopened the trusty Signal backup software from eariler, and found something interesting:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>  <span style="color:#75715e">// 3. Now decrypt the encrypted_key using the decrypted key from local state
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// the encrypted key (from step 1) is made up of
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// - a 3 byte header (&#39;v&#39;, &#39;1&#39;, &#39;0&#39;)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// - a 12 byte nonce
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// - 64 bytes of encrypted data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#75715e">// - 16 bytes mac
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#66d9ef">uint64_t</span> header_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>header <span style="color:#f92672">=</span> encryptedkey_data.<span style="color:#a6e22e">get</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">uint64_t</span> nonce_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">12</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>nonce <span style="color:#f92672">=</span> encryptedkey_data.<span style="color:#a6e22e">get</span>() <span style="color:#f92672">+</span> header_length;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">uint64_t</span> mac_length <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>mac <span style="color:#f92672">=</span> encryptedkey_data.<span style="color:#a6e22e">get</span>() <span style="color:#f92672">+</span> (encryptedkey_data_length <span style="color:#f92672">-</span> mac_length);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">uint64_t</span> encdata_length <span style="color:#f92672">=</span> encryptedkey_data_length <span style="color:#f92672">-</span> mac_length <span style="color:#f92672">-</span> header_length <span style="color:#f92672">-</span> nonce_length;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>encdata <span style="color:#f92672">=</span> nonce <span style="color:#f92672">+</span> nonce_length;
+</span></span></code></pre></div><p>The first three bytes of <code>encrypted_key</code> are yet another header. The next 12 are a nonce, 64 bytes of encrypted data, and a 16 byte mac respectively. These seem like parameters for an authenticated encryption scheme. My suspicions were confirmed when I found these lines of code later in the program:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// Create and initialize the decryption context &amp; cipher
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>std<span style="color:#f92672">::</span>unique_ptr<span style="color:#f92672">&lt;</span>EVP_CIPHER_CTX, <span style="color:#a6e22e">decltype</span>(<span style="color:#f92672">&amp;::</span>EVP_CIPHER_CTX_free)<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">ctx</span>(<span style="color:#a6e22e">EVP_CIPHER_CTX_new</span>(), <span style="color:#f92672">&amp;::</span>EVP_CIPHER_CTX_free);
+</span></span><span style="display:flex;"><span>std<span style="color:#f92672">::</span>unique_ptr<span style="color:#f92672">&lt;</span>EVP_CIPHER, <span style="color:#a6e22e">decltype</span>(<span style="color:#f92672">&amp;::</span>EVP_CIPHER_free)<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">cipher</span>(<span style="color:#a6e22e">EVP_CIPHER_fetch</span>(NULL, <span style="color:#e6db74">&#34;AES-256-GCM&#34;</span>, NULL), <span style="color:#f92672">&amp;::</span>EVP_CIPHER_free);
+</span></span></code></pre></div><p>So we&rsquo;re dealing with <code>AES-256-GCM</code>. <a href="https://en.wikipedia.org/wiki/Galois/Counter_Mode">Galois/Counter Mode</a> is one of the most common methods of modern authenticated encryption, which describes crypto-systems that allow for verifiying the integrity of the data that was encrypted as a native part of the encryption scheme, which a more basic construction like <code>AES-CBC$</code> would not do.</p>
+<p>That said, cryptography isn&rsquo;t the point of this blog post, so we&rsquo;ll skip the nitty-gritty details (as cool as GCM is). What we need is the ciphertext that was encrypted using <code>encrypted_key</code>. Although it isn&rsquo;t explicity mentioned anywhere, I had a pretty good idea of where the ciphertext could be found. Remember <code>config.json</code>, with our <code>encryptedKey</code> that was definitely not a <code>DPAPI_BLOB</code>?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;encryptedKey&#34;</span>: <span style="color:#e6db74">&#34;763130cc1843cbf3949e872b373031e89c85f8e8d6e9ec3bd9340bb9c6fd844ca424d7e666feac3663f6c2810d6ddbdfb82f7faa4456eda119bacd2709fc2404eeeb74e69b2b3f2f71e765b74a068c5549a1871559d537de08a25c700a97cd&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Let&rsquo;s try to decrypt it using <code>AES-256-GCM</code> and the key retrieved from <code>encrypted_key</code> above.</p>
+<p>Parsed out, <code>encryptedKey</code> from <code>config.json</code> looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;header&#34;</span>: <span style="color:#e6db74">&#34;763130&#34;</span>, <span style="color:#75715e">// (&#39;v&#39;, &#39;1&#39;, &#39;0&#39;) in ASCII hex
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#f92672">&#34;nonce&#34;</span>: <span style="color:#e6db74">&#34;cc1843cbf3949e872b373031&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;encrypted_data&#34;</span>: <span style="color:#e6db74">&#34;e89c85f8e8d6e9ec3bd9340bb9c6fd844ca424d7e666feac3663f6c2810d6ddbdfb82f7faa4456eda119bacd2709fc2404eeeb74e69b2b3f2f71e765b74a068c&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;mac&#34;</span>: <span style="color:#e6db74">&#34;5549a1871559d537de08a25c700a97cd&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We can use <a href="https://gchq.github.io/CyberChef">CyberChef</a> to decrypt the data. A link to the exact recipe I used is <a href="https://gchq.github.io/CyberChef/#recipe=AES_Decrypt(%7B'option':'Hex','string':'7582f084a7d00872eebe919c2c02da0a8f4d8e67e648bb55805e8994a8a165ef'%7D,%7B'option':'Hex','string':'cc1843cbf3949e872b373031'%7D,'GCM','Hex','Raw',%7B'option':'Hex','string':'5549a1871559d537de08a25c700a97cd'%7D,%7B'option':'Hex','string':''%7D)&amp;input=ZTg5Yzg1ZjhlOGQ2ZTllYzNiZDkzNDBiYjljNmZkODQ0Y2E0MjRkN2U2NjZmZWFjMzY2M2Y2YzI4MTBkNmRkYmRmYjgyZjdmYWE0NDU2ZWRhMTE5YmFjZDI3MDlmYzI0MDRlZWViNzRlNjliMmIzZjJmNzFlNzY1Yjc0YTA2OGM">here</a>.</p>
+<p><img src="./images/8_cyberchef-decode.png" alt="Cyberchef decode"></p>
+<p>Now we can go ahead and open the database with <a href="https://sqlitebrowser.org/">DB Browser for SQLite</a>.</p>
+<p><img src="./images/9_sqlite-open.png" alt="sqlite password screen"></p>
+<p>And, it opens!</p>
+<p><img src="./images/10_sqlite-open.png" alt="sqlite database open"></p>
+<p><img src="./images/11_great-success.gif" alt="Borat gif"></p>
+<h2 id="finding-the-messages">Finding the messages</h2>
+<p>A quick scan of the database structure shows that the messages are stored in the <code>json</code> field of the <code>messages</code> table. It&rsquo;s a bit odd to store serialized json objects within a SQL database, but hey, it&rsquo;s not nearly the weirdest thing we&rsquo;ve seen so far, so let&rsquo;s roll with it.</p>
+<p><img src="./images/12-messages.png" alt="messages table"></p>
+<p>A quick sql query pulls out all of the json objects with the message data.</p>
+<p><img src="./images/13_retrieved-messages.png" alt="messages retrieved"></p>
+<p>A typical message looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;timestamp&#34;</span>: <span style="color:#ae81ff">1731461048464</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;attachments&#34;</span>: [],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;0193215c-2c24-76f3-a72a-9ee52ade121d&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;received_at&#34;</span>: <span style="color:#ae81ff">1731431509028</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;conversationId&#34;</span>: <span style="color:#e6db74">&#34;84e86b7b-e012-4914-a9c1-f78bff32391d&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;readStatus&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;received_at_ms&#34;</span>: <span style="color:#ae81ff">1731461048688</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;seenStatus&#34;</span>: <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sent_at&#34;</span>: <span style="color:#ae81ff">1731461048464</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;serverGuid&#34;</span>: <span style="color:#e6db74">&#34;8a1537e1-cf59-4513-b88a-dd868a95fb1b&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;serverTimestamp&#34;</span>: <span style="color:#ae81ff">1731461049368</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sourceDevice&#34;</span>: <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;sourceServiceId&#34;</span>: <span style="color:#e6db74">&#34;2faa6b1d-1d1e-4fc7-a7e5-46c07a18aa47&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#e6db74">&#34;incoming&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;unidentifiedDeliveryReceived&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;schemaVersion&#34;</span>: <span style="color:#ae81ff">14</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;body&#34;</span>: <span style="color:#e6db74">&#34;Alright Ace, let’s get this operation underway!&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;bodyRanges&#34;</span>: [],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;contact&#34;</span>: [],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;decrypted_at&#34;</span>: <span style="color:#ae81ff">1731461048849</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;errors&#34;</span>: [],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;flags&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;hasAttachments&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;isViewOnce&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;mentionsMe&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;preview&#34;</span>: [],
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;requiredProtocolVersion&#34;</span>: <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;supportedVersionAtReceive&#34;</span>: <span style="color:#ae81ff">7</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Clearly, the body field contains the content of the message.  I exported the messages to a <code>json</code> file from DB Browser, then used the following Python script to pull out all of the <code>body</code> fields from messages that had them and reconstruct the conversation.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> json
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> open(<span style="color:#e6db74">&#34;messages.json&#34;</span>, <span style="color:#e6db74">&#34;r&#34;</span>) <span style="color:#66d9ef">as</span> fd:
+</span></span><span style="display:flex;"><span>    raw <span style="color:#f92672">=</span> json<span style="color:#f92672">.</span>loads(fd<span style="color:#f92672">.</span>read())
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> y <span style="color:#f92672">in</span> list(map(<span style="color:#66d9ef">lambda</span> x: json<span style="color:#f92672">.</span>loads(x[<span style="color:#e6db74">&#39;json&#39;</span>]), raw)):
+</span></span><span style="display:flex;"><span>    print(y[<span style="color:#e6db74">&#34;body&#34;</span>] <span style="color:#66d9ef">if</span> <span style="color:#e6db74">&#34;body&#34;</span> <span style="color:#f92672">in</span> y<span style="color:#f92672">.</span>keys() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#34;&#34;</span>)
+</span></span></code></pre></div><p>It&rsquo;s not the prettiest code ever written, but it did the job.  The message thread that it pulled out is below:</p>
+<pre tabindex="0"><code>Alright Ace, let’s get this operation underway!
+We’ll need a solid C2 server
+I was thinking maybe Sliver, Havoc or Empire! What do you think?
+Empire works. It&#39;s reliable versatile and runs quiet!
+Plus, it&#39;s got those nifty user access controls, keeps things tidy in case we want to bring in more gunslingers later. We&#39;re set to expand if need be!
+Good thinking! This setup needs to hold up under pressure. No room for slip-ups!!
+Agreed!
+I&#39;ll get Starkiller loaded up on one of the dead satellites orbiting the belt, should mask our activity as stray signals
+I&#39;ll use a few spoofed IPs and a layered encryption stack for extra cover, but there&#39;s a catch
+What catch?
+Empire&#39;s not exactly &#34;low-maintenance&#34; for this kind of op. Its log storage can swell up if we&#39;re not careful.
+if they start a data sweep, too many logs could leave a trail back to us!
+Understood. Set the logs to overwrite every hour. Clear it up as we go
+Can’t risk a breadcrumb trail…
+Done!
+Alright Empire is live. Credentials are almost set. Username is `empireadmin`. Will send the password later, need to change it and fix up some other things!
+Noted
+Now let’s discuss the main play
+We are going after the loot in Free Station 47
+Free Station 47... risky target, but that station is one of the last holdouts in the Cluster that&#39;s not under Frontier Board&#39;s control
+They&#39;ve got civilian resources, medical supplies, independent traders, event intel of sage routes outside our surveillance
+But I&#39;m getting the feeling this is not just about supplies... is it?
+Exactly! Free Station 47 also shelters some of the best engineers and medics left in the frontier who are not loyal to us
+When we seize those assets we will cripple resistance across the sector and send a clear message that nobody stands up to the board
+I&#39;ll route a beacon to their communication relay, intercepting logs of incoming and outgoing transmissions. Might take a bit but we&#39;ll have a live feed on everything happening on their channels
+But they&#39;ve got backup power sources. If they get alerted, they&#39;ll lock us out quickly!
+So we’ll sabotage those power sources
+While they’re fumbling with emergency power, we’re in and out
+What about the station’s defense grid?
+I can set up a signal jammer disguised as a drifting asteroid. It&#39;ll hover near their perimeter giving us about fifteen minutes to move before their secondary systems kick in.
+Any longer, and we&#39;ll lose our window
+Also, here&#39;s the password for Starkiller `eNSrj4qHp0pG#075D98@` Keep it safe boss!
+That’s all we need Once we have the supplies and personnel data, we’ll rendezvous near Blackreach Comet
+There’s an extraction pod if we need to make a quick getaway
+Understood
+We&#39;ll grab their resources, lock down the station, and disable their transmissions to cover our retreat
+Good!
+It’s time these rebels learned what happens when you they defy the Board!
+Couldn&#39;t agree more, Boss!
+Our new station is coming along really nicely
+Nice work pulling that access credential for their medical wing, Ace!
+What kind of clearance did it give us?
+Full access, Boss!!
+We&#39;re talking patient logs, personnel records, medical inventories
+We can see where they&#39;re hiding critical resources and key personnel across the Cluster
+Now that’s useful. Think we can make some of their inventory “disappear” without raising suspicion?
+Absolutely! I&#39;ll re-route essential medical supplies to the Board&#39;s stations, bit by bit. Undetectable!
+Plus, we&#39;ll use this access to plant a few hidden controls, let us override their systems whenever we need!
+Perfect! Free Station 47’s supplies and people just became another tool for the Board’s expansion. Let’s bleed them dry!
+</code></pre><p>From this conversation, we can see that the username for the Starkiller instance from earlier is <code>empireadmin</code> and the password is <code>eNSrj4qHp0pG#075D98@</code>.</p>
+<h2 id="into-starkiller">Into Starkiller</h2>
+<p>Using the credentials, I was able to log into Starkiller.</p>
+<p>I clicked through a few screens, and eventually came to the stored credentials page, which is where the flag was stored.</p>
+<p><img src="./images/14_starkiller_flag.png" alt="starkiller flag page"></p>
+<h2 id="conclusions">Conclusions</h2>
+<p>This was a really fun challenge, and provided a great opportunity to look further into Signal internals.  I couldn&rsquo;t find any resources online at all about decrypting the new Signal messages database, so this could actually end up being valuable information for real forensic investigations.  I may make up another more direct writeup on just the database decryption portion for easy reference.</p>
+
+		</div>
+	</main>
+
+<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+	<p>
+		&copy; 2024 <a href="http://localhost:1313/">Jeremy Dunn</a>
+		&#183; &#183; Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>
+			&#183; Theme <a href="https://github.com/1bl4z3r/hermit-V2" target="_blank" rel="noopener">Hermit-V2</a>
+		&#183; <a href="http://localhost:1313/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss">
+   <path d="M4 11a9 9 0 0 1 9 9"></path>
+   <path d="M4 4a16 16 0 0 1 16 16"></path>
+   <circle cx="5" cy="19" r="1"></circle>
+</svg></a></p>
+
+</footer>
+<script async src="http://localhost:1313/js/bundle.min.c7c384e4d29d192bbac6811ae4660bb01767194a5bea56baca77e8260f93ea16.js" integrity="sha256-x8OE5NKdGSu6xoEa5GYLsBdnGUpb6la6ynfoJg+T6hY=" crossorigin="anonymous"></script><script async src="http://localhost:1313/js/link-share.min.24409a4f6e5537d70ffc55ec8f9192208d718678cb8638585342423020b37f39.js" integrity="sha256-JECaT25VN9cP/FXsj5GSII1xhnjLhjhYU0JCMCCzfzk=" crossorigin="anonymous"></script>
+</body>
+
+</html>

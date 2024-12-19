@@ -2,17 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Writeups on Jeremy&#39;s Blog</title>
-    <link>https://stolenfootball.github.io/tags/writeups/</link>
+    <link>http://localhost:1313/tags/writeups/</link>
     <description>Recent content in Writeups on Jeremy&#39;s Blog</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Oct 2023 11:23:50 -0500</lastBuildDate>
-    <atom:link href="https://stolenfootball.github.io/tags/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 17 Dec 2024 11:23:50 -0500</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/writeups/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HackTheBox Binary Badlands 2024 - Signaling Victorious</title>
+      <link>http://localhost:1313/posts/writeups/2024/htb-uni-ctf/signaling-victorious/</link>
+      <pubDate>Tue, 17 Dec 2024 11:23:50 -0500</pubDate>
+      <guid>http://localhost:1313/posts/writeups/2024/htb-uni-ctf/signaling-victorious/</guid>
+      <description>&lt;p&gt;This challenge came with two files - an encrypted 7-zip file named &lt;code&gt;backup.7z&lt;/code&gt; and a memory dump named &lt;code&gt;win10_memdump.elf&lt;/code&gt;. There was also a docker container available online running &lt;a href=&#34;https://github.com/bc-security/starkiller&#34;&gt;Starkiller&lt;/a&gt;, which is a front-end management app for the post exploitation framework &lt;a href=&#34;https://github.com/EmpireProject/Empire&#34;&gt;PowerShell Empire&lt;/a&gt;. When I visited the site, there was a login page requesting a username and password to access Starkiller, but no username and password were provided with the challenge.&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;./images/1_starkiller.png&#34; alt=&#34;Starkiller Login&#34;&gt;&lt;/p&gt;</description>
+    </item>
     <item>
       <title>HackTheBox University CTF 2023 - ZombieNet</title>
-      <link>https://stolenfootball.github.io/posts/writeups/2023/htb-uni-ctf/zombienet/</link>
+      <link>http://localhost:1313/posts/writeups/2023/htb-uni-ctf/zombienet/</link>
       <pubDate>Tue, 17 Oct 2023 11:23:50 -0500</pubDate>
-      <guid>https://stolenfootball.github.io/posts/writeups/2023/htb-uni-ctf/zombienet/</guid>
+      <guid>http://localhost:1313/posts/writeups/2023/htb-uni-ctf/zombienet/</guid>
       <description>&lt;p&gt;The second forensics challenge for HackTheBox University CTF 2023 was called ZombieNet.  It gave participants an image of an OpenWRT router, and asked them to determine how the attackers were maintaining persistent access to the device.  This post will walk through the steps I took to solve the challenge.&lt;/p&gt;&#xA;&lt;h2 id=&#34;challenge-description&#34;&gt;Challenge Description&lt;/h2&gt;&#xA;&lt;p&gt;There was an attack on the NOC (Network Operations Center) of Hackster University and as a result, a large number of Network devices were compromised! After successfully fending off the attack the devices were decommissioned and sent off to be inspected. However, there is a strong suspicion among your peers that not all devices were identified! They suspect that the attackers managed to maintain access to the network despite our team&amp;rsquo;s efforts! It&amp;rsquo;s your job to investigate a recently used disk image and uncover how the Zombies maintain their access!&lt;/p&gt;</description>
     </item>
   </channel>
