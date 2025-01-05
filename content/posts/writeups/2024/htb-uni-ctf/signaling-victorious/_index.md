@@ -17,7 +17,7 @@ This challenge came with two files - an encrypted 7-zip file named `backup.7z` a
 
 The first thing I decided to do was attempt to decrypt the backup file. I tried a couple of basic passwords, but nothing worked. Next, I began to look through the memory dump using [Volatility3](https://github.com/volatilityfoundation/volatility3).
 
-When scanning the processes that were active when the memory image was taken, I noticed two things. First, Signal was actively running. This stuck out at me, since the challenge was called _Signaling Victorious_, and I took note of it for later. The other process that jumped out was `backuper.exe`. Given the weird spelling and the fact that it was at the end of the process list (which usually indicates user-started processes), I figured it may be a custom backup application.
+When scanning the processes that were active when the memory image was taken, I noticed two things. First, Signal was actively running. This stuck out at me since the challenge was called _Signaling Victorious_, and I took note of it for later. The other process that jumped out was `backuper.exe`. Given the weird spelling and the fact that it was at the end of the process list (which usually indicates user-started processes), I figured it may be a custom backup application.
 
 ![Volatility process scan](./images/2_vol-pslist.png)
 
@@ -111,15 +111,15 @@ Given that the challenge was called _Signaling Victorious_, as well as the fact 
 
 After some quick research, I found that the Signal Windows app stores its messages in the `%APPDATA%\Roaming\Signal\sql\db.sqlite` file. This is a SQL-Cipher encrypted database, and sure enough, the one on this device was encrypted.
 
-This is where it got interesting. Apparently Signal used to store the key for this database in plaintext in `%APPDATA%\Roaming\Signal\config.json`. This obviously wasn't great (because `%APPDATA%\Roaming` is fairly accessible by default), but the person who broke this was apparently Elon Musk?
+This is where it got interesting. Apparently Signal used to store the key for this database in plaintext in `%APPDATA%\Roaming\Signal\config.json`. This obviously wasn't great (because `%APPDATA%\Roaming` is fairly accessible by default), but the person who broke this was seems to have been Elon Musk?
 
 ![Musk tweet](./images/6_musk-tweet.png)
 
-In a strange turn of events, Musk was absolutely right, I have no idea what was going on with the community note. Any user or program with access to the `%APPDATA%` folder could read all Signal messages, and this was a known issue in Signal since 2018 that was in fact not being addressed.
+In a strange turn of events, Musk was absolutely right, I have no idea what was going on with the community note. Any user or program with access to the `%APPDATA%` folder could read the cleartext Signal database decryption key, and this was a known issue in Signal since 2018 that was in fact not being addressed.
 
 ![Twilight zone gif](./images/7_twilight-zone.gif)
 
-Anyways, after all of the publicity that came in the aftermath of Musk's tweet, Signal decided fix the problem, and began to use device-native solutions to store all of its encryption keys. In Linux, this meant the keyring, on Mac, this means keychain, and on Windows, this means DPAPI.
+Anyways, after all of the publicity that came in the aftermath of Musk's tweet, Signal decided fix the problem, and began to use device-native solutions to store all of its encryption keys. On Linux, this means the keyring, on Mac, this means keychain, and on Windows, this means DPAPI.
 
 ## A Brief Aside - DPAPI
 

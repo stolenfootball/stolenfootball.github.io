@@ -18,7 +18,7 @@
   <meta itemprop="description" content="This challenge came with two files - an encrypted 7-zip file named backup.7z and a memory dump named win10_memdump.elf. There was also a docker container available online running Starkiller, which is a front-end management app for the post exploitation framework PowerShell Empire. When I visited the site, there was a login page requesting a username and password to access Starkiller, but no username and password were provided with the challenge.">
   <meta itemprop="datePublished" content="2024-12-18T20:31:50-05:00">
   <meta itemprop="dateModified" content="2024-12-18T20:31:50-05:00">
-  <meta itemprop="wordCount" content="3425">
+  <meta itemprop="wordCount" content="3431">
   <meta itemprop="keywords" content="Writeups,Dfir"><meta property="og:url" content="https://stolenfootball.github.io/posts/writeups/2024/htb-uni-ctf/signaling-victorious/">
   <meta property="og:site_name" content="Jeremy&#39;s Blog">
   <meta property="og:title" content="HackTheBox Binary Badlands 2024 - Signaling Victorious">
@@ -80,26 +80,26 @@
     
     <ul>
         <li>
-            <a href="https://twitter.com/intent/tweet?hashtags=hermit2&amp;url=https%3a%2f%2fstolenfootball.github.io%2fposts%2f&amp;text=Posts" target="_blank" rel="noopener" aria-label="Share on X"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            <a href="https://twitter.com/intent/tweet?hashtags=hermit2&amp;url=https%3a%2f%2fstolenfootball.github.io%2fcategories%2f&amp;text=Categories" target="_blank" rel="noopener" aria-label="Share on X"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
    <path class="st0" d="m21.3 21.1 -11.4 -18.2h-7.2l11.4 18.2zm-18.6 0 7.2 -6.6m4.2 -5 7.2 -6.6" />
 </svg></a>
         </li>
         <li>
-            <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fstolenfootball.github.io%2fposts%2f" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            <a href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fstolenfootball.github.io%2fcategories%2f" target="_blank" rel="noopener" aria-label="Share on Facebook"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
 </svg></a>
         </li>
         <li>
-            <a href="mailto:?subject=Posts&amp;body=https%3a%2f%2fstolenfootball.github.io%2fposts%2f" target="_self" rel="noopener" aria-label="Share on Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            <a href="mailto:?subject=Categories&amp;body=https%3a%2f%2fstolenfootball.github.io%2fcategories%2f" target="_self" rel="noopener" aria-label="Share on Email"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
    <polyline points="22,6 12,13 2,6"></polyline>
 </svg></a>
         </li>
         <li>
-            <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fstolenfootball.github.io%2fposts%2f&amp;source=https%3a%2f%2fstolenfootball.github.io%2f&amp;title=Posts&amp;summary=Posts%2c%20by%20Jeremy%20Dunn%0a%0a%3cnil%3e%0a" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fstolenfootball.github.io%2fcategories%2f&amp;source=https%3a%2f%2fstolenfootball.github.io%2f&amp;title=Categories&amp;summary=Categories%2c%20by%20Jeremy%20Dunn%0a%0a%3cnil%3e%0a" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none"
    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
    <rect x="2" y="9" width="4" height="12"></rect>
@@ -107,7 +107,7 @@
 </svg></a>
         </li>
         <li>
-            <a href="#" onclick="linkShare(&#34;Posts&#34;,&#34;https://stolenfootball.github.io/posts/&#34;,&#34;Posts, by Jeremy Dunn\n\n\u003cnil\u003e\n&#34;); return false;" target="_self" rel="noopener" aria-label="Copy Link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            <a href="#" onclick="linkShare(&#34;Categories&#34;,&#34;https://stolenfootball.github.io/categories/&#34;,&#34;Categories, by Jeremy Dunn\n\n\u003cnil\u003e\n&#34;); return false;" target="_self" rel="noopener" aria-label="Copy Link"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -138,7 +138,7 @@
 <p><img src="./images/1_starkiller.png" alt="Starkiller Login"></p>
 <h2 id="accessing-the-backup">Accessing the backup</h2>
 <p>The first thing I decided to do was attempt to decrypt the backup file. I tried a couple of basic passwords, but nothing worked. Next, I began to look through the memory dump using <a href="https://github.com/volatilityfoundation/volatility3">Volatility3</a>.</p>
-<p>When scanning the processes that were active when the memory image was taken, I noticed two things. First, Signal was actively running. This stuck out at me, since the challenge was called <em>Signaling Victorious</em>, and I took note of it for later. The other process that jumped out was <code>backuper.exe</code>. Given the weird spelling and the fact that it was at the end of the process list (which usually indicates user-started processes), I figured it may be a custom backup application.</p>
+<p>When scanning the processes that were active when the memory image was taken, I noticed two things. First, Signal was actively running. This stuck out at me since the challenge was called <em>Signaling Victorious</em>, and I took note of it for later. The other process that jumped out was <code>backuper.exe</code>. Given the weird spelling and the fact that it was at the end of the process list (which usually indicates user-started processes), I figured it may be a custom backup application.</p>
 <p><img src="./images/2_vol-pslist.png" alt="Volatility process scan"></p>
 <p>Next I did a file scan looking for the <code>backuper.exe</code> application, and found it on the user&rsquo;s Desktop.</p>
 <p><img src="./images/3_vol-filescan.png" alt="Volatility file scan"></p>
@@ -208,11 +208,11 @@
 <h2 id="signal-messaging">Signal Messaging</h2>
 <p>Given that the challenge was called <em>Signaling Victorious</em>, as well as the fact that Signal was one of the only user space applications running on the device, I figured the point of the challenge was to retrieve the Signal messages.</p>
 <p>After some quick research, I found that the Signal Windows app stores its messages in the <code>%APPDATA%\Roaming\Signal\sql\db.sqlite</code> file. This is a SQL-Cipher encrypted database, and sure enough, the one on this device was encrypted.</p>
-<p>This is where it got interesting. Apparently Signal used to store the key for this database in plaintext in <code>%APPDATA%\Roaming\Signal\config.json</code>. This obviously wasn&rsquo;t great (because <code>%APPDATA%\Roaming</code> is fairly accessible by default), but the person who broke this was apparently Elon Musk?</p>
+<p>This is where it got interesting. Apparently Signal used to store the key for this database in plaintext in <code>%APPDATA%\Roaming\Signal\config.json</code>. This obviously wasn&rsquo;t great (because <code>%APPDATA%\Roaming</code> is fairly accessible by default), but the person who broke this was seems to have been Elon Musk?</p>
 <p><img src="./images/6_musk-tweet.png" alt="Musk tweet"></p>
-<p>In a strange turn of events, Musk was absolutely right, I have no idea what was going on with the community note. Any user or program with access to the <code>%APPDATA%</code> folder could read all Signal messages, and this was a known issue in Signal since 2018 that was in fact not being addressed.</p>
+<p>In a strange turn of events, Musk was absolutely right, I have no idea what was going on with the community note. Any user or program with access to the <code>%APPDATA%</code> folder could read the cleartext Signal database decryption key, and this was a known issue in Signal since 2018 that was in fact not being addressed.</p>
 <p><img src="./images/7_twilight-zone.gif" alt="Twilight zone gif"></p>
-<p>Anyways, after all of the publicity that came in the aftermath of Musk&rsquo;s tweet, Signal decided fix the problem, and began to use device-native solutions to store all of its encryption keys. In Linux, this meant the keyring, on Mac, this means keychain, and on Windows, this means DPAPI.</p>
+<p>Anyways, after all of the publicity that came in the aftermath of Musk&rsquo;s tweet, Signal decided fix the problem, and began to use device-native solutions to store all of its encryption keys. On Linux, this means the keyring, on Mac, this means keychain, and on Windows, this means DPAPI.</p>
 <h2 id="a-brief-aside---dpapi">A Brief Aside - DPAPI</h2>
 <p>DPAPI is the Windows Data Protection API. Application developers can use the API through the <code>CryptProtectData</code> and <code>CryptUnprotectData</code> functions. <code>CryptProtectData</code> takes plaintext and returns a <code>DPAPI_BLOB</code> structure, which contains the encrypted data and metadata regarding the encryption. <code>CryptUnprotectData</code> takes a <code>DPAPI_BLOB</code>, and returns plaintext.</p>
 <p>Under the hood DPAPI (when encrypting secrets for a specific user) uses a 64 byte &ldquo;Master Key&rdquo; during encryption, which is saved in the <code>%APPDATA\Roaming\Microsoft\Protect\[USER_SID]</code> folder. The Master Key is combined with the SHA1 hash of the user&rsquo;s password, the user&rsquo;s SID, and some metadata stored in the <code>DPAPI_BLOB</code> to derive the encryption key used to encrypt the plaintext.</p>
@@ -538,7 +538,7 @@ Perfect! Free Station 47’s supplies and people just became another tool for th
 
 <footer id="site-footer" class="section-inner thin animated fadeIn faster">
 	<p>
-		&copy; 2024 <a href="https://stolenfootball.github.io/">Jeremy Dunn</a>
+		&copy; 2025 <a href="https://stolenfootball.github.io/">Jeremy Dunn</a>
 		&#183; &#183; Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a>
 			&#183; Theme <a href="https://github.com/1bl4z3r/hermit-V2" target="_blank" rel="noopener">Hermit-V2</a>
 		&#183; <a href="https://stolenfootball.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
