@@ -1,6 +1,6 @@
 +++
-date = '2025-01-22T19:12:04-05:00'
-draft = true
+date = '2025-01-26T23:28:04-05:00'
+draft = false
 title = 'HowTo - Decryption of Signal Messages on Windows'
 +++
 
