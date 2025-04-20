@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on </title>
-    <link>/tags/</link>
+    <link>https://stolenfootball.github.io/tags/</link>
     <description>Recent content in Tags on </description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 18 Dec 2024 20:31:50 -0500</lastBuildDate>
-    <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://stolenfootball.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Dfir</title>
-      <link>/tags/dfir/</link>
+      <link>https://stolenfootball.github.io/tags/dfir/</link>
       <pubDate>Wed, 18 Dec 2024 20:31:50 -0500</pubDate>
-      <guid>/tags/dfir/</guid>
+      <guid>https://stolenfootball.github.io/tags/dfir/</guid>
       <description></description>
     </item>
     <item>
       <title>Writeups</title>
-      <link>/tags/writeups/</link>
+      <link>https://stolenfootball.github.io/tags/writeups/</link>
       <pubDate>Wed, 18 Dec 2024 20:31:50 -0500</pubDate>
-      <guid>/tags/writeups/</guid>
+      <guid>https://stolenfootball.github.io/tags/writeups/</guid>
       <description></description>
     </item>
   </channel>
