@@ -6,8 +6,15 @@
     <description>Recent content on </description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 26 Jan 2025 23:28:04 -0500</lastBuildDate>
+    <lastBuildDate>Sun, 20 Apr 2025 13:07:11 -0500</lastBuildDate>
     <atom:link href="https://stolenfootball.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About</title>
+      <link>https://stolenfootball.github.io/about/about/</link>
+      <pubDate>Sun, 20 Apr 2025 13:07:11 -0500</pubDate>
+      <guid>https://stolenfootball.github.io/about/about/</guid>
+      <description>&lt;p&gt;I like sunsets, long walks on the beach, and 1800s literature.  The key to my heart is peanut butter ice cream.  Not like other computer nerds.&lt;/p&gt;&#xA;&lt;p&gt;I specialize in low level computer security, spending the majority of my time in the capability development and incident response space.  Recently I&amp;rsquo;ve been studying insecure handling of IOCTLs in Windows Kernel drivers and data leakage through abuse of speculative execution extensions in modern processors.  Forensics is always near and dear to my heart though, and I always love a good exploit chain.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>HowTo - Decryption of Signal Messages on Windows</title>
       <link>https://stolenfootball.github.io/posts/research/2025/signal_windows_decryption/</link>

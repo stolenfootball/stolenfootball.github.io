@@ -198,6 +198,14 @@
             
                 
                 
+                    <li class="heading">
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                
+            
+                
+                
             
             
                 
@@ -214,6 +222,9 @@
         
             
 
+            
+                
+                
             
                 
                 
@@ -356,7 +367,7 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 <p>But the <code>binwalk</code> signature scanning capabilities are not limited to just files it finds within the image - it can also analyze the image itself to determine the signature of the firmware.</p>
 <p>Running <code>binwalk</code> without the <code>-e</code> flag will perform a signature scan on the image, and return the results.</p>
 <p><img src="./images/2-binwalk_signature.png" alt="Binwalk Signature Scan"></p>
-<p>As I highlighted in the image, this is a <!-- raw HTML omitted -->MIPS OpenWrt Linux-5.15.137<!-- raw HTML omitted --> image.  And from the name of the file, we know the exact version of OpenWRT that was used to create the image.  This is important, because it means we can download the source code for that version of OpenWRT, and compare the two to determine which changes were made in the image supplied to us.  If we can figure out what is different, the list of potentially malicious files to review will be much smaller.</p>
+<p>As I highlighted in the image, this is a <code>MIPS OpenWrt Linux-5.15.137</code> image.  And from the name of the file, we know the exact version of OpenWRT that was used to create the image.  This is important, because it means we can download the source code for that version of OpenWRT, and compare the two to determine which changes were made in the image supplied to us.  If we can figure out what is different, the list of potentially malicious files to review will be much smaller.</p>
 <p>After a quick Google search, I found the following site: <a href="https://openwrt.org/inbox/toh/xiaomi/xiaomi_mi_router_4a_gigabit_edition" target="_blank">https://openwrt.org/inbox/toh/xiaomi/xiaomi_mi_router_4a_gigabit_edition</a>, which contains a link to a firmware image for this exact same router.  The link is:</p>
 <p><a href="https://downloads.openwrt.org/releases/23.05.0/targets/ramips/mt7621/openwrt-23.05.0-ramips-mt7621-xiaomi_mi-router-4a-gigabit-squashfs-sysupgrade.bin" target="_blank">https://downloads.openwrt.org/releases/23.05.0/targets/ramips/mt7621/openwrt-23.05.0-ramips-mt7621-xiaomi_mi-router-4a-gigabit-squashfs-sysupgrade.bin</a></p>
 <p>This is close, but not the exact same image.  This is version 23.05.0, whereas the image we were given, as indicated by <code>binwalk</code>, is 23.05.137.  Although the link to version 23.05.137 doesn&rsquo;t appear to be listed, I was able to find it by modifying the URL slightly:</p>
@@ -364,7 +375,7 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 <p>Next, I extracted the contents of the two images, and used the <code>diff</code> command with the <code>-r</code> flag to recursively compare the directories, and the <code>-q</code> to only output the files that were different.  Then, I used <code>grep</code> to filter by files that only appeared in the modified image we were given.  The command I used was:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>diff -qr _openwrt-image-original/ factory_images/_openwrt-image-factory/ | grep <span style="color:#e6db74">&#34;Only in _openwrt&#34;</span>
 </span></span></code></pre></div><p><img src="./images/3-diff_results.png" alt="Output of command"></p>
-<p>There are a number of suspicious files in this list, but one stands out: <!-- raw HTML omitted -->/etc/rc.d/S95dead-reanimation<!-- raw HTML omitted -->.  This is a startup script that will be executed when the router boots up; it is clearly not standard, and is also themed like the rest of the CTF.</p>
+<p>There are a number of suspicious files in this list, but one stands out: <code>/etc/rc.d/S95dead-reanimation</code>.  This is a startup script that will be executed when the router boots up; it is clearly not standard, and is also themed like the rest of the CTF.</p>
 <h2 id="dead-reanimation">dead-reanimation</h2>
 <p>The <code>S95dead-reanimation</code> script is actually an OpenRC startup script, which is a symbolic link that runs another script whenever the router starts.  This is a well known feature of how OpenRC works, but we can confirm it by looking at the contents of the <code>/etc/rc.d</code> directory:</p>
 <p><img src="./images/4-openrc_startup_script.png" alt="OpenRC Startup Script"></p>
@@ -583,7 +594,7 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">curl_easy_setopt</span>(iVar3,<span style="color:#ae81ff">0x271f</span>,pvVar2);
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">curl_easy_perform</span>(iVar3);
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">curl_easy_cleanup</span>(iVar3);
-</span></span></code></pre></div><p>The code then checks to make sure that the hostname of the router is <!-- raw HTML omitted -->HSTERUNI-GW-01<!-- raw HTML omitted -->, and that the user is root.  It returns -1 if either of these conditions are not met.</p>
+</span></span></code></pre></div><p>The code then checks to make sure that the hostname of the router is <code>HSTERUNI-GW-01</code>, and that the user is root.  It returns -1 if either of these conditions are not met.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>pFVar4 <span style="color:#f92672">=</span> <span style="color:#a6e22e">fopen</span>(<span style="color:#e6db74">&#34;/proc/sys/kernel/hostname&#34;</span>,<span style="color:#e6db74">&#34;r&#34;</span>);
 </span></span><span style="display:flex;"><span>local_168 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">memset</span>(auStack_164,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0xfc</span>);

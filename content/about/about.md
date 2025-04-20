@@ -1,5 +1,5 @@
 +++
-date = '2025-04-28T18:07:11-05:00'
+date = '2025-04-20T13:07:11-05:00'
 draft = false
 title = 'About'
 +++
@@ -10,6 +10,6 @@ I specialize in low level computer security, spending the majority of my time in
 
 Outside of cyber, I'm an avid hiker and archer, and try to spend as much of my time outside as possible.  
 
-I've had a lot of help from some amazing people in my life, and feel strongly about giving back as much as possible.  If you find any of the posts on this blog helpful or interesting, please feel free to reach out.  I'd be happy to give any more information I can. 
+I've had a lot of help from some amazing people in my life, and love to give back to the community when I can.  If you find any of the posts on this blog helpful or interesting, please feel free to reach out. 
 
 
