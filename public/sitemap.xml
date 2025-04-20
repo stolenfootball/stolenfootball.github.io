@@ -2,27 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://stolenfootball.github.io/</loc>
-    <lastmod>2025-01-22T19:12:04-05:00</lastmod>
+    <loc>/</loc>
+    <lastmod>2025-01-26T23:28:04-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/posts/</loc>
-    <lastmod>2025-01-22T19:12:04-05:00</lastmod>
+    <loc>/posts/research/2025/signal_windows_decryption/</loc>
+    <lastmod>2025-01-26T23:28:04-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/tags/dfir/</loc>
+    <loc>/posts/</loc>
+    <lastmod>2025-01-26T23:28:04-05:00</lastmod>
+  </url><url>
+    <loc>/tags/dfir/</loc>
     <lastmod>2024-12-18T20:31:50-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/posts/writeups/2024/htb-uni-ctf/signaling-victorious/</loc>
+    <loc>/posts/writeups/2024/htb-uni-ctf/signaling-victorious/</loc>
     <lastmod>2024-12-18T20:31:50-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/tags/</loc>
+    <loc>/tags/</loc>
     <lastmod>2024-12-18T20:31:50-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/tags/writeups/</loc>
+    <loc>/tags/writeups/</loc>
     <lastmod>2024-12-18T20:31:50-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/posts/writeups/2023/htb-uni-ctf/zombienet/</loc>
+    <loc>/posts/writeups/2023/htb-uni-ctf/zombienet/</loc>
     <lastmod>2023-10-17T11:23:50-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/categories/</loc>
+    <loc>/series/</loc>
   </url>
 </urlset>
