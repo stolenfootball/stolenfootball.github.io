@@ -11,7 +11,7 @@ pluralizelisttitles = false   # removes the automatically appended "s" on sideba
     brand = "Jeremy's Blog"                      # name of your site - appears in the sidebar
     # remote_brand_image = 'https://github.com/USERNAME.png' # path to a remote file
     brand_image = "/images/avatar.png"    # path to the image shown in the sidebar
-    description = "Imagination is the only weapon in the war with reality." # Used as default meta description if not specified in front matter
+    description = "By the way - is there anyone on board who knows how to fly a plane?" # Used as default meta description if not specified in front matter
     dark_mode = false                      # optional - defaults to false
     # favicon = "favicon.png"             # path to favicon (defaults to favicon.png)
 

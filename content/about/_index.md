@@ -1,8 +1,15 @@
 +++
-date = '2025-01-06T18:07:11-05:00'
-draft = true
+date = '2025-04-28T18:07:11-05:00'
+draft = false
 title = 'About'
 +++
 
-{{< figure src="./gravel-calls.jpeg" width="200" alt="Gravel Calls" class="left" >}}
-![Profile pic](./images/profile_pic.png)
+I like sunsets, long walks on the beach, and 1800s literature.  The key to my heart is peanut butter ice cream.  Not like other computer nerds.
+
+I specialize in low level computer security, spending the majority of my time in the capability development and incident response space.  Recently I've been studying insecure handling of IOCTLs in Windows Kernel drivers and data leakage through abuse of speculative execution extensions in modern processors.  Forensics is always near and dear to my heart though, and I always love a good exploit chain.
+
+Outside of cyber, I'm an avid hiker and archer, and try to spend as much of my time outside as possible.  
+
+I've had a lot of help from some amazing people in my life, and feel strongly about giving back as much as possible.  If you find any of the posts on this blog helpful or interesting, please feel free to reach out.  I'd be happy to give any more information I can. 
+
+
