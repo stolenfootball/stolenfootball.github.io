@@ -2,10 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Hardware on </title>
-    <link>http://localhost:1313/tags/hardware/</link>
+    <link>https://stolenfootball.github.io/tags/hardware/</link>
     <description>Recent content in Hardware on </description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <atom:link href="http://localhost:1313/tags/hardware/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 20 Apr 2025 15:00:00 -0500</lastBuildDate>
+    <atom:link href="https://stolenfootball.github.io/tags/hardware/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>UMass CTF 2025 - Ghost in the Leg</title>
+      <link>https://stolenfootball.github.io/posts/writeups/2025/theleg/</link>
+      <pubDate>Sun, 20 Apr 2025 15:00:00 -0500</pubDate>
+      <guid>https://stolenfootball.github.io/posts/writeups/2025/theleg/</guid>
+      <description>&lt;p&gt;This is a challenge I wrote for UMass CTF 2025 using a special version theLEG™ computer architecture.  I&amp;rsquo;ll have a separate series of blog posts on the architecture itself and why it is interesting, but for this I want to go over the specifics of the challenge.&lt;/p&gt;&#xA;&lt;h2 id=&#34;the-challenge&#34;&gt;The Challenge&lt;/h2&gt;&#xA;&lt;p&gt;Participants in the CTF were given the following prompt:&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;TheLEG™ just got updated with a brand new UI and speculative execution extension! Surely no one can read data from kernel space&amp;hellip;&lt;/p&gt;</description>
+    </item>
   </channel>
 </rss>
