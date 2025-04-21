@@ -2,48 +2,48 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://stolenfootball.github.io/</loc>
+    <loc>http://localhost:1313/</loc>
     <lastmod>2025-04-20T13:07:11-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/about/</loc>
+    <loc>http://localhost:1313/about/</loc>
     <lastmod>2025-04-20T13:07:11-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/about/about/</loc>
+    <loc>http://localhost:1313/about/about/</loc>
     <lastmod>2025-04-20T13:07:11-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/tags/author/</loc>
+    <loc>http://localhost:1313/tags/author/</loc>
     <lastmod>2025-04-19T15:00:00-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/tags/hardware/</loc>
+    <loc>http://localhost:1313/tags/hardware/</loc>
     <lastmod>2025-04-19T15:00:00-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/posts/</loc>
+    <loc>http://localhost:1313/posts/</loc>
     <lastmod>2025-04-19T15:00:00-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/tags/pwn/</loc>
+    <loc>http://localhost:1313/tags/pwn/</loc>
     <lastmod>2025-04-19T15:00:00-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/tags/</loc>
+    <loc>http://localhost:1313/tags/</loc>
     <lastmod>2025-04-19T15:00:00-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/posts/writeups/2025/theleg/</loc>
+    <loc>http://localhost:1313/posts/writeups/2025/theleg/</loc>
     <lastmod>2025-04-19T15:00:00-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/tags/writeups/</loc>
+    <loc>http://localhost:1313/tags/writeups/</loc>
     <lastmod>2025-04-19T15:00:00-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/posts/research/2025/signal_windows_decryption/</loc>
+    <loc>http://localhost:1313/posts/research/2025/signal_windows_decryption/</loc>
     <lastmod>2025-01-26T23:28:04-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/tags/dfir/</loc>
+    <loc>http://localhost:1313/tags/dfir/</loc>
     <lastmod>2024-12-18T20:31:50-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/posts/writeups/2024/htb-uni-ctf/signaling-victorious/</loc>
+    <loc>http://localhost:1313/posts/writeups/2024/htb-uni-ctf/signaling-victorious/</loc>
     <lastmod>2024-12-18T20:31:50-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/posts/writeups/2023/htb-uni-ctf/zombienet/</loc>
+    <loc>http://localhost:1313/posts/writeups/2023/htb-uni-ctf/zombienet/</loc>
     <lastmod>2023-10-17T11:23:50-05:00</lastmod>
   </url><url>
-    <loc>https://stolenfootball.github.io/series/</loc>
+    <loc>http://localhost:1313/series/</loc>
   </url>
 </urlset>

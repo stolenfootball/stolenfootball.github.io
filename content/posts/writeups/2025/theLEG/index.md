@@ -1,6 +1,6 @@
 ---
 title: "UMass CTF 2025 - Ghost in the Leg"
-date: 2025-04-19T15:00:00-05:00
+date: 2025-04-20T15:00:00-05:00
 draft: false
 toc: false
 images:
