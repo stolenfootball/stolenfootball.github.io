@@ -4,9 +4,11 @@ draft = false
 title = 'About'
 +++
 
-I like sunsets, long walks on the beach, and 1800s literature.  The key to my heart is peanut butter ice cream.  Not like other computer nerds.
+I like sunsets, long walks on the beach, and classic literature.  The key to my heart is peanut butter ice cream.  Not like other computer nerds.
 
-I specialize in low level computer security, spending the majority of my time in the capability development and incident response space.  Recently I've been studying insecure handling of IOCTLs in Windows Kernel drivers and data leakage through abuse of speculative execution extensions in modern processors.  Forensics is always near and dear to my heart though, and I always love a good exploit chain.
+I specialize in low level computer security, spending a lot of time in both the capability development and incident response spaces.  Recently I've been studying insecure handling of IOCTLs in Windows Kernel drivers, as well as data leakage through abuse of speculative execution extensions in modern processors. 
+
+My first area of study was forensics, and I have experience in both law enforcement and incident response areas.  The field is near and dear to my heart, and many of the posts here will be related to forensics.
 
 Outside of cyber, I'm an avid hiker and archer, and try to spend as much of my time outside as possible.  
 
