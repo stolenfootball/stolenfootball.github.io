@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Series on </title>
+    <link>http://localhost:1313/tags/series/</link>
+    <description>Recent content in Series on </description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 13 Jul 2025 18:00:00 -0500</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/series/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Windows Drivers Series Part 1 - Overview</title>
+      <link>http://localhost:1313/posts/series/windows_drivers/p1_overview/</link>
+      <pubDate>Sun, 13 Jul 2025 18:00:00 -0500</pubDate>
+      <guid>http://localhost:1313/posts/series/windows_drivers/p1_overview/</guid>
+      <description>&lt;p&gt;During the last semester of my master&amp;rsquo;s degree at UMass Amherst, I was fortunate enough to be offered an exploit development class taught by Professor Lurene Grunier.  I had previous experience in CTF style pwn, but she pushed us all to move past CTF challenges to real world targets because of the contrived nature of CTF challenges.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
