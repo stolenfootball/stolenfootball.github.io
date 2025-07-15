@@ -13,7 +13,7 @@ tags:
 ---
 
 ## Index
-[Part 1 - Overview]({{< ref "posts/series/windows_drivers/p1_overview/index.md" >}})
+[Part 1 - Overview](https://stolenfootball.github.io//posts/series/windows_drivers/p1_overview/index.html)
 
 ## What is this?
 During the last semester of my master's degree at UMass Amherst, I was fortunate enough to be offered an exploit development class by Professor Lurene Grenier.  I had previous experience in CTF style pwn, but she pushed us all to move past CTF challenges to real world targets because of the contrived nature of CTF challenges.  The thought process was that although CTFs are great for learning the basics, the faster a student is able to acclimate to real targets, the more capable they'll be in their careers.
