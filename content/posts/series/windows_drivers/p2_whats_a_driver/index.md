@@ -1,6 +1,6 @@
 ---
 title: "Windows Drivers Series Part 2 - What's a Driver Anyways?"
-date: 2025-07-14T19:08:00-05:00
+date: 2025-07-16T17:14:58-0400
 draft: true
 toc: false
 images:
