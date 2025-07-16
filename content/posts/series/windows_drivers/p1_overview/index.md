@@ -12,9 +12,6 @@ tags:
   - drivers
 ---
 
-## Index
-[Part 1 - Overview](https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html)
-
 ## What is this?
 During the last semester of my master's degree at UMass Amherst, I was fortunate enough to be offered an exploit development class by Professor Lurene Grenier.  I had previous experience in CTF style pwn, but she pushed us all to move past CTF challenges to real world targets because of the contrived nature of CTF challenges.  The thought process was that although CTFs are great for learning the basics, the faster a student is able to acclimate to real targets, the more capable they'll be in their careers.
 
@@ -59,3 +56,6 @@ Exploit code will be written in C++ in [Visual Studio Code](https://code.visuals
 - [UMass Amherst CS367](https://www.youtube.com/playlist?list=PLkb4u_mRrLEIZPZ5Dp_lVLoolWeCL_G7R) - freely available lectures covering general exploit development topics. 
 - [pwn.college](https://pwn.college/) - cybersecurity learning platform by Arizona State University. Fantastic first place to learn pwn.
 
+## Series Index
+- [Part 1 - Overview](https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html)
+- [Part 2 - What's a Driver Anyways?](https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html)

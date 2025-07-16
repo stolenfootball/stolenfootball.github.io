@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.145453261a7755f5042a854c4213501d215a8fbe34c08d181c40f803f1315e74.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/favicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">Jeremy&#39;s Blog - Windows Drivers Series Part 2 - What&#39;s a Driver Anyways?</title>
+<meta property="og:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;2&#32;-&#32;What&#39;s&#32;a&#32;Driver&#32;Anyways? />
+<meta name="twitter:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;2&#32;-&#32;What&#39;s&#32;a&#32;Driver&#32;Anyways? />
+<meta itemprop="name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;2&#32;-&#32;What&#39;s&#32;a&#32;Driver&#32;Anyways? />
+<meta name="application-name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;2&#32;-&#32;What&#39;s&#32;a&#32;Driver&#32;Anyways? />
+<meta property="og:site_name" content="" />
+
+
+<meta name="description" content="" />
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+
+<base href="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" />
+<link rel="canonical" href="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" itemprop="url" />
+<meta name="url" content="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" />
+<meta name="twitter:url" content="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" />
+<meta property="og:url" content="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" />
+
+
+<meta property="og:updated_time" content="2025-07-14T19:08:00-05:00" />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='http://localhost:1313/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.141.0">
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.94a339836f89f0d25f31980cb6b0631da21e20af128308747ce44e0525eb16ef.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="http://localhost:1313/">
+                <img src="/images/avatar.png" alt="brand image">
+            </a>
+        
+        
+            <a href="http://localhost:1313/">
+                <h1>Jeremy&#39;s Blog</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    By the way - is there anyone on board who knows how to fly a plane?
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+        
+            
+
+            
+                
+                
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/stolenfootball">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/jeremy-dunn-a0b945172/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Discord" href="https://discordapp.com/users/stolenfootball#3265">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto:jeremy.dunn315@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="Signal" href="https://signal.me/#eu/ikkgt8MQoJBTjgrVAOrULsPwxu8mSjGsPrW-GDGj5euZreghZMlJUb91ncEA4LQr">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.4em" viewBox="0 0 1024 1024">
+            <path fill="currentColor" d="M427.5,170.3l7.9,32A319.6,319.6,0,0,0,347,238.9l-16.9-28.3A347.6,347.6,0,0,1,427.5,170.3Zm169,0-7.9,32A319.6,319.6,0,0,1,677,238.9l17.1-28.3A350.1,350.1,0,0,0,596.5,170.3ZM210.6,330a349.5,349.5,0,0,0-40.3,97.5l32,7.9A319.6,319.6,0,0,1,238.9,347ZM193,512a318.5,318.5,0,0,1,3.6-47.8l-32.6-5a352,352,0,0,0,0,105.5l32.6-4.9A319.5,319.5,0,0,1,193,512ZM693.9,813.3,677,785.1a317.8,317.8,0,0,1-88.3,36.6l7.9,32A350.3,350.3,0,0,0,693.9,813.3ZM831,512a319.5,319.5,0,0,1-3.6,47.8l32.6,4.9a352,352,0,0,0,0-105.5l-32.6,5A318.5,318.5,0,0,1,831,512Zm22.7,84.4-32-7.9A319,319,0,0,1,785.1,677l28.3,17A348.9,348.9,0,0,0,853.7,596.4Zm-293.9,231a319.1,319.1,0,0,1-95.6,0L459.3,860a351.3,351.3,0,0,0,105.4,0Zm209-126.2a318.1,318.1,0,0,1-67.6,67.5l19.6,26.6A355.1,355.1,0,0,0,795.4,721Zm-67.6-446a318.6,318.6,0,0,1,67.6,67.6L795.4,303A354.6,354.6,0,0,0,721,228.6Zm-446,67.6a318.6,318.6,0,0,1,67.6-67.6L303,228.6A354.6,354.6,0,0,0,228.6,303ZM813.4,330l-28.3,17a317.8,317.8,0,0,1,36.6,88.3l32-7.9A348.9,348.9,0,0,0,813.4,330ZM464.2,196.6a319.1,319.1,0,0,1,95.6,0l4.9-32.6a351.3,351.3,0,0,0-105.4,0ZM272.1,804.1,204,819.9l15.9-68.1-32.1-7.5-15.9,68.1a33,33,0,0,0,24.6,39.7,34.5,34.5,0,0,0,15,0l68.1-15.7Zm-77.5-89.2,32.2,7.4,11-47.2a316.2,316.2,0,0,1-35.5-86.6l-32,7.9a353.3,353.3,0,0,0,32.4,83.7Zm154,71.4-47.2,11,7.5,32.2,34.7-8.1a349,349,0,0,0,83.7,32.4l7.9-32a316.7,316.7,0,0,1-86.3-35.7ZM512,226c-158,.1-285.9,128.2-285.9,286.1a286.7,286.7,0,0,0,43.9,152L242.5,781.5,359.8,754c133.7,84.1,310.3,44,394.4-89.6S798.3,354.2,664.7,270A286.7,286.7,0,0,0,512,226s"/>
+        </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2025 . All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/">Windows Drivers Series Part 2 - What&#39;s a Driver Anyways?</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      
+      <time datetime=" 2025-07-14T19:08:00-0500" class="post-date">
+        July 14, 2025
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>7 mins read</span>
+      </span>
+    </div>
+
+    
+    <ul class="tags">
+      
+      <li class="tag-series">
+        <a href="http://localhost:1313/tags/series">series</a>
+      </li>
+      
+      <li class="tag-pwn">
+        <a href="http://localhost:1313/tags/pwn">pwn</a>
+      </li>
+      
+      <li class="tag-rev">
+        <a href="http://localhost:1313/tags/rev">rev</a>
+      </li>
+      
+      <li class="tag-windows">
+        <a href="http://localhost:1313/tags/windows">windows</a>
+      </li>
+      
+      <li class="tag-drivers">
+        <a href="http://localhost:1313/tags/drivers">drivers</a>
+      </li>
+      
+    </ul>
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <p>If you&rsquo;ve used Windows long enough, chances are you&rsquo;ve heard the term driver before.  Admittedly, it was probably in the context of something like this:</p>
+<p><img src="./images/1_driver_error.jpg" alt="Driver Unable to Install"></p>
+<p>or this:</p>
+<p><img src="./images/2_driver_error.webp" alt="Blue Screen of Death"></p>
+<p>or potentially, given the audience for this kind of blog post, this?</p>
+<p><img src="./images/3_driver_error.jpg" alt="Anti-Cheat Detected Cheating on Apex Legends"></p>
+<p>However, if we&rsquo;re going to be doing exploit development work on drivers, it&rsquo;s important to have a fundemental understanding of what a driver does and the role it plays in a modern operating system.</p>
+<h2 id="history-you-didnt-ask-for">History you didn&rsquo;t ask for</h2>
+<p>When computers first started to become mainstream, operating systems came with the ability to directly program physical memory, but little else.  For more intrepid nerds, however, computers also had expansion slots.</p>
+<p>Expansion slots allowed a user to plug in any number of their own devices and interface with them, but the computer had no native support for any peripherals.  Therefore, using an expansion device usually required writing a small program in assembly that mapped all of the I/O memory regions to interrupt assignments and instructions that a PC could use.  These programs &ldquo;drove&rdquo; the hardware for the OS that couldn&rsquo;t use it directly, much like a taxi driver would drive a car for someone who didn&rsquo;t know how to drive.  These programs became known as drivers.</p>
+<p>As computers became more powerful and compute resources became less valuable, people began to want to interface with their computers in a graphical manner.  A grapical wrapper called Windows was released for MS-DOS, and with it and number of drivers to drive the monitor, mouse, and keyboard.</p>
+<p>When the i386 came out there was another major jump - hardware supported virtual memory.  To take advantage of this, Microsoft began running all applications in their own virtual machine, which allowed easy multitasking and process isolation.  This created a problem because at the time processes still included their own drivers and drove hardware directly (which was possible because MS-DOS was a <a href="https://en.wikipedia.org/wiki/Real-time_operating_system" target="_blank">RTOS</a>).  To fix this, Microsoft introduced the virtual device driver, which provided a virtual device in the process space for the program to drive.</p>
+<p>Incidentally, the early virtual drivers were incredibly buggy because they functioned more as a mutex than as a driver - all they would do is make sure no other process was using the hardware, then provide a lock while the current process used the device.</p>
+<p>Finally, Windows NT was released, and with it the advent of kernel mode and user mode.  User mode was used for applications and games, and kernel mode was for trusted operations such as interacting with hardware.  All drivers now ran in kernel space and were mananged by the operating system.  User programs could make requests to drivers through the kernel APIs, and the kernel would use the drivers to drive the devices for the programs.</p>
+<p>The device driver model turned out to work well for interaction with extensible kernel components, and there are now any number of virtual devices as well as physical - there are drivers for on the fly encryption, different filesystems, overclocking, and more.  Many functions performed in kernel space that are not directly related to basic OS functions are done with drivers.</p>
+<h2 id="so-what-is-a-driver">So what is a driver?</h2>
+<p>Microsoft&rsquo;s definition of a driver is &ldquo;a software component that lets the operating system and a device communicate&rdquo;.  Keep in mind that a &ldquo;device&rdquo; does not need to be a physical device, and may be a virtual software component in the kernel that allows access to protected data structures. In modern Windows, drivers always run in kernel mode, and are accessible through special APIs that can be used to request functionality from them.</p>
+<h2 id="modern-windows-driver-types">Modern Windows driver types</h2>
+<p>There are three primary types of drivers in modern Windows:</p>
+<ul>
+<li>Function Drivers</li>
+<li>Filter Drivers</li>
+<li>Bus Drivers</li>
+</ul>
+<h3 id="function-drivers">Function Drivers</h3>
+<p>A function driver is a driver written to control a physical or virtual device. It sits in kernel space and waits to have requests sent to it, then handles and responds to those requests.</p>
+<p>Requests to these drivers are made in the form of an <strong>IRP</strong>, or Interrupt Request Packet.  IRPs are incredibly important for anyone working with drivers, and are a concept we will spend a lot of time with.  IRPs contain the message from user mode to be passed to the driver, as well as the response from the driver.</p>
+<p>It&rsquo;s common to think of interacting with function drivers like interacting with a remote service in a typical client / server architecture.  The userland program is the client that sends a message (IRP) to a the driver, which is the server.  The driver then handles the request internally by controlling a device or retrieving protected information, and sends back the IRP with new information.</p>
+<p><img src="./images/4_client_server_model.gif" alt="Driver as client/server device"></p>
+<h3 id="filter-drivers">Filter Drivers</h3>
+<p>A filter driver can sit above or below a device driver and modify the IRP before sending it to its destination. Continuing the client / server analogy, a filter driver is like middleware or a firewall.</p>
+<p>What this means is that when passing an IRP to a function driver, we aren&rsquo;t passing the IRP directly to the driver.  Instead, the IRP is passed to the top of a <strong>driver stack</strong> associated with the device.  The driver stack might (and probably does) contain a number of fiter drivers that view the IRP, modify what they want, and pass it down.  Eventually the IRP will reach a driver that marks it as complete, and it is passed back up the chain and back to the user who initiated the request.</p>
+<h3 id="bus-driver">Bus Driver</h3>
+<p>A bus driver is effectively a function driver for a common data bus such as PCI, ISCSI, and USB.  In addition to the normal responsibilities of a function driver, it also is responsible for power management of the devices attached to the bus.</p>
+<h2 id="the-device-tree-and-device-objects">The Device Tree and Device Objects</h2>
+<p>Every PnP compatible device in Windows is kept track of as a <strong>device object</strong> and stored as a node in the <strong>device tree</strong>.  The tree shows which objects are connected to which - effectively &ldquo;how to get to&rdquo; a certain device from the operating system&rsquo;s perspective.</p>
+<p><img src="./images/5_device_tree.png" alt="Windows PnP Device Tree"></p>
+<p>Each device object (or node in the tree) has its own <strong>driver stack</strong>, which is the linked list of function and filter drivers associated with it.</p>
+<p><img src="./images/6_driver_stack.png" alt="Windows Driver stack"></p>
+<h2 id="life-of-an-irp">Life of an IRP</h2>
+<p>So what happens when we send an IRP to a driver?</p>
+<ol>
+<li>Using a Windows API such as <code>CreateFile</code>, the IRP is created with the appropriate fields initialized.</li>
+<li>The IRP is sent to the kernel.</li>
+<li>The kernel sends the IRP to the root of the device tree.</li>
+<li>The IRP is transferred down the device tree to its appropriate node.</li>
+<li>Once the IRP gets to the correct device object, it is sent to the top of the device&rsquo;s driver stack.</li>
+<li>The IRP is sent down the stack, with each driver in the stack acting on the IRP then sending down it to the next level.</li>
+<li>One of the drivers in the stack completes the IRP</li>
+<li>The IRP walks back up the stack, with each driver in the stack acting on the IRP then sending up to the next level.</li>
+<li>The IRP returns to the kernel</li>
+<li>The kernel returns the requested information from the IRP to the user.</li>
+</ol>
+<p>Note the same IRP contains both the request and the response.  The fields are just filled out without any additional allocation.</p>
+<h2 id="the-big-picture">The Big Picture</h2>
+<p>For the majority of these posts, particularly the early ones, I will be focusing on function drivers.  Function drivers are both the most common and simplest drivers in Windows.  You can think of them as mini-servers that receive IRPs, modify them, then return them to user space.  Don&rsquo;t get too caught up in the details yet, there will be plenty of time for that later.</p>
+<h2 id="more-reading">More reading</h2>
+<ul>
+<li><a href="https://flylib.com/books/en/4.168.1.14/1/" target="_blank">A Brief History of Device Drivers</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/gettingstarted/what-is-a-driver-" target="_blank">Microsoft Learn - What is a Driver?</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/gettingstarted/driver-stacks" target="_blank">Microsoft Learn - Driver Stacks</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/device-tree" target="_blank">Microsoft Learn - Device Trees</a></li>
+</ul>
+<h2 id="series-index">Series Index</h2>
+<ul>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html" target="_blank">Part 1 - Overview</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html" target="_blank">Part 2 - What&rsquo;s a Driver Anyways?</a></li>
+</ul>
+
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="http://localhost:1313/posts/series/windows_drivers/p1_overview/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 1 - Overview</a>
+        
+	    
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#history-you-didnt-ask-for">History you didn&rsquo;t ask for</a></li>
+    <li><a href="#so-what-is-a-driver">So what is a driver?</a></li>
+    <li><a href="#modern-windows-driver-types">Modern Windows driver types</a>
+      <ul>
+        <li><a href="#function-drivers">Function Drivers</a></li>
+        <li><a href="#filter-drivers">Filter Drivers</a></li>
+        <li><a href="#bus-driver">Bus Driver</a></li>
+      </ul>
+    </li>
+    <li><a href="#the-device-tree-and-device-objects">The Device Tree and Device Objects</a></li>
+    <li><a href="#life-of-an-irp">Life of an IRP</a></li>
+    <li><a href="#the-big-picture">The Big Picture</a></li>
+    <li><a href="#more-reading">More reading</a></li>
+    <li><a href="#series-index">Series Index</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>
