@@ -1,6 +1,6 @@
 ---
 title: "Windows Drivers Series Part 3 - The Minimum Viable Driver"
-date: 2025-07-16T17:14:58-0400
+date: 2025-07-17T19:45:29-0400
 draft: true
 toc: false
 images:
@@ -12,9 +12,7 @@ tags:
   - drivers
 ---
 
-Alright, enough talk.  The best way to learn is by doing, and by coding our own simple driver, we'll get a good idea of what function driver code looks like.
-
-All this driver will do is zero out the provided buffer, sort of like the /dev/zero device in Linux.  
+Alright, enough talk.  The best way to learn is by doing, and by coding our own simple driver, we'll get a good idea of what function driver code looks like.  
 
 ## Setting up the dev environment
 There are several tools you'll need in order to compile your driver.  Driver development has gotten easier over the years, but it is still more complex than just compiling a userland C++ program.  You may benefit from installing all of this in a VM and saving a snapshot so you have it configured and ready to go whenever you want it, but it's also perfectly fine to install the tools on bare metal.
