@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     
 
 
@@ -44,41 +44,43 @@
 
 
   
+
+
+
+
+
   
-
-
-
-
+  
+  
 
 
 <!-- Open Graph image and Twitter Card metadata -->
 
-<title itemprop="name">Jeremy&#39;s Blog</title>
-<meta property="og:title" content=Jeremy&#39;s&#32;Blog />
-<meta name="twitter:title" content=Jeremy&#39;s&#32;Blog />
-<meta itemprop="name" content=Jeremy&#39;s&#32;Blog />
-<meta name="application-name" content=Jeremy&#39;s&#32;Blog />
+<title itemprop="name">Jeremy&#39;s Blog - Windows Drivers Series Part 3 - Simple Driver Start to Finish</title>
+<meta property="og:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;Simple&#32;Driver&#32;Start&#32;to&#32;Finish />
+<meta name="twitter:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;Simple&#32;Driver&#32;Start&#32;to&#32;Finish />
+<meta itemprop="name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;Simple&#32;Driver&#32;Start&#32;to&#32;Finish />
+<meta name="application-name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;Simple&#32;Driver&#32;Start&#32;to&#32;Finish />
 <meta property="og:site_name" content="" />
 
 
-<meta name="description" content="By the way - is there anyone on board who knows how to fly a plane?" />
-<meta itemprop="description" content="By the way - is there anyone on board who knows how to fly a plane?" />
-<meta property="og:description" content="By the way - is there anyone on board who knows how to fly a plane?" />
-<meta name="twitter:description" content="By the way - is there anyone on board who knows how to fly a plane?" />
+<meta name="description" content="" />
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
 
 
-<base href="https://stolenfootball.github.io/" />
-<link rel="canonical" href="https://stolenfootball.github.io/" itemprop="url" />
-<meta name="url" content="https://stolenfootball.github.io/" />
-<meta name="twitter:url" content="https://stolenfootball.github.io/" />
-<meta property="og:url" content="https://stolenfootball.github.io/" />
+<base href="http://localhost:1313/posts/series/windows_drivers/p3_babys_first_driver/" />
+<link rel="canonical" href="http://localhost:1313/posts/series/windows_drivers/p3_babys_first_driver/" itemprop="url" />
+<meta name="url" content="http://localhost:1313/posts/series/windows_drivers/p3_babys_first_driver/" />
+<meta name="twitter:url" content="http://localhost:1313/posts/series/windows_drivers/p3_babys_first_driver/" />
+<meta property="og:url" content="http://localhost:1313/posts/series/windows_drivers/p3_babys_first_driver/" />
 
 
-<meta property="og:updated_time" content="2025-07-17T19:45:29-04:00" />
+<meta property="og:updated_time" content="2025-07-16T17:14:58-04:00" />
 
 
-<link rel="sitemap" type="application/xml" title="Sitemap" href='https://stolenfootball.github.io/sitemap.xml' />
-<link href="https://stolenfootball.github.io/index.xml" rel="alternate" type="application/rss+xml" title="" />
+<link rel="sitemap" type="application/xml" title="Sitemap" href='http://localhost:1313/sitemap.xml' />
 
 <meta name="robots" content="index,follow" />
 <meta name="googlebot" content="index,follow" />
@@ -169,12 +171,12 @@
         <div class="sidebar-about">
     <h1 class="brand">
         
-            <a href="https://stolenfootball.github.io/">
+            <a href="http://localhost:1313/">
                 <img src="/images/avatar.png" alt="brand image">
             </a>
         
         
-            <a href="https://stolenfootball.github.io/">
+            <a href="http://localhost:1313/">
                 <h1>Jeremy&#39;s Blog</h1>
             </a>
         
@@ -221,6 +223,16 @@
                 
                         
                 
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
             
         
         
@@ -243,6 +255,16 @@
                 
             
                 
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
                 
                         
                 
@@ -321,21 +343,18 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </aside>
 
             <main class="content container">
-                <div class="posts">
-    
-    
-    <article class="post">
-        <div class="info">
+                <div class="post">
+  <div class="info">
   <h1 class="post-title">
-    <a href="https://stolenfootball.github.io/posts/writeups/2025/theleg/">UMass CTF 2025 - Ghost in the Leg</a>
+    <a href="http://localhost:1313/posts/series/windows_drivers/p3_babys_first_driver/">Windows Drivers Series Part 3 - Simple Driver Start to Finish</a>
   </h1>
 
   <div class="headline">
     <div>
       
       
-      <time datetime=" 2025-04-20T15:00:00-0500" class="post-date">
-        April 20, 2025
+      <time datetime=" 2025-07-16T17:14:58-0400" class="post-date">
+        July 16, 2025
       </time>
       
       <span> - </span>
@@ -344,128 +363,31 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
           
         
 
-        <span>5 mins read</span>
+        <span>1 min read</span>
       </span>
     </div>
 
     
     <ul class="tags">
       
-      <li class="tag-writeups">
-        <a href="https://stolenfootball.github.io/tags/writeups">writeups</a>
-      </li>
-      
-      <li class="tag-hardware">
-        <a href="https://stolenfootball.github.io/tags/hardware">hardware</a>
+      <li class="tag-series">
+        <a href="http://localhost:1313/tags/series">series</a>
       </li>
       
       <li class="tag-pwn">
-        <a href="https://stolenfootball.github.io/tags/pwn">pwn</a>
+        <a href="http://localhost:1313/tags/pwn">pwn</a>
       </li>
       
-      <li class="tag-author">
-        <a href="https://stolenfootball.github.io/tags/author">author</a>
+      <li class="tag-rev">
+        <a href="http://localhost:1313/tags/rev">rev</a>
       </li>
       
-    </ul>
-    
-  </div>
-
-  
-  
-
-  
-</div>
-
-        
-        <p>This is a challenge I wrote for UMass CTF 2025 using a special version theLEG™ computer architecture.  I&rsquo;ll have a separate series of blog posts on the architecture itself and why it is interesting, but for this I want to go over the specifics of the challenge.</p>
-<h2 id="the-challenge">The Challenge</h2>
-<p>Participants in the CTF were given the following prompt:</p>
-<blockquote>
-<p>TheLEG™ just got updated with a brand new UI and speculative execution extension! Surely no one can read data from kernel space&hellip;</p>
-        
-        <div class="read-more-link">
-            <a href="/posts/writeups/2025/theleg/">Read More…</a>
-        </div>
-        
-        
-    </article>
-    <article class="post">
-        <div class="info">
-  <h1 class="post-title">
-    <a href="https://stolenfootball.github.io/posts/research/2025/signal_windows_decryption/">HowTo - Decryption of Signal Messages on Windows</a>
-  </h1>
-
-  <div class="headline">
-    <div>
-      
-      
-      <time datetime=" 2025-01-26T23:28:04-0500" class="post-date">
-        January 26, 2025
-      </time>
-      
-      <span> - </span>
-      <span class="reading-time">
-        
-          
-        
-
-        <span>8 mins read</span>
-      </span>
-    </div>
-
-    
-  </div>
-
-  
-  
-
-  
-</div>
-
-        
-        <p>During HackTheBox University CTF, I played a challenge that involved decrypting Signal messages from a Windows computer that was running a new version of the Signal Windows Application.  If you&rsquo;re interested in the full writeup of the challenge you can check it out <a href="https://stolenfootball.github.io/posts/writeups/2024/htb-uni-ctf/signaling-victorious/" target="_blank">here</a>.</p>
-<p>While doing the challenge, I noticed that there wasn&rsquo;t much public information available about how to decrypt the messages database in the new Signal Windows app, and that information could be valuable for forensic investigators. With that in mind, I decided to strip out just the relevant parts from the earlier writeup to provide a better resource to that effect.</p>
-        
-        <div class="read-more-link">
-            <a href="/posts/research/2025/signal_windows_decryption/">Read More…</a>
-        </div>
-        
-        
-    </article>
-    <article class="post">
-        <div class="info">
-  <h1 class="post-title">
-    <a href="https://stolenfootball.github.io/posts/writeups/2024/htb-uni-ctf/signaling-victorious/">HackTheBox Binary Badlands 2024 - Signaling Victorious</a>
-  </h1>
-
-  <div class="headline">
-    <div>
-      
-      
-      <time datetime=" 2024-12-18T20:31:50-0500" class="post-date">
-        December 18, 2024
-      </time>
-      
-      <span> - </span>
-      <span class="reading-time">
-        
-          
-        
-
-        <span>17 mins read</span>
-      </span>
-    </div>
-
-    
-    <ul class="tags">
-      
-      <li class="tag-writeups">
-        <a href="https://stolenfootball.github.io/tags/writeups">writeups</a>
+      <li class="tag-windows">
+        <a href="http://localhost:1313/tags/windows">windows</a>
       </li>
       
-      <li class="tag-dfir">
-        <a href="https://stolenfootball.github.io/tags/dfir">dfir</a>
+      <li class="tag-drivers">
+        <a href="http://localhost:1313/tags/drivers">drivers</a>
       </li>
       
     </ul>
@@ -478,78 +400,43 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
   
 </div>
 
-        
-        <p>This challenge came with two files - an encrypted 7-zip file named <code>backup.7z</code> and a memory dump named <code>win10_memdump.elf</code>. There was also a docker container available online running <a href="https://github.com/bc-security/starkiller" target="_blank">Starkiller</a>, which is a front-end management app for the post exploitation framework <a href="https://github.com/EmpireProject/Empire" target="_blank">PowerShell Empire</a>. When I visited the site, there was a login page requesting a username and password to access Starkiller, but no username and password were provided with the challenge.</p>
-<p><img src="./images/1_starkiller.png" alt="Starkiller Login"></p>
-        
-        <div class="read-more-link">
-            <a href="/posts/writeups/2024/htb-uni-ctf/signaling-victorious/">Read More…</a>
-        </div>
-        
-        
-    </article>
-    <article class="post">
-        <div class="info">
-  <h1 class="post-title">
-    <a href="https://stolenfootball.github.io/posts/writeups/2023/htb-uni-ctf/zombienet/">HackTheBox University CTF 2023 - ZombieNet</a>
-  </h1>
-
-  <div class="headline">
-    <div>
-      
-      
-      <time datetime=" 2023-10-17T11:23:50-0500" class="post-date">
-        October 17, 2023
-      </time>
-      
-      <span> - </span>
-      <span class="reading-time">
-        
-          
-        
-
-        <span>10 mins read</span>
-      </span>
-    </div>
-
-    
-    <ul class="tags">
-      
-      <li class="tag-writeups">
-        <a href="https://stolenfootball.github.io/tags/writeups">writeups</a>
-      </li>
-      
-      <li class="tag-dfir">
-        <a href="https://stolenfootball.github.io/tags/dfir">dfir</a>
-      </li>
-      
-    </ul>
-    
-  </div>
+  <p>Alright, enough talk.  The best way to learn is by doing, and by coding our own simple driver, we&rsquo;ll get a good idea of what function driver code looks like.</p>
+<p>For this, we&rsquo;ll code a driver that plays a beep code when you</p>
+<h2 id="setting-up-the-dev-environment">Setting up the dev environment</h2>
 
   
-  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="http://localhost:1313/posts/series/windows_drivers/p1_overview/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 1 - Overview</a>
+        
+	    
+            <div class="next-post">
+                <a href="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Windows Drivers Series Part 2 - What&#39;s a Driver...</a>
+            </div>
+        
+    
+</div>
 
   
 </div>
-
-        
-        <p>The second forensics challenge for HackTheBox University CTF 2023 was called ZombieNet.  It gave participants an image of an OpenWRT router, and asked them to determine how the attackers were maintaining persistent access to the device.  This post will walk through the steps I took to solve the challenge.</p>
-<h2 id="challenge-description">Challenge Description</h2>
-<p>There was an attack on the NOC (Network Operations Center) of Hackster University and as a result, a large number of Network devices were compromised! After successfully fending off the attack the devices were decommissioned and sent off to be inspected. However, there is a strong suspicion among your peers that not all devices were identified! They suspect that the attackers managed to maintain access to the network despite our team&rsquo;s efforts! It&rsquo;s your job to investigate a recently used disk image and uncover how the Zombies maintain their access!</p>
-        
-        <div class="read-more-link">
-            <a href="/posts/writeups/2023/htb-uni-ctf/zombienet/">Read More…</a>
-        </div>
-        
-        
-    </article>
-</div>
-
-
-
             </main>
             
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#setting-up-the-dev-environment">Setting up the dev environment</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
         </div>
     </body>
 </html>

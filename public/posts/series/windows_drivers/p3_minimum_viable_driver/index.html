@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.145453261a7755f5042a854c4213501d215a8fbe34c08d181c40f803f1315e74.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/favicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">Jeremy&#39;s Blog - Windows Drivers Series Part 3 - The Minimum Viable Driver</title>
+<meta property="og:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;The&#32;Minimum&#32;Viable&#32;Driver />
+<meta name="twitter:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;The&#32;Minimum&#32;Viable&#32;Driver />
+<meta itemprop="name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;The&#32;Minimum&#32;Viable&#32;Driver />
+<meta name="application-name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;The&#32;Minimum&#32;Viable&#32;Driver />
+<meta property="og:site_name" content="" />
+
+
+<meta name="description" content="" />
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+
+<base href="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/" />
+<link rel="canonical" href="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/" itemprop="url" />
+<meta name="url" content="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/" />
+<meta name="twitter:url" content="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/" />
+<meta property="og:url" content="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/" />
+
+
+<meta property="og:updated_time" content="2025-07-16T17:14:58-04:00" />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='http://localhost:1313/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.141.0">
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.94a339836f89f0d25f31980cb6b0631da21e20af128308747ce44e0525eb16ef.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="http://localhost:1313/">
+                <img src="/images/avatar.png" alt="brand image">
+            </a>
+        
+        
+            <a href="http://localhost:1313/">
+                <h1>Jeremy&#39;s Blog</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    By the way - is there anyone on board who knows how to fly a plane?
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+        
+            
+
+            
+                
+                
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/stolenfootball">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/jeremy-dunn-a0b945172/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Discord" href="https://discordapp.com/users/stolenfootball#3265">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto:jeremy.dunn315@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="Signal" href="https://signal.me/#eu/ikkgt8MQoJBTjgrVAOrULsPwxu8mSjGsPrW-GDGj5euZreghZMlJUb91ncEA4LQr">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.4em" viewBox="0 0 1024 1024">
+            <path fill="currentColor" d="M427.5,170.3l7.9,32A319.6,319.6,0,0,0,347,238.9l-16.9-28.3A347.6,347.6,0,0,1,427.5,170.3Zm169,0-7.9,32A319.6,319.6,0,0,1,677,238.9l17.1-28.3A350.1,350.1,0,0,0,596.5,170.3ZM210.6,330a349.5,349.5,0,0,0-40.3,97.5l32,7.9A319.6,319.6,0,0,1,238.9,347ZM193,512a318.5,318.5,0,0,1,3.6-47.8l-32.6-5a352,352,0,0,0,0,105.5l32.6-4.9A319.5,319.5,0,0,1,193,512ZM693.9,813.3,677,785.1a317.8,317.8,0,0,1-88.3,36.6l7.9,32A350.3,350.3,0,0,0,693.9,813.3ZM831,512a319.5,319.5,0,0,1-3.6,47.8l32.6,4.9a352,352,0,0,0,0-105.5l-32.6,5A318.5,318.5,0,0,1,831,512Zm22.7,84.4-32-7.9A319,319,0,0,1,785.1,677l28.3,17A348.9,348.9,0,0,0,853.7,596.4Zm-293.9,231a319.1,319.1,0,0,1-95.6,0L459.3,860a351.3,351.3,0,0,0,105.4,0Zm209-126.2a318.1,318.1,0,0,1-67.6,67.5l19.6,26.6A355.1,355.1,0,0,0,795.4,721Zm-67.6-446a318.6,318.6,0,0,1,67.6,67.6L795.4,303A354.6,354.6,0,0,0,721,228.6Zm-446,67.6a318.6,318.6,0,0,1,67.6-67.6L303,228.6A354.6,354.6,0,0,0,228.6,303ZM813.4,330l-28.3,17a317.8,317.8,0,0,1,36.6,88.3l32-7.9A348.9,348.9,0,0,0,813.4,330ZM464.2,196.6a319.1,319.1,0,0,1,95.6,0l4.9-32.6a351.3,351.3,0,0,0-105.4,0ZM272.1,804.1,204,819.9l15.9-68.1-32.1-7.5-15.9,68.1a33,33,0,0,0,24.6,39.7,34.5,34.5,0,0,0,15,0l68.1-15.7Zm-77.5-89.2,32.2,7.4,11-47.2a316.2,316.2,0,0,1-35.5-86.6l-32,7.9a353.3,353.3,0,0,0,32.4,83.7Zm154,71.4-47.2,11,7.5,32.2,34.7-8.1a349,349,0,0,0,83.7,32.4l7.9-32a316.7,316.7,0,0,1-86.3-35.7ZM512,226c-158,.1-285.9,128.2-285.9,286.1a286.7,286.7,0,0,0,43.9,152L242.5,781.5,359.8,754c133.7,84.1,310.3,44,394.4-89.6S798.3,354.2,664.7,270A286.7,286.7,0,0,0,512,226s"/>
+        </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2025 . All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/">Windows Drivers Series Part 3 - The Minimum Viable Driver</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      
+      <time datetime=" 2025-07-16T17:14:58-0400" class="post-date">
+        July 16, 2025
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>7 mins read</span>
+      </span>
+    </div>
+
+    
+    <ul class="tags">
+      
+      <li class="tag-series">
+        <a href="http://localhost:1313/tags/series">series</a>
+      </li>
+      
+      <li class="tag-pwn">
+        <a href="http://localhost:1313/tags/pwn">pwn</a>
+      </li>
+      
+      <li class="tag-rev">
+        <a href="http://localhost:1313/tags/rev">rev</a>
+      </li>
+      
+      <li class="tag-windows">
+        <a href="http://localhost:1313/tags/windows">windows</a>
+      </li>
+      
+      <li class="tag-drivers">
+        <a href="http://localhost:1313/tags/drivers">drivers</a>
+      </li>
+      
+    </ul>
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <p>Alright, enough talk.  The best way to learn is by doing, and by coding our own simple driver, we&rsquo;ll get a good idea of what function driver code looks like.</p>
+<p>All this driver will do is zero out the provided buffer, sort of like the /dev/zero device in Linux.</p>
+<h2 id="setting-up-the-dev-environment">Setting up the dev environment</h2>
+<p>There are several tools you&rsquo;ll need in order to compile your driver.  Driver development has gotten easier over the years, but it is still more complex than just compiling a userland C++ program.  You may benefit from installing all of this in a VM and saving a snapshot so you have it configured and ready to go whenever you want it, but it&rsquo;s also perfectly fine to install the tools on bare metal.</p>
+<h3 id="visual-studio-2022">Visual Studio 2022</h3>
+<p>Download the latest <strong>Community</strong> version of <a href="https://visualstudio.microsoft.com/downloads/" target="_blank">Visual Studio 2022</a>.</p>
+<p><img src="./images/1_vs_download.png" alt="Visual Studio Download page"></p>
+<p>When running the installer, make sure to select the <strong>Desktop development with C++</strong> Workload.</p>
+<p><img src="./images/2_install_options.png" alt="VS installer desktop development workload"></p>
+<p>Next, move over to the <strong>Individual components</strong> tab, and install all of the following:</p>
+<ul>
+<li>MSVC v143 - VS 2022 C++ ARM64/ARM64EC Spectre-mitigated libs (Latest)</li>
+<li>MSVC v143 - VS 2022 C++ x64/x86 Spectre-mitigated libs (Latest)</li>
+<li>C++ ATL for latest v143 build tools with Spectre Mitigations (ARM64/ARM64EC)</li>
+<li>C++ ATL for latest v143 build tools with Spectre Mitigations (x86 &amp; x64)</li>
+<li>C++ MFC for latest v143 build tools with Spectre Mitigations (ARM64/ARM64EC)</li>
+<li>C++ MFC for latest v143 build tools with Spectre Mitigations (x86 &amp; x64)</li>
+<li>Windows Driver Kit</li>
+</ul>
+<p><img src="./images/3_more_install_options.png" alt="More VS installer options"></p>
+<p>You may want to consult <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/gettingstarted/writing-a-very-small-kmdf--driver#prerequisites" target="_blank">this page</a> to confirm the latest versioning still matches what is on this post.</p>
+<h3 id="windows-11-sdk">Windows 11 SDK</h3>
+<p>Download the Windows 11 SDK by navigating to <a href="https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/" target="_blank">the official download page</a> and clicking &ldquo;Download the installer&rdquo;.</p>
+<p><img src="./images/4_win11_sdk_download_site.png" alt="Windows 11 SDK Download site"></p>
+<p>Make sure to &ldquo;install the SDK on this computer&rdquo;.</p>
+<p><img src="./images/5_win11_sdk_install_1.png" alt="Install SDK location screenshot"></p>
+<p>When it comes time to select which features to install, I suggest installing all of them.  In particular, make sure the <strong>Debugging Tools for Windows</strong> get installed.</p>
+<p><img src="./images/6_win11_sdk_install_2.png" alt="Install SDK features"></p>
+<h3 id="windows-11-driver-kit">Windows 11 Driver Kit</h3>
+<p>Download the Windows Driver Kit from <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk#download-icon-for-wdk-step-3-install-wdk" target="_blank">the official download page</a>.</p>
+<p>As before, make sure to &ldquo;install the WDK to this computer&rdquo;.</p>
+<p><img src="./images/12_wdk_install.png" alt="Windows driver kit install"></p>
+<p>If you&rsquo;ve completed it correctly, there should be no error messages.  That said, the versioning between Visual Studio, the SDK, and the WDK can be finicky.  If you follow the above steps in the exact order you should be fine.  Otherwise, Google is your friend.</p>
+<h2 id="creating-the-project">Creating the project</h2>
+<p>Start Visual Studio, then select <strong>Create a new project</strong></p>
+<p><img src="./images/7_new_vs_project.png" alt="New visual studio project"></p>
+<p>Search for and select <strong>Empty WDM Driver</strong> then click Next.</p>
+<p><img src="./images/8_empty_wdm_driver.png" alt="Empty WDM driver screen"></p>
+<p>On the next screen call the driver whatever you want and put it wherever you want in the filesystem.</p>
+<p>In the project files on the right hand side under <strong>Driver Files</strong>, delete the inf file with your driver&rsquo;s name by right clicking on it.</p>
+<p><img src="./images/9_driver_files.png" alt="INF file to delete"></p>
+<p>Now right click on <strong>Source Files</strong> then select <strong>Add</strong> then <strong>New Item</strong></p>
+<p><img src="./images/10_new_item.png" alt="New item"></p>
+<p>Name the new item <em>Your driver name</em>.cpp.  For example, mine is named MyDriver1.cpp.</p>
+<p><img src="./images/11_mydriver.png" alt="New source file added"></p>
+<p>Now, finally, we can start to code.</p>
+<h2 id="driverentry-and-unload">DriverEntry and Unload</h2>
+<p>If you have previous coding experience, you are probably used to a progam starting in the <strong>main</strong> function.  Drivers have an equivalent, called <strong>DriverEntry</strong>.</p>
+<p><strong>DriverEntry</strong> is run once, when the driver is loaded into the kernel.  It does not run each time the driver is interfaced with.  It&rsquo;s complement, the <strong>Unload</strong> routine, is run when the driver is unloaded.</p>
+<p>The signature of a DriverEntry function is as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;ntddk.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> NTSTATUS 
+</span></span><span style="display:flex;"><span>DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING RegistryPath) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>There are a few things about this function that will look strange to the C++ developer coming from userland.</p>
+<ul>
+<li><code>#include &lt;ntddk.h&gt;</code> - an external library where many types used for drivers can be imported from.</li>
+<li><code>extern &quot;C&quot; NTSTATUS</code> - the return type of this function is an NTSTATUS code, which is a well defined <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/596a1078-e883-4972-9bbc-49e60bebca55" target="_blank">enum from Microsoft</a>.  The <code>extern &quot;C&quot;</code> keyword is included to have the compiler link to the C library where the NTSTATUS enum lives, which is not done by default for a C++ driver.</li>
+<li><code>_In_</code> and <code>_Out_</code> - part of the <strong>SAL</strong> (Source (code) Annotation Language).  Most kernel functions return status values only.  Therefore, the only way to return data from functions is to pass an allocated piece of memory as an argument that the called function can write to.  The SAL annotations are transparent to the compiler, and are present to remind the programmer which arguments are true arguments and which ones are actually return values.</li>
+<li><code>PUNICODE_STRING</code> - equivalent to <code>UNICODE_STRING *RegistryPath</code>.  Just a helpful typedef for cleaner code.  If you see a <code>P</code> in front of a known type, its a pointer.</li>
+</ul>
+<p>The two arguments DriverEntry takes are initialized and passed in by the kernel for use in the driver. <code>PUNICODE_STRING RegistryPath</code> is simply a path to a place in the registry the driver can store and retrieve its configuration keys from.</p>
+<p><code>PDRIVER_OBJECT DriverObject</code> is a <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/ns-wdm-_driver_object" target="_blank">struct defined in the MSDN</a> as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">_DRIVER_OBJECT</span> {
+</span></span><span style="display:flex;"><span>  CSHORT             Type;
+</span></span><span style="display:flex;"><span>  CSHORT             Size;
+</span></span><span style="display:flex;"><span>  PDEVICE_OBJECT     DeviceObject;
+</span></span><span style="display:flex;"><span>  ULONG              Flags;
+</span></span><span style="display:flex;"><span>  PVOID              DriverStart;
+</span></span><span style="display:flex;"><span>  ULONG              DriverSize;
+</span></span><span style="display:flex;"><span>  PVOID              DriverSection;
+</span></span><span style="display:flex;"><span>  PDRIVER_EXTENSION  DriverExtension;
+</span></span><span style="display:flex;"><span>  UNICODE_STRING     DriverName;
+</span></span><span style="display:flex;"><span>  PUNICODE_STRING    HardwareDatabase;
+</span></span><span style="display:flex;"><span>  PFAST_IO_DISPATCH  FastIoDispatch;
+</span></span><span style="display:flex;"><span>  PDRIVER_INITIALIZE DriverInit;
+</span></span><span style="display:flex;"><span>  PDRIVER_STARTIO    DriverStartIo;
+</span></span><span style="display:flex;"><span>  PDRIVER_UNLOAD     DriverUnload;
+</span></span><span style="display:flex;"><span>  PDRIVER_DISPATCH   MajorFunction[IRP_MJ_MAXIMUM_FUNCTION <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>];
+</span></span><span style="display:flex;"><span>} DRIVER_OBJECT, <span style="color:#f92672">*</span>PDRIVER_OBJECT;
+</span></span></code></pre></div><p>For right now, the only field in this struct we care about is <code>PDRIVER_UNLOAD DriverUnload</code>. This is an uninitialized pointer to the driver&rsquo;s <strong>Unload</strong> function.</p>
+<p>The job of an <strong>Unload</strong> function is to undo everything done during <strong>DriverEntry</strong>.  For example, if you allocate memory during <strong>DriverEntry</strong>, you must free it in <strong>Unload</strong> or else there will be a memory leak in the kernel.</p>
+<p>A minimal <strong>Unload</strong> function looks like the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">MyDriverUnload</span>(_In_ PDRIVER_OBJECT DriverObject) {
+</span></span><span style="display:flex;"><span>  UNREFERENCED_PARAMETER(DriverObject);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>An <strong>Unload</strong> function receives the same <code>PDRIVER_OBJECT</code> as the <strong>DriverEntry</strong> function does and returns nothing.  Since we didn&rsquo;t do anything in our <strong>DriverEntry</strong>, there is no need to do anything in <strong>Unload</strong>.</p>
+<p>The compiler complains if there are unused variables in the code, so the <code>UNREFERENCED_PARAMETER</code> macro simply references the variable in place to clear the error.</p>
+<p>To tell the kernel where the driver&rsquo;s <strong>Unload</strong> function is, we need to set the appropriate field in the <code>DeviceObject</code> in <strong>DriverEntry</strong>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>DriverObject<span style="color:#f92672">-&gt;</span>DriverUnload <span style="color:#f92672">=</span> MyDriverUnload;
+</span></span></code></pre></div><h2 id="full-minimal-driver">Full Minimal Driver</h2>
+<p>Once everything is set, the final code for the minimum viable driver is as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;ntddk.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">MyDriverUnload</span>(_In_ PDRIVER_OBJECT DriverObject) {
+</span></span><span style="display:flex;"><span>  UNREFERENCED_PARAMETER(DriverObject);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> NTSTATUS
+</span></span><span style="display:flex;"><span>DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath) {
+</span></span><span style="display:flex;"><span>  UNREFERENCED_PARAMETER(RegistryPath);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  DriverObject<span style="color:#f92672">-&gt;</span>DriverUnload <span style="color:#f92672">=</span> MyDriverUnload;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Read through each line of code, and make sure you know what everything is doing.  If you don&rsquo;t understand how something is supposed to work, you&rsquo;ll have a much harder time trying to find bugs in it.</p>
+<h2 id="building-the-driver">Building the Driver</h2>
+<p>Once you&rsquo;re ready, simply click *<em>Build-&gt;Build Solution</em> and build the driver.</p>
+<p><img src="./images/13_build%20driver.gif" alt="Build Driver"></p>
+<h2 id="loading-the-driver">Loading the Driver</h2>
+<p>Now that we have a driver, we have to load it.</p>
+<p>In order to load a driver on a live Windows system, it needs to be signed with a certificate issued by Microsoft.  The signing process isn&rsquo;t complicated but it does cost money, which isn&rsquo;t practical for a test driver.</p>
+<p>We can bypass the requirement by enabling test signing.  <strong>DO THIS ON A VM NOT YOUR LOCAL MACHINE</strong>.  To enable test signing, run the following then reboot the system:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ps1" data-lang="ps1"><span style="display:flex;"><span>bcdedit /set testsigning on
+</span></span></code></pre></div><p>If you used the default location for the Visual Studio project, your driver will be stored at <code>C:\Users\[YOUR USER]\repos\[YOUR DRIVER NAME]\x64\Release\[YOUR DRIVER NAME].sys</code></p>
+<p>Open the Release directory in an Administrative command prompt, then run the following command to install the driver.  <strong>USE CMD, NOT POWERSHELL.  ALIASING ISN&rsquo;T YOUR FRIEND RIGHT NOW</strong>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ps1" data-lang="ps1"><span style="display:flex;"><span>sc create sample type= kernel binPath= C:\Users\[<span style="color:#66d9ef">YOUR USER</span>]\repos\[<span style="color:#66d9ef">YOUR DRIVER NAME</span>]\x64\debug\[<span style="color:#66d9ef">YOUR DRIVER NAME</span>].sys
+</span></span></code></pre></div><p>Note the locations of the spaces in regards to the equals signs after type and binPath.  Yes it is weird, but it won&rsquo;t work if the spaces aren&rsquo;t attached correctly.</p>
+<p>You should receive the message:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ps1" data-lang="ps1"><span style="display:flex;"><span>[<span style="color:#66d9ef">SC</span>] CreateService SUCCESS
+</span></span></code></pre></div><p>Now run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ps1" data-lang="ps1"><span style="display:flex;"><span>sc start sample
+</span></span></code></pre></div><p>You&rsquo;ll see a message like the following:</p>
+<p><img src="./images/14_start_success.png" alt="Service successfully started"></p>
+<p>Note that the service name has nothing to do with the name of your driver&rsquo;s source file.</p>
+<p>To unload the driver, just issue:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ps1" data-lang="ps1"><span style="display:flex;"><span>sc stop sample
+</span></span></code></pre></div><p>And you&rsquo;ll see:</p>
+<p><img src="./images/15_stop_success.png" alt="Service successfully stopped"></p>
+<h2 id="final-thoughts">Final thoughts</h2>
+<p>Congratulations, you&rsquo;ve written and installed a kernel driver!  Admittedly not very useful yet, but we&rsquo;ll work on that in the next post.</p>
+<p>Most of the source here (and throughout my examples) is taken heavily from <a href="https://www.amazon.com/Windows-Kernel-Programming-Pavel-Yosifovich/dp/B0BW2X91L2" target="_blank">Pavel Yosifovich&rsquo;s Windows Kernel Programming</a>.  If you&rsquo;re interested in the programming aspect of this, I highly recommend buying the book, he does a fantastic job of explaining concepts and there&rsquo;s a lot more information than I am providing here.</p>
+<h2 id="more-reading">More reading</h2>
+<ul>
+<li><a href="https://www.amazon.com/Windows-Kernel-Programming-Pavel-Yosifovich/dp/B0BW2X91L2" target="_blank">Pavel Yosifovich&rsquo;s Windows Kernel Programming</a></li>
+<li><a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/596a1078-e883-4972-9bbc-49e60bebca55" target="_blank">MSDN NTSTATUS Codes</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/gettingstarted/writing-a-very-small-kmdf--driver" target="_blank">MSDN Write a HelloWorld Driver</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/develop/building-a-driver" target="_blank">MSDN Building a Driver</a></li>
+</ul>
+<h2 id="series-index">Series Index</h2>
+<ul>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html" target="_blank">Part 1 - Overview</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html" target="_blank">Part 2 - What&rsquo;s a Driver Anyways?</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">Part 3 - The Minimum Viable Driver</a></li>
+</ul>
+
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="http://localhost:1313/posts/writeups/2025/theleg/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>UMass CTF 2025 - Ghost in the Leg</a>
+        
+	    
+            <div class="next-post">
+                <a href="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Windows Drivers Series Part 2 - What&#39;s a Driver...</a>
+            </div>
+        
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#setting-up-the-dev-environment">Setting up the dev environment</a>
+      <ul>
+        <li><a href="#visual-studio-2022">Visual Studio 2022</a></li>
+        <li><a href="#windows-11-sdk">Windows 11 SDK</a></li>
+        <li><a href="#windows-11-driver-kit">Windows 11 Driver Kit</a></li>
+      </ul>
+    </li>
+    <li><a href="#creating-the-project">Creating the project</a></li>
+    <li><a href="#driverentry-and-unload">DriverEntry and Unload</a></li>
+    <li><a href="#full-minimal-driver">Full Minimal Driver</a></li>
+    <li><a href="#building-the-driver">Building the Driver</a></li>
+    <li><a href="#loading-the-driver">Loading the Driver</a></li>
+    <li><a href="#final-thoughts">Final thoughts</a></li>
+    <li><a href="#more-reading">More reading</a></li>
+    <li><a href="#series-index">Series Index</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>

@@ -49,14 +49,18 @@
 
 
 
+  
+  
+  
+
 
 <!-- Open Graph image and Twitter Card metadata -->
 
-<title itemprop="name"></title>
-<meta property="og:title" content=ZgotmplZ />
-<meta name="twitter:title" content=ZgotmplZ />
-<meta itemprop="name" content=ZgotmplZ />
-<meta name="application-name" content=ZgotmplZ />
+<title itemprop="name">Jeremy&#39;s Blog - Windows Drivers Series Part 3 - The Minimum Viable Driver</title>
+<meta property="og:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;The&#32;Minimum&#32;Viable&#32;Driver />
+<meta name="twitter:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;The&#32;Minimum&#32;Viable&#32;Driver />
+<meta itemprop="name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;The&#32;Minimum&#32;Viable&#32;Driver />
+<meta name="application-name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;3&#32;-&#32;The&#32;Minimum&#32;Viable&#32;Driver />
 <meta property="og:site_name" content="" />
 
 
@@ -66,18 +70,17 @@
 <meta name="twitter:description" content="" />
 
 
-<base href="http://localhost:1313/tags/series/" />
-<link rel="canonical" href="http://localhost:1313/tags/series/" itemprop="url" />
-<meta name="url" content="http://localhost:1313/tags/series/" />
-<meta name="twitter:url" content="http://localhost:1313/tags/series/" />
-<meta property="og:url" content="http://localhost:1313/tags/series/" />
+<base href="http://localhost:1313/posts/series/windows_drivers/p3_simple_driver/" />
+<link rel="canonical" href="http://localhost:1313/posts/series/windows_drivers/p3_simple_driver/" itemprop="url" />
+<meta name="url" content="http://localhost:1313/posts/series/windows_drivers/p3_simple_driver/" />
+<meta name="twitter:url" content="http://localhost:1313/posts/series/windows_drivers/p3_simple_driver/" />
+<meta property="og:url" content="http://localhost:1313/posts/series/windows_drivers/p3_simple_driver/" />
 
 
 <meta property="og:updated_time" content="2025-07-16T17:14:58-04:00" />
 
 
 <link rel="sitemap" type="application/xml" title="Sitemap" href='http://localhost:1313/sitemap.xml' />
-<link href="http://localhost:1313/tags/series/index.xml" rel="alternate" type="application/rss+xml" title="" />
 
 <meta name="robots" content="index,follow" />
 <meta name="googlebot" content="index,follow" />
@@ -340,43 +343,185 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </aside>
 
             <main class="content container">
-                <h1 class="title">Series</h1>
-<ul class="entries">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="http://localhost:1313/posts/series/windows_drivers/p3_simple_driver/">Windows Drivers Series Part 3 - The Minimum Viable Driver</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      
+      <time datetime=" 2025-07-16T17:14:58-0400" class="post-date">
+        July 16, 2025
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>4 mins read</span>
+      </span>
+    </div>
+
     
-        <h3 style="text-align: center;">2025</h3>
-        
-            <li>
-                <span class="title">
-                    <a href="/posts/series/windows_drivers/p3_minimum_viable_driver/">Windows Drivers Series Part 3 - The Minimum Viable Driver</a>
-                </span>
-                <span class="published">
-                    <time class="pull-right post-list">July 16, 2025</time>
-                </span>
-            </li>
-        
-            <li>
-                <span class="title">
-                    <a href="/posts/series/windows_drivers/p2_whats_a_driver/">Windows Drivers Series Part 2 - What&#39;s a Driver Anyways?</a>
-                </span>
-                <span class="published">
-                    <time class="pull-right post-list">July 16, 2025</time>
-                </span>
-            </li>
-        
-            <li>
-                <span class="title">
-                    <a href="/posts/series/windows_drivers/p1_overview/">Windows Drivers Series Part 1 - Overview</a>
-                </span>
-                <span class="published">
-                    <time class="pull-right post-list">July 14, 2025</time>
-                </span>
-            </li>
-        
+    <ul class="tags">
+      
+      <li class="tag-series">
+        <a href="http://localhost:1313/tags/series">series</a>
+      </li>
+      
+      <li class="tag-pwn">
+        <a href="http://localhost:1313/tags/pwn">pwn</a>
+      </li>
+      
+      <li class="tag-rev">
+        <a href="http://localhost:1313/tags/rev">rev</a>
+      </li>
+      
+      <li class="tag-windows">
+        <a href="http://localhost:1313/tags/windows">windows</a>
+      </li>
+      
+      <li class="tag-drivers">
+        <a href="http://localhost:1313/tags/drivers">drivers</a>
+      </li>
+      
+    </ul>
     
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <p>Alright, enough talk.  The best way to learn is by doing, and by coding our own simple driver, we&rsquo;ll get a good idea of what function driver code looks like.</p>
+<p>All this driver will do is zero out the provided buffer, sort of like the /dev/zero device in Linux.</p>
+<h2 id="setting-up-the-dev-environment">Setting up the dev environment</h2>
+<p>There are several tools you&rsquo;ll need in order to compile your driver.  Driver development has gotten easier over the years, but it is still more complex than just compiling a userland C++ program.  You may benefit from installing all of this in a VM and saving a snapshot so you have it configured and ready to go whenever you want it, but it&rsquo;s also perfectly fine to install the tools on bare metal.</p>
+<h3 id="visual-studio-2022">Visual Studio 2022</h3>
+<p>Download the latest <strong>Community</strong> version of <a href="https://visualstudio.microsoft.com/downloads/" target="_blank">Visual Studio 2022</a>.</p>
+<p><img src="./images/1_vs_download.png" alt="Visual Studio Download page"></p>
+<p>When running the installer, make sure to select the <strong>Desktop development with C++</strong> Workload.</p>
+<p><img src="./images/2_install_options.png" alt="VS installer desktop development workload"></p>
+<p>Next, move over to the <strong>Individual components</strong> tab, and install all of the following:</p>
+<ul>
+<li>MSVC v143 - VS 2022 C++ ARM64/ARM64EC Spectre-mitigated libs (Latest)</li>
+<li>MSVC v143 - VS 2022 C++ x64/x86 Spectre-mitigated libs (Latest)</li>
+<li>C++ ATL for latest v143 build tools with Spectre Mitigations (ARM64/ARM64EC)</li>
+<li>C++ ATL for latest v143 build tools with Spectre Mitigations (x86 &amp; x64)</li>
+<li>C++ MFC for latest v143 build tools with Spectre Mitigations (ARM64/ARM64EC)</li>
+<li>C++ MFC for latest v143 build tools with Spectre Mitigations (x86 &amp; x64)</li>
+<li>Windows Driver Kit</li>
+</ul>
+<p><img src="./images/3_more_install_options.png" alt="More VS installer options"></p>
+<p>You may want to consult <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/gettingstarted/writing-a-very-small-kmdf--driver#prerequisites" target="_blank">this page</a> to confirm the latest versioning still matches what is on this post.</p>
+<h3 id="windows-11-sdk">Windows 11 SDK</h3>
+<p>Download the Windows 11 SDK by navigating to <a href="https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/" target="_blank">the official download page</a> and clicking &ldquo;Download the installer&rdquo;.</p>
+<p><img src="./images/4_win11_sdk_download_site.png" alt="Windows 11 SDK Download site"></p>
+<p>Make sure to &ldquo;install the SDK on this computer&rdquo;.</p>
+<p><img src="./images/5_win11_sdk_install_1.png" alt="Install SDK location screenshot"></p>
+<p>When it comes time to select which features to install, I suggest installing all of them.  In particular, make sure the <strong>Debugging Tools for Windows</strong> get installed.</p>
+<p><img src="./images/6_win11_sdk_install_2.png" alt="Install SDK features"></p>
+<h2 id="creating-the-project">Creating the project</h2>
+<p>Start Visual Studio, then select <strong>Create a new project</strong></p>
+<p><img src="./images/7_new_vs_project.png" alt="New visual studio project"></p>
+<p>Search for and select <strong>Empty WDM Driver</strong> then click Next.</p>
+<p><img src="./images/8_empty_wdm_driver.png" alt="Empty WDM driver screen"></p>
+<p>On the next screen call the driver whatever you want and put it wherever you want in the filesystem.</p>
+<p>In the project files on the right hand side under <strong>Driver Files</strong>, delete the inf file with your driver&rsquo;s name by right clicking on it.</p>
+<p><img src="./images/9_driver_files.png" alt="INF file to delete"></p>
+<p>Now right click on <strong>Source Files</strong> then select <strong>Add</strong> then <strong>New Item</strong></p>
+<p><img src="./images/10_new_item.png" alt="New item"></p>
+<p>Name the new item <em>Your driver name</em>.cpp.  For example, mine is named MyDriver1.cpp.</p>
+<p><img src="./images/11_mydriver.png" alt="New source file added"></p>
+<p>Now, finally, we can start to code.</p>
+<h2 id="driverentry-and-unload">DriverEntry and Unload</h2>
+<p>If you have previous coding experience, you are probably used to a progam starting in the <strong>main</strong> function.  Drivers have an equivalent, called <strong>DriverEntry</strong>.</p>
+<p><strong>DriverEntry</strong> is run once, when the driver is loaded into the kernel.  It does not run each time the driver is interfaced with.  It&rsquo;s complement, the <strong>Unload</strong> routine, is run when the driver is unloaded.</p>
+<p>The signature of a DriverEntry function is as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;ntddk.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> NTSTATUS 
+</span></span><span style="display:flex;"><span>DriverEntry(_In_ PDRIVER_OBJECT DriverObject, _In_ PUNICODE_STRING RegistryPath) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>There are a few things about this function that will look strange to the C++ developer coming from userland.</p>
+<ul>
+<li><code>#include &lt;ntddk.h&gt;</code> - the external library where the types used above are imported from.</li>
+<li><code>extern &quot;C&quot; NTSTATUS</code> - the return type of this function is an NTSTATUS code, which is a well defined <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/596a1078-e883-4972-9bbc-49e60bebca55" target="_blank">enum from Microsoft</a>.  The <code>extern &quot;C&quot;</code> keyword is included to have the compiler link to the C library where the NTSTATUS enum lives, which is not done by default for a C++ driver.</li>
+<li><code>_In_</code> and <code>_Out_</code> - part of the <strong>SAL</strong> (Source (code) Annotation Language).  Most kernel functions return status values only.  Therefore, the only way to return data from functions is to pass an allocated piece of memory as an argument that the called function can write to.  The SAL annotations are transparent to the compiler, and are present to remind the programmer which arguments are true arguments and which ones are actually return values.</li>
+<li><code>PUNICODE_STRING</code> - equivalent to <code>UNICODE_STRING *RegistryPath</code>.  Just a helpful typedef for cleaner code.  If you see a <code>P</code> in front of a known type, its a pointer.</li>
+</ul>
+<p>The two arguments DriverEntry takes are initialized and passed in by the kernel for use in the driver. <code>PUNICODE_STRING RegistryPath</code> is simply a path to a place in the registry the driver can store and retrieve its configuration keys from.</p>
+<p><code>PDRIVER_OBJECT DriverObject</code> is a <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/ns-wdm-_driver_object" target="_blank">struct defined in the MSDN</a> as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">_DRIVER_OBJECT</span> {
+</span></span><span style="display:flex;"><span>  CSHORT             Type;
+</span></span><span style="display:flex;"><span>  CSHORT             Size;
+</span></span><span style="display:flex;"><span>  PDEVICE_OBJECT     DeviceObject;
+</span></span><span style="display:flex;"><span>  ULONG              Flags;
+</span></span><span style="display:flex;"><span>  PVOID              DriverStart;
+</span></span><span style="display:flex;"><span>  ULONG              DriverSize;
+</span></span><span style="display:flex;"><span>  PVOID              DriverSection;
+</span></span><span style="display:flex;"><span>  PDRIVER_EXTENSION  DriverExtension;
+</span></span><span style="display:flex;"><span>  UNICODE_STRING     DriverName;
+</span></span><span style="display:flex;"><span>  PUNICODE_STRING    HardwareDatabase;
+</span></span><span style="display:flex;"><span>  PFAST_IO_DISPATCH  FastIoDispatch;
+</span></span><span style="display:flex;"><span>  PDRIVER_INITIALIZE DriverInit;
+</span></span><span style="display:flex;"><span>  PDRIVER_STARTIO    DriverStartIo;
+</span></span><span style="display:flex;"><span>  PDRIVER_UNLOAD     DriverUnload;
+</span></span><span style="display:flex;"><span>  PDRIVER_DISPATCH   MajorFunction[IRP_MJ_MAXIMUM_FUNCTION <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>];
+</span></span><span style="display:flex;"><span>} DRIVER_OBJECT, <span style="color:#f92672">*</span>PDRIVER_OBJECT;
+</span></span></code></pre></div><p>The most relevant fields of this struct are as follows:</p>
+<ul>
+<li><code>PDEVICE_OBJECT DeviceObject</code> - a pointer to the parent device object of this driver.  Can be used</li>
 </ul>
 
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="http://localhost:1313/posts/series/windows_drivers/p1_overview/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 1 - Overview</a>
+        
+	    
+            <div class="next-post">
+                <a href="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Windows Drivers Series Part 2 - What&#39;s a Driver...</a>
+            </div>
+        
+    
+</div>
+
+  
+</div>
             </main>
             
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#setting-up-the-dev-environment">Setting up the dev environment</a>
+      <ul>
+        <li><a href="#visual-studio-2022">Visual Studio 2022</a></li>
+        <li><a href="#windows-11-sdk">Windows 11 SDK</a></li>
+      </ul>
+    </li>
+    <li><a href="#creating-the-project">Creating the project</a></li>
+    <li><a href="#driverentry-and-unload">DriverEntry and Unload</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
         </div>
     </body>
 </html>
