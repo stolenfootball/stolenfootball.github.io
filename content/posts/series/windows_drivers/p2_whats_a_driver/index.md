@@ -67,11 +67,11 @@ What this means is that when passing an IRP to a function driver, we aren't pass
 A bus driver is effectively a function driver for a common data bus such as PCI, ISCSI, and USB.  In addition to the normal responsibilities of a function driver, it also is responsible for power management of the devices attached to the bus.
 
 ## The Device Tree and Device Objects
-Every PnP compatible device in Windows is kept track of as a **device object** and stored as a node in the **device tree**.  The tree shows which objects are connected to which - effectively "how to get to" a certain device from the operating system's perspective.
+Every PnP compatible device in Windows is kept track of as a **device node** and stored as a node in the **device tree**.  The tree shows which objects are connected to which - effectively "how to get to" a certain device from the operating system's perspective.
 
 ![Windows PnP Device Tree](./images/5_device_tree.png)
 
-Each device object (or node in the tree) has its own **driver stack**, which is the linked list of function and filter drivers associated with it.
+Each device node has its own **driver stack**, which is the linked list of function and filter drivers associated with it.
 
 ![Windows Driver stack](./images/6_driver_stack.png)
 
@@ -82,7 +82,7 @@ So what happens when we send an IRP to a driver?
 2. The IRP is sent to the kernel.
 3. The kernel sends the IRP to the root of the device tree.
 4. The IRP is transferred down the device tree to its appropriate node.
-5. Once the IRP gets to the correct device object, it is sent to the top of the device's driver stack.
+5. Once the IRP gets to the correct device node, it is sent to the top of the device's driver stack.
 6. The IRP is sent down the stack, with each driver in the stack acting on the IRP then sending down it to the next level.
 7. One of the drivers in the stack completes the IRP
 8. The IRP walks back up the stack, with each driver in the stack acting on the IRP then sending up to the next level.
@@ -104,3 +104,4 @@ For the majority of these posts, particularly the early ones, I will be focusing
 - [Part 1 - Overview](https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html)
 - [Part 2 - What's a Driver Anyways?](https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html)
 - [Part 3 - The Minimum Viable Driver](https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html)
+- [Part 4 - Interacting with the Driver](https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/)

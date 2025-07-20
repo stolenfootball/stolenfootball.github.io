@@ -435,9 +435,9 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 <h3 id="bus-driver">Bus Driver</h3>
 <p>A bus driver is effectively a function driver for a common data bus such as PCI, ISCSI, and USB.  In addition to the normal responsibilities of a function driver, it also is responsible for power management of the devices attached to the bus.</p>
 <h2 id="the-device-tree-and-device-objects">The Device Tree and Device Objects</h2>
-<p>Every PnP compatible device in Windows is kept track of as a <strong>device object</strong> and stored as a node in the <strong>device tree</strong>.  The tree shows which objects are connected to which - effectively &ldquo;how to get to&rdquo; a certain device from the operating system&rsquo;s perspective.</p>
+<p>Every PnP compatible device in Windows is kept track of as a <strong>device node</strong> and stored as a node in the <strong>device tree</strong>.  The tree shows which objects are connected to which - effectively &ldquo;how to get to&rdquo; a certain device from the operating system&rsquo;s perspective.</p>
 <p><img src="./images/5_device_tree.png" alt="Windows PnP Device Tree"></p>
-<p>Each device object (or node in the tree) has its own <strong>driver stack</strong>, which is the linked list of function and filter drivers associated with it.</p>
+<p>Each device node has its own <strong>driver stack</strong>, which is the linked list of function and filter drivers associated with it.</p>
 <p><img src="./images/6_driver_stack.png" alt="Windows Driver stack"></p>
 <h2 id="life-of-an-irp">Life of an IRP</h2>
 <p>So what happens when we send an IRP to a driver?</p>
@@ -446,7 +446,7 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 <li>The IRP is sent to the kernel.</li>
 <li>The kernel sends the IRP to the root of the device tree.</li>
 <li>The IRP is transferred down the device tree to its appropriate node.</li>
-<li>Once the IRP gets to the correct device object, it is sent to the top of the device&rsquo;s driver stack.</li>
+<li>Once the IRP gets to the correct device node, it is sent to the top of the device&rsquo;s driver stack.</li>
 <li>The IRP is sent down the stack, with each driver in the stack acting on the IRP then sending down it to the next level.</li>
 <li>One of the drivers in the stack completes the IRP</li>
 <li>The IRP walks back up the stack, with each driver in the stack acting on the IRP then sending up to the next level.</li>
@@ -468,6 +468,7 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 <li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html" target="_blank">Part 1 - Overview</a></li>
 <li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html" target="_blank">Part 2 - What&rsquo;s a Driver Anyways?</a></li>
 <li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">Part 3 - The Minimum Viable Driver</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/" target="_blank">Part 4 - Interacting with the Driver</a></li>
 </ul>
 
   
@@ -475,11 +476,11 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 <div class="footer">
     
 	    
-            <a class="previous-post" href="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 3 - The Minimum Viable...</a>
+            <a class="previous-post" href="http://localhost:1313/posts/series/windows_drivers/p1_overview/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 1 - Overview</a>
         
 	    
             <div class="next-post">
-                <a href="http://localhost:1313/posts/series/windows_drivers/p1_overview/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Windows Drivers Series Part 1 - Overview</a>
+                <a href="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Windows Drivers Series Part 3 - The Minimum Viable...</a>
             </div>
         
     

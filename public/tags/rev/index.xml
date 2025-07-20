@@ -6,14 +6,21 @@
     <description>Recent content in Rev on </description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 17 Jul 2025 19:45:29 -0400</lastBuildDate>
+    <lastBuildDate>Fri, 18 Jul 2025 10:05:06 -0400</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/rev/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Windows Drivers Series Part 1 - Overview</title>
-      <link>http://localhost:1313/posts/series/windows_drivers/p1_overview/</link>
+      <title>Windows Drivers Series Part 4 - Interacting with the Driver</title>
+      <link>http://localhost:1313/posts/series/windows_drivers/p4_interacting_with_driver/</link>
+      <pubDate>Fri, 18 Jul 2025 10:05:06 -0400</pubDate>
+      <guid>http://localhost:1313/posts/series/windows_drivers/p4_interacting_with_driver/</guid>
+      <description>&lt;p&gt;If you&amp;rsquo;ve been following along with this series, in &lt;a href=&#34;https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html&#34; target=&#34;_blank&#34;&gt;the last post&lt;/a&gt; I walked through how to build a minimum viable driver and how to load it into Windows.&lt;/p&gt;&#xA;&lt;p&gt;That said, the previous driver simply loaded and unloaded itself, nothing more.  In this post we&amp;rsquo;re going to go over how to send messages to our driver and have it respond.&lt;/p&gt;&#xA;&lt;h2 id=&#34;the-irp&#34;&gt;The IRP&lt;/h2&gt;&#xA;&lt;p&gt;As I explained in &lt;a href=&#34;https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html&#34; target=&#34;_blank&#34;&gt;part 2&lt;/a&gt;, a driver in Windows is a small piece of software that sits in kernel space and responds to requests.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Windows Drivers Series Part 3 - The Minimum Viable Driver</title>
+      <link>http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/</link>
       <pubDate>Thu, 17 Jul 2025 19:45:29 -0400</pubDate>
-      <guid>http://localhost:1313/posts/series/windows_drivers/p1_overview/</guid>
-      <description>&lt;h2 id=&#34;what-is-this&#34;&gt;What is this?&lt;/h2&gt;&#xA;&lt;p&gt;During the last semester of my master&amp;rsquo;s degree at UMass Amherst, I was fortunate enough to be offered an exploit development class by Professor Lurene Grenier.  I had previous experience in CTF style pwn, but she pushed us all to move past CTF challenges to real world targets because of the contrived nature of CTF challenges.  The thought process was that although CTFs are great for learning the basics, the faster a student is able to acclimate to real targets, the more capable they&amp;rsquo;ll be in their careers.&lt;/p&gt;</description>
+      <guid>http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/</guid>
+      <description>&lt;p&gt;Alright, enough talk.  The best way to learn is by doing, and by coding our own simple driver, we&amp;rsquo;ll get a good idea of what function driver code looks like.&lt;/p&gt;&#xA;&lt;h2 id=&#34;setting-up-the-dev-environment&#34;&gt;Setting up the dev environment&lt;/h2&gt;&#xA;&lt;p&gt;There are several tools you&amp;rsquo;ll need in order to compile your driver.  Driver development has gotten easier over the years, but it is still more complex than just compiling a userland C++ program.  You may benefit from installing all of this in a VM and saving a snapshot so you have it configured and ready to go whenever you want it, but it&amp;rsquo;s also perfectly fine to install the tools on bare metal.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Windows Drivers Series Part 2 - What&#39;s a Driver Anyways?</title>
@@ -23,11 +30,11 @@
       <description>&lt;p&gt;If you&amp;rsquo;ve used Windows long enough, chances are you&amp;rsquo;ve heard the term driver before.  Admittedly, it was probably in the context of something like this:&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;./images/1_driver_error.jpg&#34; alt=&#34;Driver Unable to Install&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;or this:&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;./images/2_driver_error.webp&#34; alt=&#34;Blue Screen of Death&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;or potentially, given the audience for this kind of blog post, this?&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;./images/3_driver_error.jpg&#34; alt=&#34;Anti-Cheat Detected Cheating on Apex Legends&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;However, if we&amp;rsquo;re going to be doing exploit development work on drivers, it&amp;rsquo;s important to have a fundemental understanding of what a driver does and the role it plays in a modern operating system.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Windows Drivers Series Part 3 - The Minimum Viable Driver</title>
-      <link>http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/</link>
-      <pubDate>Wed, 16 Jul 2025 17:14:58 -0400</pubDate>
-      <guid>http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/</guid>
-      <description>&lt;p&gt;Alright, enough talk.  The best way to learn is by doing, and by coding our own simple driver, we&amp;rsquo;ll get a good idea of what function driver code looks like.&lt;/p&gt;&#xA;&lt;p&gt;All this driver will do is zero out the provided buffer, sort of like the /dev/zero device in Linux.&lt;/p&gt;&#xA;&lt;h2 id=&#34;setting-up-the-dev-environment&#34;&gt;Setting up the dev environment&lt;/h2&gt;&#xA;&lt;p&gt;There are several tools you&amp;rsquo;ll need in order to compile your driver.  Driver development has gotten easier over the years, but it is still more complex than just compiling a userland C++ program.  You may benefit from installing all of this in a VM and saving a snapshot so you have it configured and ready to go whenever you want it, but it&amp;rsquo;s also perfectly fine to install the tools on bare metal.&lt;/p&gt;</description>
+      <title>Windows Drivers Series Part 1 - Overview</title>
+      <link>http://localhost:1313/posts/series/windows_drivers/p1_overview/</link>
+      <pubDate>Mon, 14 Jul 2025 19:07:00 -0500</pubDate>
+      <guid>http://localhost:1313/posts/series/windows_drivers/p1_overview/</guid>
+      <description>&lt;h2 id=&#34;what-is-this&#34;&gt;What is this?&lt;/h2&gt;&#xA;&lt;p&gt;During the last semester of my master&amp;rsquo;s degree at UMass Amherst, I was fortunate enough to be offered an exploit development class by Professor Lurene Grenier.  I had previous experience in CTF style pwn, but she pushed us all to move past CTF challenges to real world targets because of the contrived nature of CTF challenges.  The thought process was that although CTFs are great for learning the basics, the faster a student is able to acclimate to real targets, the more capable they&amp;rsquo;ll be in their careers.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

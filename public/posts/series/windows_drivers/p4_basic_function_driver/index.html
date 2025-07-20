@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.145453261a7755f5042a854c4213501d215a8fbe34c08d181c40f803f1315e74.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/favicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">Jeremy&#39;s Blog - Windows Drivers Series Part 4 - Interacting with the Driver</title>
+<meta property="og:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;4&#32;-&#32;Interacting&#32;with&#32;the&#32;Driver />
+<meta name="twitter:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;4&#32;-&#32;Interacting&#32;with&#32;the&#32;Driver />
+<meta itemprop="name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;4&#32;-&#32;Interacting&#32;with&#32;the&#32;Driver />
+<meta name="application-name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;4&#32;-&#32;Interacting&#32;with&#32;the&#32;Driver />
+<meta property="og:site_name" content="" />
+
+
+<meta name="description" content="" />
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+
+<base href="http://localhost:1313/posts/series/windows_drivers/p4_basic_function_driver/" />
+<link rel="canonical" href="http://localhost:1313/posts/series/windows_drivers/p4_basic_function_driver/" itemprop="url" />
+<meta name="url" content="http://localhost:1313/posts/series/windows_drivers/p4_basic_function_driver/" />
+<meta name="twitter:url" content="http://localhost:1313/posts/series/windows_drivers/p4_basic_function_driver/" />
+<meta property="og:url" content="http://localhost:1313/posts/series/windows_drivers/p4_basic_function_driver/" />
+
+
+<meta property="og:updated_time" content="2025-07-18T10:05:06-04:00" />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='http://localhost:1313/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.141.0">
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.94a339836f89f0d25f31980cb6b0631da21e20af128308747ce44e0525eb16ef.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="http://localhost:1313/">
+                <img src="/images/avatar.png" alt="brand image">
+            </a>
+        
+        
+            <a href="http://localhost:1313/">
+                <h1>Jeremy&#39;s Blog</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    By the way - is there anyone on board who knows how to fly a plane?
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+        
+            
+
+            
+                
+                
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/stolenfootball">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/jeremy-dunn-a0b945172/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Discord" href="https://discordapp.com/users/stolenfootball#3265">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto:jeremy.dunn315@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="Signal" href="https://signal.me/#eu/ikkgt8MQoJBTjgrVAOrULsPwxu8mSjGsPrW-GDGj5euZreghZMlJUb91ncEA4LQr">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.4em" viewBox="0 0 1024 1024">
+            <path fill="currentColor" d="M427.5,170.3l7.9,32A319.6,319.6,0,0,0,347,238.9l-16.9-28.3A347.6,347.6,0,0,1,427.5,170.3Zm169,0-7.9,32A319.6,319.6,0,0,1,677,238.9l17.1-28.3A350.1,350.1,0,0,0,596.5,170.3ZM210.6,330a349.5,349.5,0,0,0-40.3,97.5l32,7.9A319.6,319.6,0,0,1,238.9,347ZM193,512a318.5,318.5,0,0,1,3.6-47.8l-32.6-5a352,352,0,0,0,0,105.5l32.6-4.9A319.5,319.5,0,0,1,193,512ZM693.9,813.3,677,785.1a317.8,317.8,0,0,1-88.3,36.6l7.9,32A350.3,350.3,0,0,0,693.9,813.3ZM831,512a319.5,319.5,0,0,1-3.6,47.8l32.6,4.9a352,352,0,0,0,0-105.5l-32.6,5A318.5,318.5,0,0,1,831,512Zm22.7,84.4-32-7.9A319,319,0,0,1,785.1,677l28.3,17A348.9,348.9,0,0,0,853.7,596.4Zm-293.9,231a319.1,319.1,0,0,1-95.6,0L459.3,860a351.3,351.3,0,0,0,105.4,0Zm209-126.2a318.1,318.1,0,0,1-67.6,67.5l19.6,26.6A355.1,355.1,0,0,0,795.4,721Zm-67.6-446a318.6,318.6,0,0,1,67.6,67.6L795.4,303A354.6,354.6,0,0,0,721,228.6Zm-446,67.6a318.6,318.6,0,0,1,67.6-67.6L303,228.6A354.6,354.6,0,0,0,228.6,303ZM813.4,330l-28.3,17a317.8,317.8,0,0,1,36.6,88.3l32-7.9A348.9,348.9,0,0,0,813.4,330ZM464.2,196.6a319.1,319.1,0,0,1,95.6,0l4.9-32.6a351.3,351.3,0,0,0-105.4,0ZM272.1,804.1,204,819.9l15.9-68.1-32.1-7.5-15.9,68.1a33,33,0,0,0,24.6,39.7,34.5,34.5,0,0,0,15,0l68.1-15.7Zm-77.5-89.2,32.2,7.4,11-47.2a316.2,316.2,0,0,1-35.5-86.6l-32,7.9a353.3,353.3,0,0,0,32.4,83.7Zm154,71.4-47.2,11,7.5,32.2,34.7-8.1a349,349,0,0,0,83.7,32.4l7.9-32a316.7,316.7,0,0,1-86.3-35.7ZM512,226c-158,.1-285.9,128.2-285.9,286.1a286.7,286.7,0,0,0,43.9,152L242.5,781.5,359.8,754c133.7,84.1,310.3,44,394.4-89.6S798.3,354.2,664.7,270A286.7,286.7,0,0,0,512,226s"/>
+        </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2025 . All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="http://localhost:1313/posts/series/windows_drivers/p4_basic_function_driver/">Windows Drivers Series Part 4 - Interacting with the Driver</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      
+      <time datetime=" 2025-07-18T10:05:06-0400" class="post-date">
+        July 18, 2025
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>12 mins read</span>
+      </span>
+    </div>
+
+    
+    <ul class="tags">
+      
+      <li class="tag-series">
+        <a href="http://localhost:1313/tags/series">series</a>
+      </li>
+      
+      <li class="tag-pwn">
+        <a href="http://localhost:1313/tags/pwn">pwn</a>
+      </li>
+      
+      <li class="tag-rev">
+        <a href="http://localhost:1313/tags/rev">rev</a>
+      </li>
+      
+      <li class="tag-windows">
+        <a href="http://localhost:1313/tags/windows">windows</a>
+      </li>
+      
+      <li class="tag-drivers">
+        <a href="http://localhost:1313/tags/drivers">drivers</a>
+      </li>
+      
+    </ul>
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <p>If you&rsquo;ve been following along with this series, in <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">the last post</a> I walked through how to build a minimum viable driver and how to load it into Windows.</p>
+<p>That said, the previous driver simply loaded and unloaded itself, nothing more.  In this post we&rsquo;re going to go over how to send messages to our driver and have it respond.</p>
+<h2 id="the-irp">The IRP</h2>
+<p>As I explained in <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html" target="_blank">part 2</a>, a driver in Windows is a small piece of software that sits in kernel space and responds to requests.</p>
+<p>These requests come in the form of a struct called an <strong>IO Request Packet</strong>, or more commonly an <strong>IRP</strong>.</p>
+<p>A single IRP contains all of the information a driver needs to handle an IO request.  Any return values from the driver are also written to the IRP, and are returned to the caller later.</p>
+<p>The IRP is always allocated along with one or more <strong>IO Stack Locations</strong>.  An IO Stack Location is another struct that contains information about the request.  The IO Manager creates one IO Stack Location for each driver in the device node&rsquo;s driver stack.</p>
+<p>For example, if the devnode&rsquo;s driver stack consists of four drivers:</p>
+<p><img src="./images/2_device_object.png" alt="Example devnode"></p>
+<p>The IRP would have 4 IO stack locations, like in the picture below.  The IO Stack Location for the function driver is the second one from the bottom, since the function driver is second from the bottom.</p>
+<p><img src="./images/1_irp_iosp.png" alt="IRP and irpSP"></p>
+<p>IRPs and IO Stack Locations are a detailed topic I&rsquo;d recommend learning in more detail than I will provide here. For a great writeup on them see chapter 7 of <a href="https://www.amazon.com/Windows-Kernel-Programming-Pavel-Yosifovich/dp/B0BW2X91L2" target="_blank">Pavel Yosifovich&rsquo;s Windows Kernel Programming</a>.</p>
+<h2 id="function-codes">Function codes</h2>
+<p>Each IO Stack Location struct has a <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/irp-major-function-codes" target="_blank">major function code</a> field.  The major function code is an enum that indicates what kind of functionality the IRP is requesting from the driver.</p>
+<p>Some common values are:</p>
+<ul>
+<li><code>IRP_MJ_CREATE</code> (0)</li>
+<li><code>IRP_MJ_CLOSE</code> (2)</li>
+<li><code>IRP_MJ_DEVICE_CONTROL</code> (14)</li>
+</ul>
+<h2 id="dispatch-functions">Dispatch functions</h2>
+<p>Every driver is associated with a <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/ns-wdm-_driver_object" target="_blank"><code>_DRIVER_OBJECT</code></a> struct when it is loaded.  The <code>_DRIVER_OBJECT</code> struct contains information about how the driver behaves.  This struct is passed into <strong>DriverEntry</strong> when the function is loaded, and <strong>DriverEntry</strong> modifies it to fit the developer&rsquo;s needs.</p>
+<p>For more information on this, see <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">part 3 of this series</a>.</p>
+<p>The final field in <code>_DRIVER_OBJECT</code> is an array of function pointers called <strong>MajorFunction</strong>. Each of these functions has a <code>PDRIVER_DISPATCH</code> signature, and knows how to handle IRPs for a specific major function code.  A <code>PDRIVER_DISPATCH</code> function signature looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>NSTATUS DispatchFunction(_In_ PDEVICE_OBJECT DeviceObject, _Inout_ PIRP Irp) 
+</span></span></code></pre></div><p>To tell the kernel which dispatch function corresponds to which major function code, we set the index in the array corresponding to the major function code to a pointer to the function we want to use.</p>
+<p>For example, if I made a function called <code>MyCustomDeviceControlHandler</code> and wanted to use it to hande any device control operations sent to my driver, I would have the following line in <strong>DriverEntry</strong>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>DriverObject<span style="color:#f92672">-&gt;</span>MajorFunction[<span style="color:#ae81ff">14</span>] <span style="color:#f92672">=</span> MyCustomDeviceControlHandler;
+</span></span></code></pre></div><p>It&rsquo;s preferable to use the enum for clarity though, so the line would actually be the equivalent:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>DriverObject<span style="color:#f92672">-&gt;</span>MajorFunction[IRP_MJ_DEVICE_CONTROL] <span style="color:#f92672">=</span> MyCustomDeviceControlHandler;
+</span></span></code></pre></div><p>Each time an IRP comes in with a major function code the dispatch function is registered to, the dispatch function is called with the IRP passed in as an argument.</p>
+<h2 id="handling-an-irp">Handling an IRP</h2>
+<p>So how do we &ldquo;handle an IRP&rdquo; in a dispatch function?</p>
+<p>The most common operation a function driver will perform on an IRP is completing it. Completing an IRP means that the function driver has completed its operation, and the IRP is ready to propagate back to the user.  In user space terms, this is &ldquo;return IRP&rdquo;, although the actual process is a bit more complicated here.</p>
+<p>To complete the IRP, we must set the IRP&rsquo;s <strong>IoStatus</strong> field correctly. The <strong>IoStatus</strong> field is a struct of type <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/ns-wdm-_io_status_block" target="_blank"><code>_IO_STATUS_BLOCK</code></a>, which has two members:</p>
+<ul>
+<li><code>Status</code> - The NTSTATUS code the IRP will complete with</li>
+<li><code>Information</code> - A generic pointer which can mean different things depending on how the developer wants to use it.</li>
+</ul>
+<p>Setting these fields in the dispatch handler function looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>Irp<span style="color:#f92672">-&gt;</span>IoStatus.Status <span style="color:#f92672">=</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>Irp<span style="color:#f92672">-&gt;</span>IoStatus.Information <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span></code></pre></div><p>In this case, we&rsquo;re just setting the IRP to complete with a successful status and returning no information.</p>
+<p>Once this is done, we need to call the <code>IoCompleteRequest</code> function on the IRP.  This function actually completes the request, and sends the IRP back up to whomever created it.  You can think of it as &ldquo;return IRP&rdquo;, even though it doesn&rsquo;t end the function.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>IoCompleteRequest(Irp, IO_NO_INCREMENT);
+</span></span></code></pre></div><p>The second field in <code>IoCompleteRequest</code> is an optional temporary priority boost for the thread handling the IRP.  It should be set to <code>IO_NO_INCREMENT</code>, which doesn&rsquo;t boost the thread, unless you have a convincing reason to do otherwise.</p>
+<p>So finally our dispatch function that will complete an IRP with a success status looks like the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>NSTATUS <span style="color:#a6e22e">DispatchFunction</span>(_In_ PDEVICE_OBJECT DeviceObject, _Inout_ PIRP Irp) {
+</span></span><span style="display:flex;"><span>    UNREFERENCED_PARAMETER(DeviceObject);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Irp<span style="color:#f92672">-&gt;</span>IoStatus.Status <span style="color:#f92672">=</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>    Irp<span style="color:#f92672">-&gt;</span>IoStatus.Information <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    IoCompleteRequest(Irp, IO_NO_INCREMENT);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>As a small side note, we have the first of the many <a href="https://en.wiktionary.org/wiki/footgun" target="_blank">footguns</a> here.  The dispatch function must complete with the same NTSTATUS as is set in the IRP.  As such, you might be tempted to do the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>Irp<span style="color:#f92672">-&gt;</span>IoStatus.Status <span style="color:#f92672">=</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>IoCompleteRequest(Irp, IO_NO_INCREMENT);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">return</span> Irp<span style="color:#f92672">-&gt;</span>IoStatus.Status;
+</span></span></code></pre></div><p>This is <strong>undefined behavior</strong>, as the IRP may be freed by <strong>IoCompleteRequest</strong>.  The <code>Irp-&gt;IoStatus</code> pointer may be pointing to uninitialized memory.</p>
+</blockquote>
+<h2 id="objects-and-handles">Objects and Handles</h2>
+<p>We now have a driver that can receive an IRP and complete it.  But how can we actually send an IRP to the driver?</p>
+<p>Windows represents all system resources through an data structure called an <strong>object</strong>.  An object can be a file, thread, graphical image, or even a physical device.  All the object does is provide a consistent interface to access the resource.</p>
+<p>Apps can&rsquo;t directly interface with objects.  Instead, they must obtain a <strong>handle</strong> to the object, which is simply a pointer that can be used to examine or modify the object.</p>
+<p>The function used to open a handle to an object is the somewhat incongruously named <code>CreateFile</code> function.  <code>CreateFile</code> doesn&rsquo;t create a file by default.  Instead, it looks for an object with the file name given and returns a handle to it if possible.  It&rsquo;s only if the object doesn&rsquo;t exist that it will fall back to making a new file.</p>
+<h2 id="the-device-object">The Device Object</h2>
+<p>The Windows IO model is <em>device centric</em>.  This means we can only obtain handles to Device Objects, not our Driver Object.</p>
+<p>As such, we need to create a Device Object so users can obtain a handle to our driver.  This is done during <strong>DriverEntry</strong> with the <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-iocreatedevice" target="_blank"><code>IoCreateDevice</code></a> function.  It&rsquo;s definition is as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>NTSTATUS <span style="color:#a6e22e">IoCreateDevice</span>(
+</span></span><span style="display:flex;"><span>  [in]           PDRIVER_OBJECT  DriverObject,
+</span></span><span style="display:flex;"><span>  [in]           ULONG           DeviceExtensionSize,
+</span></span><span style="display:flex;"><span>  [in, optional] PUNICODE_STRING DeviceName,
+</span></span><span style="display:flex;"><span>  [in]           DEVICE_TYPE     DeviceType,
+</span></span><span style="display:flex;"><span>  [in]           ULONG           DeviceCharacteristics,
+</span></span><span style="display:flex;"><span>  [in]           BOOLEAN         Exclusive,
+</span></span><span style="display:flex;"><span>  [out]          PDEVICE_OBJECT  <span style="color:#f92672">*</span>DeviceObject
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>The arguments are:</p>
+<ul>
+<li><code>DriverObject</code> - the driver object the device belongs to (our driver object)</li>
+<li><code>DeviceExtensionSize</code> - if we should allocate any extra bytes to the Device Object</li>
+<li><code>DeviceName</code> - the name of the device object to be created</li>
+<li><code>DeviceType</code> - useful for hardware devices, for software drivers should be set to <code>FILE_DEVICE_UNKNOWN</code></li>
+<li><code>DeviceCharacteristics</code> - flag field only relevant in some cases</li>
+<li><code>Exclusive</code> - should we prevent multiple handles being opened at once</li>
+<li><code>DeviceObject</code> - the device object (return value)</li>
+</ul>
+<p>We&rsquo;ll need to initialize a Unicode String for the device name, which can be done with <code>RtlInitUnicodeString</code>.</p>
+<p>Putting it all together, the code for creating the Driver Object looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>UNICODE_STRING devName;
+</span></span><span style="display:flex;"><span>RtlInitUnicodeString(<span style="color:#f92672">&amp;</span>devName, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Device</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PDEVICE_OBJECT DeviceObject;
+</span></span><span style="display:flex;"><span>NTSTATUS status <span style="color:#f92672">=</span> IoCreateDevice(
+</span></span><span style="display:flex;"><span>    DriverObject,           <span style="color:#75715e">// Driver object from earlier in DriverEntry
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#ae81ff">0</span>,                      <span style="color:#75715e">// no extra bytes
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">&amp;</span>devName,               <span style="color:#75715e">// device name
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    FILE_DEVICE_UNKNOWN,    <span style="color:#75715e">// software device
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#ae81ff">0</span>,                      <span style="color:#75715e">// no characteristics flags needed
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    FALSE,                  <span style="color:#75715e">// no need for exclusive access
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">&amp;</span>DeviceObject           <span style="color:#75715e">// return pointer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>    KdPrint((<span style="color:#e6db74">&#34;Failed to create device object (0x%08X)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, status));
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> status;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>There are two things of note here that I haven&rsquo;t mentioned before:</p>
+<ul>
+<li>The NT_SUCCESS macro simply returns false if any NTSTATUS error code is present</li>
+<li>The <code>KdPrint</code> macro allows for debug printing within the driver.  Note the double parenthesis since this is a macro, not a function.  Needed for variable argument printing.  We&rsquo;ll go over how to view this output later.</li>
+</ul>
+<p>By returning the status code if it is a failure, the driver won&rsquo;t load if the <code>IoCreateDevice</code> function fails to create the device object, which is what we want.</p>
+<p>There is one more step we need to take.  Userland programs cannot access the <code>\\Devices</code> directory, so we&rsquo;ll need to make a symbolic link they can access.</p>
+<p>This is done with the <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-iocreatesymboliclink" target="_blank"><code>IoCreateSymbolicLink</code></a> function, which only takes two arguments:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>NTSTATUS <span style="color:#a6e22e">IoCreateSymbolicLink</span>(
+</span></span><span style="display:flex;"><span>  [in] PUNICODE_STRING SymbolicLinkName,
+</span></span><span style="display:flex;"><span>  [in] PUNICODE_STRING DeviceName
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>Simple enough.  Let&rsquo;s add the code to DriverEntry:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>UNICODE_STRING symLinkName;
+</span></span><span style="display:flex;"><span>RtlInitUnicodeString(<span style="color:#f92672">&amp;</span>symLinkName, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">??</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>status <span style="color:#f92672">=</span> IoCreateSymbolicLink(<span style="color:#f92672">&amp;</span>symLinkName, <span style="color:#f92672">&amp;</span>devName);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>    KdPrint((<span style="color:#e6db74">&#34;Failed to create symbolic link (0x%08X)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, status));
+</span></span><span style="display:flex;"><span>    IoDeleteDevice(DeviceObject);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> status;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>None of this should be unfamiliar by this point, but there is a design point I want to stress that is different for developers coming from user space.  <strong>If you allocate something in the kernel, you must deallocate it</strong>.</p>
+<p>The device object we made is allocated directly in the kernel - the driver doesn&rsquo;t have its own &ldquo;virtual space&rdquo; that is automatically cleaned up after the process ends.  If something is allocated in the kernel, it stays there until the next reboot of the computer.  Memory leaks in kernel space don&rsquo;t get cleaned up, and can eventually BSOD the computer.</p>
+<p>As such, if the symlink creation fails, we call <code>IoDeleteDevice</code> and clean up the device object we created earlier before exiting.  We&rsquo;ll also need to update the <strong>Unload</strong> function, which now has some cleanup work to do.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">MyDriverUnload</span>(_In_ PDRIVER_OBJECT DriverObject) {
+</span></span><span style="display:flex;"><span>    UNICODE_STRING symLinkName;
+</span></span><span style="display:flex;"><span>    RtlInitUnicodeString(<span style="color:#f92672">&amp;</span>symLinkName, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">??</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    IoDeleteSymbolicLink(<span style="color:#f92672">&amp;</span>symLinkName);
+</span></span><span style="display:flex;"><span>    IoDeleteDevice(DriverObject<span style="color:#f92672">-&gt;</span>DeviceObject);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As I mentioned in the last post, the job of the <strong>Unload</strong> function is to clean up everything allocated in <strong>DriverEntry</strong>.  We allocated a symlink and a DeviceObject, so we use unload to delete those and prevent a memory leak.</p>
+<h2 id="putting-it-all-together">Putting it all together</h2>
+<p>Combining all of the pieces of code we looked at earlier, our driver will now look like the code below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;ntddk.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> NTSTATUS
+</span></span><span style="display:flex;"><span>CreateCloseHandler(_In_ PDEVICE_OBJECT DeviceObject, _Inout_ PIRP Irp) {
+</span></span><span style="display:flex;"><span>    UNREFERENCED_PARAMETER(DeviceObject);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Irp<span style="color:#f92672">-&gt;</span>IoStatus.Status <span style="color:#f92672">=</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>    Irp<span style="color:#f92672">-&gt;</span>IoStatus.Information <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    IoCompleteRequest(Irp, IO_NO_INCREMENT);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">MyDriverUnload</span>(_In_ PDRIVER_OBJECT DriverObject) {
+</span></span><span style="display:flex;"><span>    UNICODE_STRING symLinkName;
+</span></span><span style="display:flex;"><span>    RtlInitUnicodeString(<span style="color:#f92672">&amp;</span>symLinkName, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">??</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    IoDeleteSymbolicLink(<span style="color:#f92672">&amp;</span>symLinkName);
+</span></span><span style="display:flex;"><span>    IoDeleteDevice(DriverObject<span style="color:#f92672">-&gt;</span>DeviceObject);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> NTSTATUS
+</span></span><span style="display:flex;"><span>DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath) {
+</span></span><span style="display:flex;"><span>    UNREFERENCED_PARAMETER(RegistryPath);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create the Device Object
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    UNICODE_STRING devName;
+</span></span><span style="display:flex;"><span>    RtlInitUnicodeString(<span style="color:#f92672">&amp;</span>devName, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Device</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    PDEVICE_OBJECT DeviceObject;
+</span></span><span style="display:flex;"><span>    NTSTATUS status <span style="color:#f92672">=</span> IoCreateDevice(
+</span></span><span style="display:flex;"><span>        DriverObject,           <span style="color:#75715e">// Driver object from earlier in DriverEntry
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#ae81ff">0</span>,                      <span style="color:#75715e">// no extra bytes
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&amp;</span>devName,               <span style="color:#75715e">// device name
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FILE_DEVICE_UNKNOWN,    <span style="color:#75715e">// software device
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#ae81ff">0</span>,                      <span style="color:#75715e">// no characteristics flags needed
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FALSE,                  <span style="color:#75715e">// no need for exclusive access
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&amp;</span>DeviceObject           <span style="color:#75715e">// return pointer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>        KdPrint((<span style="color:#e6db74">&#34;Failed to create device object (0x%08X)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, status));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> status;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create the symbolic link
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    UNICODE_STRING symLinkName;
+</span></span><span style="display:flex;"><span>    RtlInitUnicodeString(<span style="color:#f92672">&amp;</span>symLinkName, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">??</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    status <span style="color:#f92672">=</span> IoCreateSymbolicLink(<span style="color:#f92672">&amp;</span>symLinkName, <span style="color:#f92672">&amp;</span>devName);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>        KdPrint((<span style="color:#e6db74">&#34;Failed to create symbolic link (0x%08X)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, status));
+</span></span><span style="display:flex;"><span>        IoDeleteDevice(DeviceObject);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> status;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Register handler functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    DriverObject<span style="color:#f92672">-&gt;</span>MajorFunction[IRP_MJ_CREATE] <span style="color:#f92672">=</span> CreateCloseHandler;
+</span></span><span style="display:flex;"><span>    DriverObject<span style="color:#f92672">-&gt;</span>MajorFunction[IRP_MJ_CLOSE] <span style="color:#f92672">=</span> CreateCloseHandler;
+</span></span><span style="display:flex;"><span>    DriverObject<span style="color:#f92672">-&gt;</span>DriverUnload <span style="color:#f92672">=</span> MyDriverUnload;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The only change I made was to rename <strong>DispatchFunction</strong> to <strong>CreateCloseHandler</strong> for more clarity.</p>
+<blockquote>
+<p>As a note, having a dispatch function to successfully complete all Create and Close IRPs that are sent to the driver is a very common design pattern.</p>
+<p>This is due to a small idiosyncracy of the Windows driver model - we need to be able to open and close a handle to our driver.  This is done by sending Create and Close IRPs to the driver respectively.  If <code>IRP_MJ_CREATE</code> and <code>IRP_MJ_CLOSE</code> aren&rsquo;t handled, we won&rsquo;t be able to obtain a handle even if we made the Device Object.</p>
+<p>The most common way to do this is simply to compete the IRP as a success, which is what the above function does.</p>
+</blockquote>
+<h2 id="client-code">Client code</h2>
+<p>We&rsquo;re finally at a point where a client can interact with our driver!</p>
+<p>We&rsquo;ll open a handle to the device with <a href="https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew" target="_blank"><code>CreateFileW</code></a>.  The options for <code>CreateFileW</code> are:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>HANDLE <span style="color:#a6e22e">CreateFileW</span>(
+</span></span><span style="display:flex;"><span>  [in]           LPCSTR                lpFileName,
+</span></span><span style="display:flex;"><span>  [in]           DWORD                 dwDesiredAccess,
+</span></span><span style="display:flex;"><span>  [in]           DWORD                 dwShareMode,
+</span></span><span style="display:flex;"><span>  [in, optional] LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+</span></span><span style="display:flex;"><span>  [in]           DWORD                 dwCreationDisposition,
+</span></span><span style="display:flex;"><span>  [in]           DWORD                 dwFlagsAndAttributes,
+</span></span><span style="display:flex;"><span>  [in, optional] HANDLE                hTemplateFile
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><blockquote>
+<p>Yes, <code>CreateFile</code> is roughly equivalent to <code>CreateFileW</code>.  The <code>W</code> just means use UTF-16LE, which is Windows default.</p>
+</blockquote>
+<p>The source for the client is fairly self explanatory.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    HANDLE hDevice <span style="color:#f92672">=</span> CreateFileW(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">.</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>,             <span style="color:#75715e">// Name of the file or device to be opened
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        GENERIC_READ <span style="color:#f92672">|</span> GENERIC_WRITE,   <span style="color:#75715e">// Permissions to open with
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#ae81ff">0</span>,                              <span style="color:#75715e">// Whether the handle can be shared
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">nullptr</span>,                        <span style="color:#75715e">// Additional security attributes
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        OPEN_EXISTING,                  <span style="color:#75715e">// Whether to open an existing handle or create a new file
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#ae81ff">0</span>,                              <span style="color:#75715e">// Optional flags field
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">nullptr</span>                         <span style="color:#75715e">// Optional template file for new file creation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (hDevice <span style="color:#f92672">==</span> INVALID_HANDLE_VALUE) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;Failed to open device: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Device opened successfully.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    CloseHandle(hDevice);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As usual, a couple of things to look for:</p>
+<ul>
+<li>Make sure to import <code>windows.h</code></li>
+<li>The symbolic link is has the <code>??</code> replaced with a <code>.</code></li>
+<li>The <code>L</code> in front of the symbolic link name just means use a wide char string</li>
+</ul>
+<p>The client code can be compiled with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>g++ driverClient.cpp -o driverClient.exe
+</span></span></code></pre></div><h2 id="testing-it-out">Testing it out</h2>
+<p>Now, compile the driver code and load the driver on to a VM.  If you don&rsquo;t know how to do this, please refer to the instructions in <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">part 3 of this series</a>.</p>
+<p>First, run the client before starting the driver, and you&rsquo;ll see:</p>
+<pre tabindex="0"><code>C:\Users\jeremy\Desktop&gt; driverClient.exe
+Failed to open device: 2
+</code></pre><p>Then, start the driver, and run the client again:</p>
+<pre tabindex="0"><code>C:\Users\jeremy\Desktop&gt;driverClient.exe
+Device opened successfully.
+</code></pre><p>Congratulations, you&rsquo;ve successfully sent and IRP to your driver and it responded!</p>
+<h2 id="next-steps">Next steps</h2>
+<p>In the next post, we&rsquo;ll finally be able to add some functionality to the driver by making some more detailed dispatch functions.</p>
+<p>The next post will be the last &ldquo;development&rdquo; post for those of you only interested in the VR aspect of this.  After that, I&rsquo;ll move on to debugging, and then to actual bugs and exploit code.</p>
+<h2 id="more-reading">More reading</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/gettingstarted/i-o-request-packets" target="_blank">MSDN IRP Documentation</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/handling-irps" target="_blank">MSDN Handling IRPs</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/handles-and-objects" target="_blank">MSDN Handles and Objects</a></li>
+</ul>
+<h2 id="series-index">Series Index</h2>
+<ul>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html" target="_blank">Part 1 - Overview</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html" target="_blank">Part 2 - What&rsquo;s a Driver Anyways?</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">Part 3 - The Minimum Viable Driver</a></li>
+<li>[Part 4 - Adding Function to the Driver]</li>
+</ul>
+
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 3 - The Minimum Viable...</a>
+        
+	    
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-irp">The IRP</a></li>
+    <li><a href="#function-codes">Function codes</a></li>
+    <li><a href="#dispatch-functions">Dispatch functions</a></li>
+    <li><a href="#handling-an-irp">Handling an IRP</a></li>
+    <li><a href="#objects-and-handles">Objects and Handles</a></li>
+    <li><a href="#the-device-object">The Device Object</a></li>
+    <li><a href="#putting-it-all-together">Putting it all together</a></li>
+    <li><a href="#client-code">Client code</a></li>
+    <li><a href="#testing-it-out">Testing it out</a></li>
+    <li><a href="#next-steps">Next steps</a></li>
+    <li><a href="#more-reading">More reading</a></li>
+    <li><a href="#series-index">Series Index</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>
