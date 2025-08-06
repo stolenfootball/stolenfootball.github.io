@@ -70,7 +70,7 @@ And so on an so forth.  Each operation would get a code, and you pass the code i
 IOCTLs aren't just random numbers though.  They are actually mini-structs that contain four fields about how the driver should process the request.
 
 - `DeviceType` - a [large enum](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/specifying-device-types) that specifies the type of device the driver is.  For a software driver such as ours, the value can be set to anything over `0x8000`.
-- `Function` - arbitrary number that serves as the actual function code. Should be different for each function the driver can take.  This time, the minimum value should be `0x800`.
+- `Function` - arbitrary number that serves as the actual function code. Should be different for each function the driver can take.  The minimum value should be `0x800`.
 - `Method` - sets the buffering method used to access the input and output buffers passed in with the IRP.  Important and slightly complex, will get into it below.
 - `Access` - determines the direction of data flow, whether from the client to the driver or driver to the client.  In practice, should always use `FILE_ANY_ACCESS` to allow full access to input and output structs.
 
@@ -197,7 +197,9 @@ This should all be understandable quickly.  We retrieve the lengths of the user 
 ### METHOD_IN_DIRECT and METHOD_OUT_DIRECT
 Although Buffered IO is safe, we perform two full copies of the data during the transaction, one on the way in and one on the way out.  As such, it will be quite slow for larger buffers.
 
-The fix for this is Direct IO. `METHOD_IN_DIRECT` and `METHOD_OUT_DIRECT` both indicate Direct IO, the only difference is that `METHOD_IN_DIRECT` reads from the output buffer and  `METHOD_OUT_DIRECT` writes to the output buffer.
+The fix for this is Direct IO. Direct IO allows both user space and kernel space to have virtual mappings to the same physical page, which means accessing the user page from kernel space becomes safe.
+
+`METHOD_IN_DIRECT` and `METHOD_OUT_DIRECT` both indicate Direct IO, the only difference is that `METHOD_IN_DIRECT` reads from the output buffer and  `METHOD_OUT_DIRECT` writes to the output buffer.
 
 Direct IO works as follows:
 1. The IO manager makes sure the user buffer is paged into physical memory
@@ -555,3 +557,4 @@ If you've taken an interest and want to learn more about building drivers, [Pave
 - [Part 3 - The Minimum Viable Driver](https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html)
 - [Part 4 - Interacting with the Driver](https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/)
 - [Part 5 - Basic Driver Functionality](https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/)
+- [Part 6 - Debugging and Basic Rev](https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/)
