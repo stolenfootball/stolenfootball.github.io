@@ -3,21 +3,60 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://stolenfootball.github.io/</loc>
-    <lastmod>2025-07-20T11:46:16-04:00</lastmod>
+    <lastmod>2025-08-19T21:45:44-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/tags/drivers/</loc>
+    <lastmod>2025-08-19T21:45:44-04:00</lastmod>
   </url><url>
     <loc>https://stolenfootball.github.io/posts/</loc>
+    <lastmod>2025-08-19T21:45:44-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/tags/pwn/</loc>
+    <lastmod>2025-08-19T21:45:44-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/tags/rev/</loc>
+    <lastmod>2025-08-19T21:45:44-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/tags/series/</loc>
+    <lastmod>2025-08-19T21:45:44-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/tags/</loc>
+    <lastmod>2025-08-19T21:45:44-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/tags/windows/</loc>
+    <lastmod>2025-08-19T21:45:44-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/</loc>
+    <lastmod>2025-08-19T21:45:44-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/</loc>
+    <lastmod>2025-08-15T14:37:47-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/posts/research/2025/windows_kernel_debugger/</loc>
+    <lastmod>2025-08-06T14:59:28-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/</loc>
+    <lastmod>2025-08-06T11:35:29-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/</loc>
+    <lastmod>2025-07-22T13:20:31-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/</loc>
     <lastmod>2025-07-20T11:46:16-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/</loc>
+    <lastmod>2025-07-17T19:45:29-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/</loc>
+    <lastmod>2025-07-16T17:14:58-04:00</lastmod>
+  </url><url>
+    <loc>https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/</loc>
+    <lastmod>2025-07-14T19:07:00-05:00</lastmod>
   </url><url>
     <loc>https://stolenfootball.github.io/tags/author/</loc>
     <lastmod>2025-04-20T15:00:00-05:00</lastmod>
   </url><url>
     <loc>https://stolenfootball.github.io/tags/hardware/</loc>
-    <lastmod>2025-04-20T15:00:00-05:00</lastmod>
-  </url><url>
-    <loc>https://stolenfootball.github.io/tags/pwn/</loc>
-    <lastmod>2025-04-20T15:00:00-05:00</lastmod>
-  </url><url>
-    <loc>https://stolenfootball.github.io/tags/</loc>
     <lastmod>2025-04-20T15:00:00-05:00</lastmod>
   </url><url>
     <loc>https://stolenfootball.github.io/posts/writeups/2025/theleg/</loc>

@@ -1,7 +1,7 @@
 ---
 title: "Windows Drivers Series Part 4 - Interacting with the Driver"
 date: 2025-07-20 11:46:16.442 -0400
-draft: true
+draft: false
 toc: false
 images:
 tags:
@@ -373,10 +373,10 @@ As usual, a couple of things to look for:
 - The symbolic link is has the `??` replaced with a `.`
 - The `L` in front of the symbolic link name just means use a wide char string
 
-The client code can be compiled with:
+To compile the code, open the **Developer Command Prompt for Visual Studio 2022** (this was installed along with Visual Studio).  Once it's open, navigate to the directory with the client code, and compile with:
 
 ```cmd
-g++ driverClient.cpp -o driverClient.exe
+cl driverClient.cpp
 ```
 
 ## Testing it out
@@ -416,3 +416,5 @@ The next post will be the last "development" post for those of you only interest
 - [Part 4 - Interacting with the Driver](https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/)
 - [Part 5 - Basic Driver Functionality](https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/)
 - [Part 6 - Debugging and Basic Rev](https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/)
+- [Part 7 - Buffer Overflow on Windows 7](https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/)
+- [Part 8 - Bypassing SMEP](https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/)

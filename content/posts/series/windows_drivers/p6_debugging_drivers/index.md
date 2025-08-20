@@ -1,7 +1,7 @@
 ---
 title: "Windows Drivers Series Part 6 - Debugging and Basic Rev"
 date: 2025-08-06 11:35:29.293 -0400
-draft: true
+draft: false
 toc: false
 images:
 tags:
@@ -13,7 +13,7 @@ tags:
 ---
 Finally, time to get to what I promised in the first place - reversing a driver!
 
-The first step, of course, will be to set up a debugger.  Then we'll put our driver into IDA, rebase the .text segment, and look at some IRPs flowing through it.
+The first step, of course, will be to set up a debugger.  Then we'll put our driver into IDA, rebase the `.text` segment, and look at some IRPs flowing through it.
 
 ## Install the VM
 I'll be using [VMWare Workstation Pro](https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion) as my hypervisor for this.  It's the most ubiquitous hypervisor out there (and in my opinion the easiest to use).  
@@ -39,7 +39,7 @@ The first step to take is to install WinDbg on your host computer, which is the 
 
 > Yes, that means you should be running Windows while doing Windows development work.  It is possible to do all of this from MacOS or Linux, but your life will be more difficult than it needs to be, and exploit development is difficult enough as it is.  
 >
-> If you're daily driving Linux I'll assume you know enough to set up a dual boot.  If you're using an ARM Mac, I'd recommend getting a cheap x64 computer you can write exploits on.  A decent used Thinkpad should be less than $100 on eBay, or you could take a dumpster diving trip to your local office park if that isn't feasible for some reason.  Dumpster diving for parts is a well respected pastime in the security world.
+> If you're daily driving Linux I'll assume you know enough to either set up dual boot or figure this out with multiple VMs rather than VM to host.  If you're using an ARM Mac, I'd recommend getting a cheap x64 computer you can write exploits on.  A decent used Thinkpad should be less than $100 on eBay, or you could take a dumpster diving trip to your local office park if that isn't feasible for some reason.  Dumpster diving for parts is a well respected pastime in the security world.
 
 If you followed along from [part 3 of this series](https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html), you may already have installed WinDbg along with the Windows SDK.
 
@@ -176,7 +176,7 @@ To enable test signing on the VM so the driver loads, run `bcdedit /set testsign
 Now drop the driver on the Desktop of the VM and run the following in an Administrative command prompt:
 
 ```cmd
-sc create MyDriver1 type= kernel binPath= C:\Users\[YOUR USERNAME]\Desktop\MyDriver1.sys
+sc create MyDriver1 type= kernel start= auto binPath= C:\Users\[YOUR USERNAME]\Desktop\MyDriver1.sys
 ```
 
 Then run:
@@ -410,3 +410,5 @@ If you're starting with this post, I *highly* recommend going through the rest o
 - [Part 4 - Interacting with the Driver](https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/)
 - [Part 5 - Basic Driver Functionality](https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/)
 - [Part 6 - Debugging and Basic Rev](https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/)
+- [Part 7 - Buffer Overflow on Windows 7](https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/)
+- [Part 8 - Bypassing SMEP](https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/)

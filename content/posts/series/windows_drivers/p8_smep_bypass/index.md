@@ -1,7 +1,7 @@
 ---
 title: "Windows Drivers Series Part 8 - Bypassing SMEP"
-date: 2025-08-15 14:43:05.423 -0400
-draft: true
+date: 2025-08-19 21:45:44.387 -0400
+draft: false
 toc: false
 images:
 tags:

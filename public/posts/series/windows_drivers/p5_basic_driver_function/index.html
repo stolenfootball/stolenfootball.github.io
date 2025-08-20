@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.145453261a7755f5042a854c4213501d215a8fbe34c08d181c40f803f1315e74.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/favicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">Jeremy&#39;s Blog - Windows Drivers Series Part 5 - Basic Driver Functionality</title>
+<meta property="og:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;5&#32;-&#32;Basic&#32;Driver&#32;Functionality />
+<meta name="twitter:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;5&#32;-&#32;Basic&#32;Driver&#32;Functionality />
+<meta itemprop="name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;5&#32;-&#32;Basic&#32;Driver&#32;Functionality />
+<meta name="application-name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;5&#32;-&#32;Basic&#32;Driver&#32;Functionality />
+<meta property="og:site_name" content="" />
+
+
+<meta name="description" content="" />
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+
+<base href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" />
+<link rel="canonical" href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" itemprop="url" />
+<meta name="url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" />
+<meta name="twitter:url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" />
+<meta property="og:url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" />
+
+
+<meta property="og:updated_time" content="2025-07-22T13:20:31-04:00" />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='https://stolenfootball.github.io/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.141.0">
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.94a339836f89f0d25f31980cb6b0631da21e20af128308747ce44e0525eb16ef.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="https://stolenfootball.github.io/">
+                <img src="/images/avatar.png" alt="brand image">
+            </a>
+        
+        
+            <a href="https://stolenfootball.github.io/">
+                <h1>Jeremy&#39;s Blog</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    By the way - is there anyone on board who knows how to fly a plane?
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+        
+            
+
+            
+                
+                
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/stolenfootball">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/jeremy-dunn-a0b945172/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Discord" href="https://discordapp.com/users/stolenfootball#3265">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto:jeremy.dunn315@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="Signal" href="https://signal.me/#eu/ikkgt8MQoJBTjgrVAOrULsPwxu8mSjGsPrW-GDGj5euZreghZMlJUb91ncEA4LQr">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.4em" viewBox="0 0 1024 1024">
+            <path fill="currentColor" d="M427.5,170.3l7.9,32A319.6,319.6,0,0,0,347,238.9l-16.9-28.3A347.6,347.6,0,0,1,427.5,170.3Zm169,0-7.9,32A319.6,319.6,0,0,1,677,238.9l17.1-28.3A350.1,350.1,0,0,0,596.5,170.3ZM210.6,330a349.5,349.5,0,0,0-40.3,97.5l32,7.9A319.6,319.6,0,0,1,238.9,347ZM193,512a318.5,318.5,0,0,1,3.6-47.8l-32.6-5a352,352,0,0,0,0,105.5l32.6-4.9A319.5,319.5,0,0,1,193,512ZM693.9,813.3,677,785.1a317.8,317.8,0,0,1-88.3,36.6l7.9,32A350.3,350.3,0,0,0,693.9,813.3ZM831,512a319.5,319.5,0,0,1-3.6,47.8l32.6,4.9a352,352,0,0,0,0-105.5l-32.6,5A318.5,318.5,0,0,1,831,512Zm22.7,84.4-32-7.9A319,319,0,0,1,785.1,677l28.3,17A348.9,348.9,0,0,0,853.7,596.4Zm-293.9,231a319.1,319.1,0,0,1-95.6,0L459.3,860a351.3,351.3,0,0,0,105.4,0Zm209-126.2a318.1,318.1,0,0,1-67.6,67.5l19.6,26.6A355.1,355.1,0,0,0,795.4,721Zm-67.6-446a318.6,318.6,0,0,1,67.6,67.6L795.4,303A354.6,354.6,0,0,0,721,228.6Zm-446,67.6a318.6,318.6,0,0,1,67.6-67.6L303,228.6A354.6,354.6,0,0,0,228.6,303ZM813.4,330l-28.3,17a317.8,317.8,0,0,1,36.6,88.3l32-7.9A348.9,348.9,0,0,0,813.4,330ZM464.2,196.6a319.1,319.1,0,0,1,95.6,0l4.9-32.6a351.3,351.3,0,0,0-105.4,0ZM272.1,804.1,204,819.9l15.9-68.1-32.1-7.5-15.9,68.1a33,33,0,0,0,24.6,39.7,34.5,34.5,0,0,0,15,0l68.1-15.7Zm-77.5-89.2,32.2,7.4,11-47.2a316.2,316.2,0,0,1-35.5-86.6l-32,7.9a353.3,353.3,0,0,0,32.4,83.7Zm154,71.4-47.2,11,7.5,32.2,34.7-8.1a349,349,0,0,0,83.7,32.4l7.9-32a316.7,316.7,0,0,1-86.3-35.7ZM512,226c-158,.1-285.9,128.2-285.9,286.1a286.7,286.7,0,0,0,43.9,152L242.5,781.5,359.8,754c133.7,84.1,310.3,44,394.4-89.6S798.3,354.2,664.7,270A286.7,286.7,0,0,0,512,226s"/>
+        </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2025 . All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/">Windows Drivers Series Part 5 - Basic Driver Functionality</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      
+      <time datetime=" 2025-07-22T13:20:31-0400" class="post-date">
+        July 22, 2025
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>16 mins read</span>
+      </span>
+    </div>
+
+    
+    <ul class="tags">
+      
+      <li class="tag-series">
+        <a href="https://stolenfootball.github.io/tags/series">series</a>
+      </li>
+      
+      <li class="tag-pwn">
+        <a href="https://stolenfootball.github.io/tags/pwn">pwn</a>
+      </li>
+      
+      <li class="tag-rev">
+        <a href="https://stolenfootball.github.io/tags/rev">rev</a>
+      </li>
+      
+      <li class="tag-windows">
+        <a href="https://stolenfootball.github.io/tags/windows">windows</a>
+      </li>
+      
+      <li class="tag-drivers">
+        <a href="https://stolenfootball.github.io/tags/drivers">drivers</a>
+      </li>
+      
+    </ul>
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <p>Alright, all the work in the previous posts has led up to this: a driver that does something!</p>
+<p>Admittedly, it won&rsquo;t do much.  The driver I will be going over here heavily takes code from the <a href="https://github.com/microsoft/Windows-driver-samples/tree/main/general/ioctl/wdm" target="_blank">example IOCTL driver in the Windows driver samples repo</a>, and all that does is copy data from one buffer to another.  It will, however, give a good idea of how drivers handle I/O from their calling applications, as well as some of the benefits and drawbacks of different IO methods.</p>
+<p>This will be the last post in the &ldquo;driver development crash course&rdquo; part of this series.  The goal of these posts isn&rsquo;t to make you a great driver developer, but rather to give enough of a baseline understanding of how driver code works that it will be possible for you to follow the rev and pwn posts to come without becoming too lost.</p>
+<h2 id="device-control">Device Control</h2>
+<p>The majority of the time you are interfacing with a function driver, it will be through the <code>IRP_MJ_DEVICE_CONTROL</code> major function code.  From userspace, you send Device Control IRPs to a driver with the <a href="https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-deviceiocontrol" target="_blank"><code>DeviceIoControl</code></a> function, which is defined like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>BOOL <span style="color:#a6e22e">DeviceIoControl</span>(
+</span></span><span style="display:flex;"><span>  [in]                HANDLE       hDevice,
+</span></span><span style="display:flex;"><span>  [in]                DWORD        dwIoControlCode,
+</span></span><span style="display:flex;"><span>  [in, optional]      LPVOID       lpInBuffer,
+</span></span><span style="display:flex;"><span>  [in]                DWORD        nInBufferSize,
+</span></span><span style="display:flex;"><span>  [out, optional]     LPVOID       lpOutBuffer,
+</span></span><span style="display:flex;"><span>  [in]                DWORD        nOutBufferSize,
+</span></span><span style="display:flex;"><span>  [out, optional]     LPDWORD      lpBytesReturned,
+</span></span><span style="display:flex;"><span>  [in, out, optional] LPOVERLAPPED lpOverlapped
+</span></span><span style="display:flex;"><span>);
+</span></span></code></pre></div><p>Effectively, you pass in a control code, an input buffer, and an output buffer.  The driver reads from the input buffer, does something based on the control code, then writes to the output buffer.</p>
+<p>Most of the specific fields should be self-explanatory at this point (ignoring <code>lpOverlapped</code>, which is useful for advanced cases and can safely be set to <code>NULL</code> for our purposes).</p>
+<p>The one field that is new and important is <code>dwIoControlCode</code>, which we&rsquo;ll get into below.</p>
+<p>To &ldquo;catch&rdquo; <code>IRP_MJ_DEVICE_CONTROL</code> IRPs when they come to our driver, we define a dispatch function to handle them:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>NSTATUS <span style="color:#a6e22e">MyDriverDeviceControl</span>(_In_ PDEVICE_OBJECT DeviceObject, _Inout_ PIRP Irp) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>And we set the corresponding entry in the MajorFunction array in the DriverObject during DriverEntry:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>DriverObject<span style="color:#f92672">-&gt;</span>MajorFunction[IRP_MJ_DEVICE_CONTROL] <span style="color:#f92672">=</span> MyDriverDeviceControl;
+</span></span></code></pre></div><p>Now, any <code>IRP_MJ_DEVICE_CONTROL</code> IRPs that are sent to our driver will be handled by MyDriverDeviceControl.</p>
+<h2 id="ioctls">IOCTLs</h2>
+<p>The <strong>IOCTL</strong>, or <strong>IO Control Code</strong>, is a number that tells the driver which action to take.  They are typically handled by a large switch statement in the DeviceControl dispatch function, which has different actions to take depending on which IOCTL is received.</p>
+<p>For example, in an antivirus driver, there are any number of functions you may want, but you don&rsquo;t want to make a new driver for each one.  In that case, you could define an IOCTL for:</p>
+<ul>
+<li>Protect a file from deletion</li>
+<li>Make an alternate data stream the default</li>
+<li>Hide a file from the operating system</li>
+</ul>
+<p>And so on an so forth.  Each operation would get a code, and you pass the code in through the <code>DeviceIoControl</code> function when calling the driver.</p>
+<p>IOCTLs aren&rsquo;t just random numbers though.  They are actually mini-structs that contain four fields about how the driver should process the request.</p>
+<ul>
+<li><code>DeviceType</code> - a <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/specifying-device-types" target="_blank">large enum</a> that specifies the type of device the driver is.  For a software driver such as ours, the value can be set to anything over <code>0x8000</code>.</li>
+<li><code>Function</code> - arbitrary number that serves as the actual function code. Should be different for each function the driver can take.  The minimum value should be <code>0x800</code>.</li>
+<li><code>Method</code> - sets the buffering method used to access the input and output buffers passed in with the IRP.  Important and slightly complex, will get into it below.</li>
+<li><code>Access</code> - determines the direction of data flow, whether from the client to the driver or driver to the client.  In practice, should always use <code>FILE_ANY_ACCESS</code> to allow full access to input and output structs.</li>
+</ul>
+<p>In practice, IOCTLs are created using the <code>CTL_CODE</code> macro, which is defined as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#define CTL_CODE( DeviceType, Function, Method, Access ) ( \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    ((DeviceType) &lt;&lt; 16) | ((Access) &lt;&lt; 14) | ((Function) &lt;&lt; 2) | (Method))
+</span></span></span></code></pre></div><p>What this means is that when you see IOCTLs in a decompilation, they will look simply like numbers, but they actually have more information.  Skipping slightly ahead, this is what a typical IOCTL handler will look like in IDA</p>
+<p><img src="./images/1_ioctl_handler.png" alt="IOCTL Handler"></p>
+<p>The IOCTLs are <code>0x80002000</code>, <code>0x80002004</code>, and <code>0x80002008</code>.  You can use a tool such as the <a href="https://www.osronline.com/article.cfm%5Earticle=229.htm" target="_blank">OSR Online IOCTL Decoder</a> to retrieve the packed info.  The decodings of the first two IOCTLs using this tool are shown below:</p>
+<p><img src="./images/2_decoded_ioctls.png" alt="Decoded IOCTLs"></p>
+<blockquote>
+<p>Note that whoever wrote this driver did not follow best practices and use a DeviceType higher than 0x8000.  Although this isn&rsquo;t a bug in itself, failure to follow best coding practices can be indicitive of poorly written code.  This driver would be worth inspecting closer for any bugs.</p>
+</blockquote>
+<p>Let&rsquo;s take a look at what our DeviceControl function will look like with a basic IOCTL handler switch statement:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>NSTATUS <span style="color:#a6e22e">MyDriverDeviceControl</span>(_In_ PDEVICE_OBJECT DeviceObject, _Inout_ PIRP Irp) {
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    PIO_STACK_LOCATION irpSP <span style="color:#f92672">=</span> IoGetCurrentIrpStackLocation(Irp);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">switch</span> (irpSp<span style="color:#f92672">-&gt;</span>Parameters.DeviceIoControl.IoControlCode) {
+</span></span><span style="display:flex;"><span>        ...
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We use the <code>IoGetCurrentIrpStackLocation</code> function to retrieve the <code>IO_STACK_LOCATION</code> associated with our driver.  Then, we switch on the IOCTL field to find the appropriate handler.</p>
+<h2 id="virtual-memory-and-context">Virtual Memory and Context</h2>
+<p>To understand IOCTL IO buffering methods, we need to dive into the Windows memory model a bit further.  This section will be technical, but given that this series is about exploiting memory corruption vulnerabilities within drivers, I believe it is important to understand virtual memory in the kernel and how it is used.</p>
+<p>Virtual memory is a big concept that would usually cover a week or two of a university course.  To avoid getting too off topic (since we&rsquo;re discussing drivers here) this section will be more of a review than a deep dive.</p>
+<p>If virtual memory and context switching are new concepts to you, <a href="https://www.youtube.com/watch?v=A9WLYbE0p-I" target="_blank">this video</a> is a great intro to virtual memory, and even though I haven&rsquo;t found a great context switching video on YouTube, <a href="https://www.youtube.com/watch?v=DKmBRl8j3Ak" target="_blank">this one</a> is decent.</p>
+<h3 id="kernel-and-user-memory">Kernel and User Memory</h3>
+<p>Back in the day, computers only had one memory space.  It was word addressable and ran from 0x000000 to 0xFFFFFF, or whatever the maximum was on that system.</p>
+<p>This meant that wherever your program wrote, it physically wrote to.  If your word processor accidentally tried to overwrote part of your kernel, the computer <a href="https://users.rust-lang.org/t/was-crowdstrike-a-null-pointer-related-c-bug/114696" target="_blank">simply died</a>.  (Incidentally, this wasn&rsquo;t fixed on MacOS until <a href="https://en.wikipedia.org/wiki/System_7" target="_blank">shockingly recently</a>).  It also meant that programs only got a small section of the computer&rsquo;s memory to work with, and could accidentally write to or read from other processes as well.</p>
+<p><img src="./images/3_before_virtual_memory.png" alt="Pre-Virtual Memory"></p>
+<p>For the non-Apple world, this was changed in 1985 with the release of the i386, which supported <strong>virtual memory</strong>. With virtual memory, each process could use the full address space and not worry about writing to other processes at all.</p>
+<p><img src="./images/4_after_virtual_memory.gif" alt="After Virtual Memory"></p>
+<p>In Windows, the kernel always exists in the upper half of the virtual address space (0x800000 to 0xFFFFFF) and the currently in context process exists in the lower half of the process space (0x000000 to 0x7FFFFF).</p>
+<h3 id="pages-and-page-tables">Pages and Page Tables</h3>
+<p>Virtual memory was accomplished through pages and <a href="https://en.wikipedia.org/wiki/Page_table" target="_blank">page tables</a>.  The physical memory of the computer is separated into 4096 byte blocks called pages, which is the smallest unit of memory a process can request.</p>
+<p>When a program accesses memory at an address, it actually reaches out to its page table.  The page table checks to see if it has a physical block of memory mapped at that address, and if it does not, reaches out for one.  The page table then allows for access to that physical memory block as though it exists at that requested address.</p>
+<p>Pages can also be swapped out to disk if the computer is asking for more physical memory than is currently available.  Any access to a page that is not currently mapped results in a <strong>page fault</strong>, during which the operating system will pause the current program and retrieve the page before continuing.</p>
+<h3 id="context-switching">Context Switching</h3>
+<p>Modern computers are asked to do many tasks at the same time and only have a few processors to complete them.  To accomplish this, they use <strong>context switching</strong>, which effectively means they switch back and forth between all of their processes very quickly in order to make it look like they&rsquo;re all running at the same time.</p>
+<p>The process space virtual memory that the kernel sees depends on the currently in-context process, as can be seen in the graphic above.</p>
+<h2 id="ioctl-buffering-methods">IOCTL Buffering Methods</h2>
+<p>With the above information in mind, let&rsquo;s consider some possible issues when we attempt to access a user allocated buffer from kernel space.</p>
+<p>First, the requesting process could no longer be in context.  In this case, even though we access the correct virtual address, because we are in a different process&rsquo;s context that pointer could contain anything.  This is obviously bad.</p>
+<p>Second, another thread in the process could free the buffer before we access it.  The steps would go:</p>
+<ol>
+<li>Thread 1 allocates a buffer, calls DeviceIoControl with that buffer as an argument</li>
+<li>Thread 1 is switched out of context and Thread 2 is switched in</li>
+<li>Thread 2 frees buffer</li>
+<li>The driver attempts to access the original buffer, which has been freed (bad)</li>
+</ol>
+<p>Third, suppose the thread is boosted to a higher interrupt request level (IRQL).  At high IRQLs, which are used for tasks that can&rsquo;t be interrupted, no page fault handling can occur.  Therefore accessing any page not already in physical memory would result in a BSOD.</p>
+<p>There are even more problems that could occur when accessing user memory from kernel space, but I&rsquo;m not going to go into them here.  This should at least provide enough motivation to convince you that it can cause problems.</p>
+<p>Fortunately, the Windows IO manager provides built in functionality to help circumvent these problems.  There are four options for how a DeviceControl handler can accept buffers from user space, and which one is used is dependent on the IOCTL.</p>
+<h3 id="method_buffered">METHOD_BUFFERED</h3>
+<p>Buffered IO is the simplest method to understand from the programmer&rsquo;s perspective.  When the IRP is created, the IO manager just copies the user buffer to kernel space.  It then provides a pointer to the kernel space buffer in the <strong>SystemBuffer</strong> field the in the IRP.  The dispatch function can then just use the SystemBuffer like a normal pointer.</p>
+<p>When writing back, the dispatch function will again write to the SystemBuffer.  The IO manager will handle copying the SystemBuffer back to user space when the IRP is completed.</p>
+<p>Because Buffered IO copies the entire user buffer to kernel space, all accesses are trivially safe from the above issues.  However, Buffered IO can be slow for large buffers because we are performing a physical copy each time we send data to the driver.</p>
+<p>Let&rsquo;s make a Buffered IO IOCTL hander that sets the output buffer to be the first byte of the input buffer repeated.  For example, if the input buffer is &ldquo;ABCD&rdquo;, the output buffer would be &ldquo;AAAA&rdquo;.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#define MYDRIVER_IOCTL_METHOD_BUFFERED \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    CTL_CODE( 0x8765, 0x900, METHOD_BUFFERED, FILE_ANY_ACCESS )
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>inBufLen <span style="color:#f92672">=</span> irpSp<span style="color:#f92672">-&gt;</span>Parameters.DeviceIoControl.InputBufferLength;
+</span></span><span style="display:flex;"><span>outBufLen <span style="color:#f92672">=</span> irpSp<span style="color:#f92672">-&gt;</span>Parameters.DeviceIoControl.OutputBufferLength;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">switch</span> (irpSp<span style="color:#f92672">-&gt;</span>Parameters.DeviceIoControl.IoControlCode) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> MYDRIVER_IOCTL_METHOD_BUFFERED:
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        inBuf <span style="color:#f92672">=</span> Irp<span style="color:#f92672">-&gt;</span>AssociatedIrp.SystemBuffer;
+</span></span><span style="display:flex;"><span>        outBuf <span style="color:#f92672">=</span> Irp<span style="color:#f92672">-&gt;</span>AssociatedIrp.SystemBuffer;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CHAR firstChar <span style="color:#f92672">=</span> inBuf[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        memset(outBuf, firstChar, outBufLen);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This should all be understandable quickly.  We retrieve the lengths of the user buffers from the correct fields in the IRP.  The input and output buffers are both the SystemBuffer.  We copy everything over, and we&rsquo;re good to go.</p>
+<h3 id="method_in_direct-and-method_out_direct">METHOD_IN_DIRECT and METHOD_OUT_DIRECT</h3>
+<p>Although Buffered IO is safe, we perform two full copies of the data during the transaction, one on the way in and one on the way out.  As such, it will be quite slow for larger buffers.</p>
+<p>The fix for this is Direct IO. Direct IO allows both user space and kernel space to have virtual mappings to the same physical page, which means accessing the user page from kernel space becomes safe.</p>
+<p><code>METHOD_IN_DIRECT</code> and <code>METHOD_OUT_DIRECT</code> both indicate Direct IO, the only difference is that <code>METHOD_IN_DIRECT</code> reads from the output buffer and  <code>METHOD_OUT_DIRECT</code> writes to the output buffer.</p>
+<p>Direct IO works as follows:</p>
+<ol>
+<li>The IO manager makes sure the user buffer is paged into physical memory</li>
+<li>It locks the buffer in memory so it can&rsquo;t be paged out anymore</li>
+<li>It builds an <strong>MDL</strong> (Memory Descriptor List), which is a data structure that describes a buffer in physical memory.  It then stores the MDL in the <em>MDLAddress</em> field of the IRP.</li>
+<li>The dispatch routine is called.  The driver passes the MDL to <a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-mmgetsystemaddressformdlsafe" target="_blank"><code>MmGetSystemAddressForMdlSafe</code></a>, which maps the physical memory to an address in the kernel.  Now there are two page tables pointing to the same physical address.</li>
+<li>When the driver completes the IRP, the second mapping and MDL are removed, and the user can access their buffer like normal.</li>
+</ol>
+<p>Effectively, the MDL points to physical memory and allows the kernel page table and the user space page table to both point to the same backing page.  Then any writes to the kernel address also write to the user address.</p>
+<p><img src="./images/5_direct_io.png" alt="Direct IO diagram"></p>
+<p>Note that even in Direct IO, the input buffer always uses Buffered IO.  The output buffer is the only one that can use Direct IO.</p>
+<p>Let&rsquo;s define a <code>METHOD_OUT_DIRECT</code> IOCTL and add it to the DeviceControl dispatch function.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#define MYDRIVER_IOCTL_METHOD_OUT_DIRECT \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    CTL_CODE( 0x8765, 0x901, METHOD_OUT_DIRECT, FILE_ANY_ACCESS )
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#66d9ef">switch</span> (irpSp<span style="color:#f92672">-&gt;</span>Parameters.DeviceIoControl.IoControlCode) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> MYDRIVER_IOCTL_METHOD_OUT_DIRECT:
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        inBuf <span style="color:#f92672">=</span> Irp<span style="color:#f92672">-&gt;</span>AssociatedIrp.SystemBuffer;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        outBuf <span style="color:#f92672">=</span> MmGetSystemAddressForMdlSafe(Irp<span style="color:#f92672">-&gt;</span>MdlAddress, NormalPagePriority <span style="color:#f92672">|</span> MdlMappingNoExecute);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">!</span>(outBuf) {
+</span></span><span style="display:flex;"><span>            status <span style="color:#f92672">=</span> STATUS_INSUFFICIENT_RESOURCES;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CHAR firstChar <span style="color:#f92672">=</span> inBuf[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>        memset(outBuf, firstChar, outBufLen);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    ...
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>All of this should be fairly self explanatory.  The only pieces to note are:</p>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-mmgetsystemaddressformdlsafe" target="_blank"><code>MmGetSystemAddressForMdlSafe</code></a> takes flags as a second argument.  Read through the linked docs for a description of what they are and which ones you should use.</li>
+<li><code>MmGetSystemAddressForMdlSafe</code> can return NULL if system resources are very low.  Drivers should handle that case to avoid a null pointer dereference.</li>
+</ul>
+<h3 id="method_neither">METHOD_NEITHER</h3>
+<p><code>METHOD_NEITHER</code> means that there is no help provided by the IO manager at all.  Any of the bugs I mentioned earlier could happen, and it&rsquo;s up to the programmer to prevent them.</p>
+<p>In practice, you see most commonly see <code>METHOD_NEITHER</code> IOCTLs when the DeviceControl handler requires no information beyond the control code, so user input isn&rsquo;t needed.  An example might be a &ldquo;shutdown now&rdquo; signal.</p>
+<p>However, if you do see a <code>NEITHER_IO</code> IOCTL handling buffers, odds are you&rsquo;ve found a bug.  Because <code>NEITHER_IO</code> requires a lot of manual checking and buffer copying to get right, developers get it wrong all the time.</p>
+<p>I&rsquo;m not including code for a safe <code>NEITHER_IO</code> handler below since it&rsquo;s long and involved, but a link to an example provided by Microsoft can be found <a href="https://github.com/microsoft/Windows-driver-samples/blob/7bc5255321145137d51beff5cc450932cb8db8b7/general/ioctl/wdm/sys/sioctl.c#L367" target="_blank">here</a>.  More or less what it does is all of the steps for Direct IO, except instead of letting Windows handle them for us we do it manually.  Read through and try to understand the big picture.</p>
+<h2 id="the-ioctl-handler-driver">The IOCTL handler driver</h2>
+<p>Finally, it is time to add IOCTL handling to our driver!  Read through the following source and make sure you understand everything.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;ntddk.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define MYDRIVER_IOCTL_METHOD_BUFFERED \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    CTL_CODE( 0x8765, 0x900, METHOD_BUFFERED, FILE_ANY_ACCESS )
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define MYDRIVER_IOCTL_METHOD_OUT_DIRECT \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    CTL_CODE( 0x8765, 0x901, METHOD_OUT_DIRECT, FILE_ANY_ACCESS )
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> NTSTATUS
+</span></span><span style="display:flex;"><span>DeviceControlHandler(_In_ PDEVICE_OBJECT DeviceObject, _Inout_ PIRP Irp) {
+</span></span><span style="display:flex;"><span>    UNREFERENCED_PARAMETER(DeviceObject);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    PIO_STACK_LOCATION irpSp;
+</span></span><span style="display:flex;"><span>    ULONG inBufLen, outBufLen;
+</span></span><span style="display:flex;"><span>    PCHAR inBuf, outBuf;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    LONG status <span style="color:#f92672">=</span> STATUS_SUCCESS; <span style="color:#75715e">// Assume success, change later if needed
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    irpSp <span style="color:#f92672">=</span> IoGetCurrentIrpStackLocation(Irp);
+</span></span><span style="display:flex;"><span>    inBufLen <span style="color:#f92672">=</span> irpSp<span style="color:#f92672">-&gt;</span>Parameters.DeviceIoControl.InputBufferLength;
+</span></span><span style="display:flex;"><span>    outBufLen <span style="color:#f92672">=</span> irpSp<span style="color:#f92672">-&gt;</span>Parameters.DeviceIoControl.OutputBufferLength;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">switch</span> (irpSp<span style="color:#f92672">-&gt;</span>Parameters.DeviceIoControl.IoControlCode) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> MYDRIVER_IOCTL_METHOD_BUFFERED:
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        inBuf <span style="color:#f92672">=</span> (CHAR <span style="color:#f92672">*</span>)Irp<span style="color:#f92672">-&gt;</span>AssociatedIrp.SystemBuffer;
+</span></span><span style="display:flex;"><span>        outBuf <span style="color:#f92672">=</span> (CHAR<span style="color:#f92672">*</span>)Irp<span style="color:#f92672">-&gt;</span>AssociatedIrp.SystemBuffer;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CHAR firstChar <span style="color:#f92672">=</span> inBuf[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        memset(outBuf, firstChar, outBufLen);
+</span></span><span style="display:flex;"><span>        outBuf[outBufLen <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;\0&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">case</span> MYDRIVER_IOCTL_METHOD_OUT_DIRECT:
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        inBuf <span style="color:#f92672">=</span> (CHAR<span style="color:#f92672">*</span>)Irp<span style="color:#f92672">-&gt;</span>AssociatedIrp.SystemBuffer;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        outBuf <span style="color:#f92672">=</span> (CHAR<span style="color:#f92672">*</span>)MmGetSystemAddressForMdlSafe(Irp<span style="color:#f92672">-&gt;</span>MdlAddress, NormalPagePriority <span style="color:#f92672">|</span> MdlMappingNoExecute);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>outBuf) {
+</span></span><span style="display:flex;"><span>            status <span style="color:#f92672">=</span> STATUS_INSUFFICIENT_RESOURCES;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        CHAR firstChar <span style="color:#f92672">=</span> inBuf[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>        memset(outBuf, firstChar, outBufLen);
+</span></span><span style="display:flex;"><span>        outBuf[outBufLen <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;\0&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        status <span style="color:#f92672">=</span> STATUS_INVALID_DEVICE_REQUEST;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Irp<span style="color:#f92672">-&gt;</span>IoStatus.Status <span style="color:#f92672">=</span> status;
+</span></span><span style="display:flex;"><span>    Irp<span style="color:#f92672">-&gt;</span>IoStatus.Information <span style="color:#f92672">=</span> outBufLen;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    IoCompleteRequest(Irp, IO_NO_INCREMENT);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> status;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> NTSTATUS
+</span></span><span style="display:flex;"><span>CreateCloseHandler(_In_ PDEVICE_OBJECT DeviceObject, _Inout_ PIRP Irp) {
+</span></span><span style="display:flex;"><span>    UNREFERENCED_PARAMETER(DeviceObject);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Irp<span style="color:#f92672">-&gt;</span>IoStatus.Status <span style="color:#f92672">=</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>    Irp<span style="color:#f92672">-&gt;</span>IoStatus.Information <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    IoCompleteRequest(Irp, IO_NO_INCREMENT);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">MyDriverUnload</span>(_In_ PDRIVER_OBJECT DriverObject) {
+</span></span><span style="display:flex;"><span>    UNICODE_STRING symLinkName;
+</span></span><span style="display:flex;"><span>    RtlInitUnicodeString(<span style="color:#f92672">&amp;</span>symLinkName, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">??</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    IoDeleteSymbolicLink(<span style="color:#f92672">&amp;</span>symLinkName);
+</span></span><span style="display:flex;"><span>    IoDeleteDevice(DriverObject<span style="color:#f92672">-&gt;</span>DeviceObject);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> NTSTATUS
+</span></span><span style="display:flex;"><span>DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath) {
+</span></span><span style="display:flex;"><span>    UNREFERENCED_PARAMETER(RegistryPath);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create the Device Object
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    UNICODE_STRING devName;
+</span></span><span style="display:flex;"><span>    RtlInitUnicodeString(<span style="color:#f92672">&amp;</span>devName, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">Device</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    PDEVICE_OBJECT DeviceObject;
+</span></span><span style="display:flex;"><span>    NTSTATUS status <span style="color:#f92672">=</span> IoCreateDevice(
+</span></span><span style="display:flex;"><span>        DriverObject,           <span style="color:#75715e">// Driver object from earlier in DriverEntry
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#ae81ff">0</span>,                      <span style="color:#75715e">// no extra bytes
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&amp;</span>devName,               <span style="color:#75715e">// device name
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FILE_DEVICE_UNKNOWN,    <span style="color:#75715e">// software device
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#ae81ff">0</span>,                      <span style="color:#75715e">// no characteristics flags needed
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        FALSE,                  <span style="color:#75715e">// no need for exclusive access
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&amp;</span>DeviceObject           <span style="color:#75715e">// return pointer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>        KdPrint((<span style="color:#e6db74">&#34;Failed to create device object (0x%08X)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, status));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> status;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create the symbolic link
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    UNICODE_STRING symLinkName;
+</span></span><span style="display:flex;"><span>    RtlInitUnicodeString(<span style="color:#f92672">&amp;</span>symLinkName, <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">??</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    status <span style="color:#f92672">=</span> IoCreateSymbolicLink(<span style="color:#f92672">&amp;</span>symLinkName, <span style="color:#f92672">&amp;</span>devName);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>NT_SUCCESS(status)) {
+</span></span><span style="display:flex;"><span>        KdPrint((<span style="color:#e6db74">&#34;Failed to create symbolic link (0x%08X)</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, status));
+</span></span><span style="display:flex;"><span>        IoDeleteDevice(DeviceObject);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> status;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Register handler functions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    DriverObject<span style="color:#f92672">-&gt;</span>MajorFunction[IRP_MJ_CREATE] <span style="color:#f92672">=</span> CreateCloseHandler;
+</span></span><span style="display:flex;"><span>    DriverObject<span style="color:#f92672">-&gt;</span>MajorFunction[IRP_MJ_CLOSE] <span style="color:#f92672">=</span> CreateCloseHandler;
+</span></span><span style="display:flex;"><span>    DriverObject<span style="color:#f92672">-&gt;</span>MajorFunction[IRP_MJ_DEVICE_CONTROL] <span style="color:#f92672">=</span> DeviceControlHandler;
+</span></span><span style="display:flex;"><span>    DriverObject<span style="color:#f92672">-&gt;</span>DriverUnload <span style="color:#f92672">=</span> MyDriverUnload;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> STATUS_SUCCESS;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The only meaningful change from the driver in the last post is the <strong>DeviceControlHandler</strong> function, which you should understand pretty well by this point.  It should look similar to the handler snippets above, with some additional casting thrown in to make it all work.  Don&rsquo;t forget to register it in <strong>DriverEntry</strong>!.</p>
+<p>Let&rsquo;s create a client for this driver:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define MYDRIVER_IOCTL_METHOD_BUFFERED \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    CTL_CODE( 0x8765, 0x900, METHOD_BUFFERED, FILE_ANY_ACCESS )
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define MYDRIVER_IOCTL_METHOD_OUT_DIRECT \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    CTL_CODE( 0x8765, 0x901, METHOD_OUT_DIRECT, FILE_ANY_ACCESS )
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">testIoctlMethodBuffered</span>(HANDLE hDevice);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">testIoctlMethodOutDirect</span>(HANDLE hDevice);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    HANDLE hDevice <span style="color:#f92672">=</span> CreateFileW(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">.</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">MyDriver&#34;</span>, 
+</span></span><span style="display:flex;"><span>        GENERIC_WRITE, 
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>, 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>,
+</span></span><span style="display:flex;"><span>        OPEN_EXISTING, 
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>, 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (hDevice <span style="color:#f92672">==</span> INVALID_HANDLE_VALUE) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;Failed to open device: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Device opened successfully.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> result;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> testIoctlMethodBuffered(hDevice);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (result <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        CloseHandle(hDevice);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> testIoctlMethodOutDirect(hDevice);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (result <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        CloseHandle(hDevice);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Clean up
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    printf(<span style="color:#e6db74">&#34;Cleaning up and closing device handle.</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    CloseHandle(hDevice);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">testIoctlMethodBuffered</span>(HANDLE hDevice) {
+</span></span><span style="display:flex;"><span>    CHAR inputBuffer[] <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;Hello&#34;</span>};
+</span></span><span style="display:flex;"><span>    CHAR outputBuffer[<span style="color:#ae81ff">10</span>] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    DWORD bytesReturned;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Sending IOCTL with METHOD_BUFFERED...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Input: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inputBuffer);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Output: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, outputBuffer);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    BOOL result <span style="color:#f92672">=</span> DeviceIoControl(
+</span></span><span style="display:flex;"><span>        hDevice,
+</span></span><span style="display:flex;"><span>        MYDRIVER_IOCTL_METHOD_BUFFERED,
+</span></span><span style="display:flex;"><span>        inputBuffer,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">sizeof</span>(inputBuffer),
+</span></span><span style="display:flex;"><span>        outputBuffer,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">sizeof</span>(outputBuffer),
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&amp;</span>bytesReturned,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>result) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;Failed to send IOCTL with METHOD_BUFFERED: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;IOCTL with METHOD_BUFFERED sent successfully.  Bytes returned: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, bytesReturned);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Input: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inputBuffer);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Output: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, outputBuffer);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">testIoctlMethodOutDirect</span>(HANDLE hDevice) {
+</span></span><span style="display:flex;"><span>    CHAR inputBuffer[] <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#34;Hello&#34;</span>};
+</span></span><span style="display:flex;"><span>    CHAR outputDirectBuffer[<span style="color:#ae81ff">10</span>] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0</span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    DWORD bytesReturned;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Sending IOCTL with METHOD_OUT_DIRECT...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Input: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inputBuffer);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Output: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, outputDirectBuffer);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    BOOL result <span style="color:#f92672">=</span> DeviceIoControl(
+</span></span><span style="display:flex;"><span>        hDevice,
+</span></span><span style="display:flex;"><span>        MYDRIVER_IOCTL_METHOD_OUT_DIRECT,
+</span></span><span style="display:flex;"><span>        inputBuffer,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">sizeof</span>(inputBuffer),
+</span></span><span style="display:flex;"><span>        outputDirectBuffer,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">sizeof</span>(outputDirectBuffer),
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&amp;</span>bytesReturned,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">nullptr</span>
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>result) {
+</span></span><span style="display:flex;"><span>        printf(<span style="color:#e6db74">&#34;Failed to send IOCTL with METHOD_OUT_DIRECT: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, GetLastError());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;IOCTL with METHOD_OUT_DIRECT sent successfully. Bytes returned: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, bytesReturned);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Input: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inputBuffer);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Output: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, outputDirectBuffer);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Note that in this case, the <strong>Information</strong> field refers to the number of bytes returned by the driver.</p>
+<p>Now, all that&rsquo;s left is to compile and run both pieces of code.  Run both on your test VM, and you should see something along the lines of the following:</p>
+<pre tabindex="0"><code>C:\Users\jeremy\Desktop&gt;ioctlDriverClient.exe
+Device opened successfully.
+Sending IOCTL with METHOD_BUFFERED...
+Input: Hello
+Output:
+IOCTL with METHOD_BUFFERED sent successfully.  Bytes returned: 10
+Input: Hello
+Output: HHHHHHHHH
+Sending IOCTL with METHOD_OUT_DIRECT...
+Input: Hello
+Output:
+IOCTL with METHOD_OUT_DIRECT sent successfully. Bytes returned: 10
+Input: Hello
+Output: HHHHHHHHH
+Cleaning up and closing device handle.
+</code></pre><h2 id="last-remarks">Last remarks</h2>
+<p>As I mentioned earlier, this will be the last post in the &ldquo;driver development&rdquo; part of this series.  I just wanted to get you all familiar with what a driver looks like in its most basic form and how it works so that some later more advanced concepts make sense.  The next posts will start to get into reverse engineering and bug finding.</p>
+<p>If you&rsquo;ve taken an interest and want to learn more about building drivers, <a href="https://www.amazon.com/Windows-Kernel-Programming-Pavel-Yosifovich/dp/B0BW2X91L2" target="_blank">Pavel Yosifovich&rsquo;s Windows Kernel Programming</a> is still your best bet.  If you plan on working with drivers long term, you&rsquo;re going to want to get it eventually.</p>
+<h2 id="more-reading">More reading</h2>
+<ul>
+<li><a href="https://github.com/microsoft/Windows-driver-samples/tree/main/general/ioctl/wdm" target="_blank">Windows Driver IOCTL Handler Example from Microsoft</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/defining-i-o-control-codes" target="_blank">MSDN Defining IOCTL Control Codes</a></li>
+<li><a href="https://www.youtube.com/watch?v=A9WLYbE0p-I" target="_blank">What is Virtual Memory by Tech with Nikola</a></li>
+<li><a href="https://www.youtube.com/watch?v=DKmBRl8j3Ak" target="_blank">OS Context Switching by Computerphile</a></li>
+</ul>
+<h2 id="series-index">Series Index</h2>
+<ul>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html" target="_blank">Part 1 - Overview</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html" target="_blank">Part 2 - What&rsquo;s a Driver Anyways?</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">Part 3 - The Minimum Viable Driver</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/" target="_blank">Part 4 - Interacting with the Driver</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" target="_blank">Part 5 - Basic Driver Functionality</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/" target="_blank">Part 6 - Debugging and Basic Rev</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/" target="_blank">Part 7 - Buffer Overflow on Windows 7</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/" target="_blank">Part 8 - Bypassing SMEP</a></li>
+</ul>
+
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 4 - Interacting with...</a>
+        
+	    
+            <div class="next-post">
+                <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Windows Drivers Series Part 6 - Debugging and...</a>
+            </div>
+        
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#device-control">Device Control</a></li>
+    <li><a href="#ioctls">IOCTLs</a></li>
+    <li><a href="#virtual-memory-and-context">Virtual Memory and Context</a>
+      <ul>
+        <li><a href="#kernel-and-user-memory">Kernel and User Memory</a></li>
+        <li><a href="#pages-and-page-tables">Pages and Page Tables</a></li>
+        <li><a href="#context-switching">Context Switching</a></li>
+      </ul>
+    </li>
+    <li><a href="#ioctl-buffering-methods">IOCTL Buffering Methods</a>
+      <ul>
+        <li><a href="#method_buffered">METHOD_BUFFERED</a></li>
+        <li><a href="#method_in_direct-and-method_out_direct">METHOD_IN_DIRECT and METHOD_OUT_DIRECT</a></li>
+        <li><a href="#method_neither">METHOD_NEITHER</a></li>
+      </ul>
+    </li>
+    <li><a href="#the-ioctl-handler-driver">The IOCTL handler driver</a></li>
+    <li><a href="#last-remarks">Last remarks</a></li>
+    <li><a href="#more-reading">More reading</a></li>
+    <li><a href="#series-index">Series Index</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>

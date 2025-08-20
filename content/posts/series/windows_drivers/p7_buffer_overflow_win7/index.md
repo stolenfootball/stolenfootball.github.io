@@ -1,7 +1,7 @@
 ---
 title: "Windows Drivers Series Part 7 - Buffer Overflow on Windows 7"
 date: 2025-08-15 14:37:47.923 -0400
-draft: true
+draft: false
 toc: false
 images:
 tags:
@@ -26,7 +26,9 @@ Because unpatched versions of Windows 7 are hard to find these days, you can acc
 For instructions on how to get a kernel debugger working, follow the **serial debugging** setup steps on my [kernel debugger setup post](https://stolenfootball.github.io/posts/research/2025/windows_kernel_debugger/).
 
 ## What does a kernel exploit do?
-Kernel exploits are traditionally used for **privilege escalation**.  In other words, we assume we can execute arbitrary code as a user, and we use a bug to attempt to execute arbitrary code as the kernel.
+Kernel exploits are primarily used for **privilege escalation**.  In other words, we assume we can execute arbitrary code as a user, and we use a bug to attempt to execute arbitrary code as the kernel.
+
+> There is such a thing as fully remote kernel exploit development, but it is rare to find these days and difficult to do.  I may make a post on it in the eventual future if I have the time.
 
 This makes for a slightly different landscape for those used to user land exploit development.  The primitives are more powerful because we start out with arbitrary code execution, but more work is required to make a working exploit because we need to make sure the kernel is still functioning when our exploit is done with it.
 
@@ -707,3 +709,4 @@ That was a big post with a lot of information, but it is probably the most impor
 - [Part 5 - Basic Driver Functionality](https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/)
 - [Part 6 - Debugging and Basic Rev](https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/)
 - [Part 7 - Buffer Overflow on Windows 7](https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/)
+- [Part 8 - Bypassing SMEP](https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/)

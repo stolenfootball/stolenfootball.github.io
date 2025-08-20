@@ -1,7 +1,7 @@
 ---
 title: "Windows Drivers Series Part 2 - What's a Driver Anyways?"
 date: 2025-07-16T17:14:58-0400
-draft: true
+draft: false
 toc: false
 images:
 tags:
@@ -61,15 +61,17 @@ It's common to think of interacting with function drivers like interacting with 
 ### Filter Drivers
 A filter driver can sit above or below a device driver and modify the IRP before sending it to its destination. Continuing the client / server analogy, a filter driver is like middleware or a firewall.
 
-What this means is that when passing an IRP to a function driver, we aren't passing the IRP directly to the driver.  Instead, the IRP is passed to the top of a **driver stack** associated with the device.  The driver stack might (and probably does) contain a number of fiter drivers that view the IRP, modify what they want, and pass it down.  Eventually the IRP will reach a driver that marks it as complete, and it is passed back up the chain and back to the user who initiated the request.
+Any number of filter drivers can act on an IRP, both before it reaches the function driver and after it passes the function driver.  The filter and function drivers associated with a device are called the **driver stack**.  When an IRP is sent to a device, it starts at the top of the stack and works its way down until one of the drivers marks it as complete.  Once it is completed, it works its way back up again.
 
 ### Bus Driver
 A bus driver is effectively a function driver for a common data bus such as PCI, ISCSI, and USB.  In addition to the normal responsibilities of a function driver, it also is responsible for power management of the devices attached to the bus.
 
 ## The Device Tree and Device Objects
-Every PnP compatible device in Windows is kept track of as a **device node** and stored as a node in the **device tree**.  The tree shows which objects are connected to which - effectively "how to get to" a certain device from the operating system's perspective.
+Just about every device in Windows is kept track of as a **device node** and stored as a node in a structure called the **device tree**.  The tree shows which devices are connected to which - for example in the image below, the camera is attached to a USB hub which is attached to the USB controller, and so on.
 
 ![Windows PnP Device Tree](./images/5_device_tree.png)
+
+When you send an IRP to a device, it traverses the tree down to the device it is intended for, then enters the driver stack for the device.
 
 Each device node has its own **driver stack**, which is the linked list of function and filter drivers associated with it.
 
@@ -107,3 +109,5 @@ For the majority of these posts, particularly the early ones, I will be focusing
 - [Part 4 - Interacting with the Driver](https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/)
 - [Part 5 - Basic Driver Functionality](https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/)
 - [Part 6 - Debugging and Basic Rev](https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/)
+- [Part 7 - Buffer Overflow on Windows 7](https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/)
+- [Part 8 - Bypassing SMEP](https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/)

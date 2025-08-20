@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<head>
     
 
 
@@ -70,17 +70,17 @@
 <meta name="twitter:description" content="" />
 
 
-<base href="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" />
-<link rel="canonical" href="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" itemprop="url" />
-<meta name="url" content="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" />
-<meta name="twitter:url" content="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" />
-<meta property="og:url" content="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/" />
+<base href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/" />
+<link rel="canonical" href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/" itemprop="url" />
+<meta name="url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/" />
+<meta name="twitter:url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/" />
+<meta property="og:url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/" />
 
 
 <meta property="og:updated_time" content="2025-07-16T17:14:58-04:00" />
 
 
-<link rel="sitemap" type="application/xml" title="Sitemap" href='http://localhost:1313/sitemap.xml' />
+<link rel="sitemap" type="application/xml" title="Sitemap" href='https://stolenfootball.github.io/sitemap.xml' />
 
 <meta name="robots" content="index,follow" />
 <meta name="googlebot" content="index,follow" />
@@ -171,12 +171,12 @@
         <div class="sidebar-about">
     <h1 class="brand">
         
-            <a href="http://localhost:1313/">
+            <a href="https://stolenfootball.github.io/">
                 <img src="/images/avatar.png" alt="brand image">
             </a>
         
         
-            <a href="http://localhost:1313/">
+            <a href="https://stolenfootball.github.io/">
                 <h1>Jeremy&#39;s Blog</h1>
             </a>
         
@@ -231,8 +231,6 @@
                 
                         
                 
-                        
-                
             
         
         
@@ -255,8 +253,6 @@
                 
             
                 
-                
-                        
                 
                         
                 
@@ -346,7 +342,7 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
                 <div class="post">
   <div class="info">
   <h1 class="post-title">
-    <a href="http://localhost:1313/posts/series/windows_drivers/p2_whats_a_driver/">Windows Drivers Series Part 2 - What&#39;s a Driver Anyways?</a>
+    <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/">Windows Drivers Series Part 2 - What&#39;s a Driver Anyways?</a>
   </h1>
 
   <div class="headline">
@@ -371,23 +367,23 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
     <ul class="tags">
       
       <li class="tag-series">
-        <a href="http://localhost:1313/tags/series">series</a>
+        <a href="https://stolenfootball.github.io/tags/series">series</a>
       </li>
       
       <li class="tag-pwn">
-        <a href="http://localhost:1313/tags/pwn">pwn</a>
+        <a href="https://stolenfootball.github.io/tags/pwn">pwn</a>
       </li>
       
       <li class="tag-rev">
-        <a href="http://localhost:1313/tags/rev">rev</a>
+        <a href="https://stolenfootball.github.io/tags/rev">rev</a>
       </li>
       
       <li class="tag-windows">
-        <a href="http://localhost:1313/tags/windows">windows</a>
+        <a href="https://stolenfootball.github.io/tags/windows">windows</a>
       </li>
       
       <li class="tag-drivers">
-        <a href="http://localhost:1313/tags/drivers">drivers</a>
+        <a href="https://stolenfootball.github.io/tags/drivers">drivers</a>
       </li>
       
     </ul>
@@ -431,12 +427,13 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 <p><img src="./images/4_client_server_model.gif" alt="Driver as client/server device"></p>
 <h3 id="filter-drivers">Filter Drivers</h3>
 <p>A filter driver can sit above or below a device driver and modify the IRP before sending it to its destination. Continuing the client / server analogy, a filter driver is like middleware or a firewall.</p>
-<p>What this means is that when passing an IRP to a function driver, we aren&rsquo;t passing the IRP directly to the driver.  Instead, the IRP is passed to the top of a <strong>driver stack</strong> associated with the device.  The driver stack might (and probably does) contain a number of fiter drivers that view the IRP, modify what they want, and pass it down.  Eventually the IRP will reach a driver that marks it as complete, and it is passed back up the chain and back to the user who initiated the request.</p>
+<p>Any number of filter drivers can act on an IRP, both before it reaches the function driver and after it passes the function driver.  The filter and function drivers associated with a device are called the <strong>driver stack</strong>.  When an IRP is sent to a device, it starts at the top of the stack and works its way down until one of the drivers marks it as complete.  Once it is completed, it works its way back up again.</p>
 <h3 id="bus-driver">Bus Driver</h3>
 <p>A bus driver is effectively a function driver for a common data bus such as PCI, ISCSI, and USB.  In addition to the normal responsibilities of a function driver, it also is responsible for power management of the devices attached to the bus.</p>
 <h2 id="the-device-tree-and-device-objects">The Device Tree and Device Objects</h2>
-<p>Every PnP compatible device in Windows is kept track of as a <strong>device node</strong> and stored as a node in the <strong>device tree</strong>.  The tree shows which objects are connected to which - effectively &ldquo;how to get to&rdquo; a certain device from the operating system&rsquo;s perspective.</p>
+<p>Just about every device in Windows is kept track of as a <strong>device node</strong> and stored as a node in a structure called the <strong>device tree</strong>.  The tree shows which devices are connected to which - for example in the image below, the camera is attached to a USB hub which is attached to the USB controller, and so on.</p>
 <p><img src="./images/5_device_tree.png" alt="Windows PnP Device Tree"></p>
+<p>When you send an IRP to a device, it traverses the tree down to the device it is intended for, then enters the driver stack for the device.</p>
 <p>Each device node has its own <strong>driver stack</strong>, which is the linked list of function and filter drivers associated with it.</p>
 <p><img src="./images/6_driver_stack.png" alt="Windows Driver stack"></p>
 <h2 id="life-of-an-irp">Life of an IRP</h2>
@@ -469,6 +466,10 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 <li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html" target="_blank">Part 2 - What&rsquo;s a Driver Anyways?</a></li>
 <li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">Part 3 - The Minimum Viable Driver</a></li>
 <li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/" target="_blank">Part 4 - Interacting with the Driver</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" target="_blank">Part 5 - Basic Driver Functionality</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/" target="_blank">Part 6 - Debugging and Basic Rev</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/" target="_blank">Part 7 - Buffer Overflow on Windows 7</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/" target="_blank">Part 8 - Bypassing SMEP</a></li>
 </ul>
 
   
@@ -476,11 +477,11 @@ powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a
 <div class="footer">
     
 	    
-            <a class="previous-post" href="http://localhost:1313/posts/series/windows_drivers/p1_overview/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 1 - Overview</a>
+            <a class="previous-post" href="https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 1 - Overview</a>
         
 	    
             <div class="next-post">
-                <a href="http://localhost:1313/posts/series/windows_drivers/p3_minimum_viable_driver/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Windows Drivers Series Part 3 - The Minimum Viable...</a>
+                <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/?ref=footer"><span style="font-weight:bold;">Next »</span><br>Windows Drivers Series Part 3 - The Minimum Viable...</a>
             </div>
         
     

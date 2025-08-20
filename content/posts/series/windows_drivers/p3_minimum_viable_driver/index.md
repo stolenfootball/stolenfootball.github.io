@@ -1,7 +1,7 @@
 ---
 title: "Windows Drivers Series Part 3 - The Minimum Viable Driver"
 date: 2025-07-17T19:45:29-0400
-draft: true
+draft: false
 toc: false
 images:
 tags:
@@ -198,7 +198,7 @@ If you used the default location for the Visual Studio project, your driver will
 Open the Release directory in an Administrative command prompt, then run the following command to install the driver.  **USE CMD, NOT POWERSHELL.  ALIASING ISN'T YOUR FRIEND RIGHT NOW**.
 
 ```ps1
-sc create sample type= kernel binPath= C:\Users\[YOUR USER]\repos\[YOUR DRIVER NAME]\x64\debug\[YOUR DRIVER NAME].sys
+sc create sample type= kernel start= auto binPath= C:\Users\[YOUR USER]\repos\[YOUR DRIVER NAME]\x64\debug\[YOUR DRIVER NAME].sys
 ```
 
 Note the locations of the spaces in regards to the equals signs after type and binPath.  Yes it is weird, but it won't work if the spaces aren't attached correctly.
@@ -250,3 +250,5 @@ Most of the source here (and throughout my examples) is taken heavily from [Pave
 - [Part 4 - Interacting with the Driver](https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/)
 - [Part 5 - Basic Driver Functionality](https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/)
 - [Part 6 - Debugging and Basic Rev](https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/)
+- [Part 7 - Buffer Overflow on Windows 7](https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/)
+- [Part 8 - Bypassing SMEP](https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/)

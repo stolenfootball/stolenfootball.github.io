@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.145453261a7755f5042a854c4213501d215a8fbe34c08d181c40f803f1315e74.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/favicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">Jeremy&#39;s Blog - Windows Drivers Series Part 6 - Debugging and Basic Rev</title>
+<meta property="og:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;6&#32;-&#32;Debugging&#32;and&#32;Basic&#32;Rev />
+<meta name="twitter:title" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;6&#32;-&#32;Debugging&#32;and&#32;Basic&#32;Rev />
+<meta itemprop="name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;6&#32;-&#32;Debugging&#32;and&#32;Basic&#32;Rev />
+<meta name="application-name" content=Jeremy&#39;s&#32;Blog&#32;-&#32;Windows&#32;Drivers&#32;Series&#32;Part&#32;6&#32;-&#32;Debugging&#32;and&#32;Basic&#32;Rev />
+<meta property="og:site_name" content="" />
+
+
+<meta name="description" content="" />
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<meta name="twitter:description" content="" />
+
+
+<base href="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/" />
+<link rel="canonical" href="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/" itemprop="url" />
+<meta name="url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/" />
+<meta name="twitter:url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/" />
+<meta property="og:url" content="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/" />
+
+
+<meta property="og:updated_time" content="2025-08-06T11:35:29-04:00" />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='https://stolenfootball.github.io/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.141.0">
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.94a339836f89f0d25f31980cb6b0631da21e20af128308747ce44e0525eb16ef.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="https://stolenfootball.github.io/">
+                <img src="/images/avatar.png" alt="brand image">
+            </a>
+        
+        
+            <a href="https://stolenfootball.github.io/">
+                <h1>Jeremy&#39;s Blog</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    By the way - is there anyone on board who knows how to fly a plane?
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                
+            
+                
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+        
+            
+
+            
+                
+                
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                
+            
+            
+                
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/stolenfootball">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="LinkedIn" href="https://www.linkedin.com/in/jeremy-dunn-a0b945172/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 448 512">
+            <path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5c0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7c-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5c67.2 0 79.7 44.3 79.7 101.9V416z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Discord" href="https://discordapp.com/users/stolenfootball#3265">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="Email" href="mailto:jeremy.dunn315@gmail.com">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+
+    <a target="_blank" class="social" title="Signal" href="https://signal.me/#eu/ikkgt8MQoJBTjgrVAOrULsPwxu8mSjGsPrW-GDGj5euZreghZMlJUb91ncEA4LQr">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.4em" viewBox="0 0 1024 1024">
+            <path fill="currentColor" d="M427.5,170.3l7.9,32A319.6,319.6,0,0,0,347,238.9l-16.9-28.3A347.6,347.6,0,0,1,427.5,170.3Zm169,0-7.9,32A319.6,319.6,0,0,1,677,238.9l17.1-28.3A350.1,350.1,0,0,0,596.5,170.3ZM210.6,330a349.5,349.5,0,0,0-40.3,97.5l32,7.9A319.6,319.6,0,0,1,238.9,347ZM193,512a318.5,318.5,0,0,1,3.6-47.8l-32.6-5a352,352,0,0,0,0,105.5l32.6-4.9A319.5,319.5,0,0,1,193,512ZM693.9,813.3,677,785.1a317.8,317.8,0,0,1-88.3,36.6l7.9,32A350.3,350.3,0,0,0,693.9,813.3ZM831,512a319.5,319.5,0,0,1-3.6,47.8l32.6,4.9a352,352,0,0,0,0-105.5l-32.6,5A318.5,318.5,0,0,1,831,512Zm22.7,84.4-32-7.9A319,319,0,0,1,785.1,677l28.3,17A348.9,348.9,0,0,0,853.7,596.4Zm-293.9,231a319.1,319.1,0,0,1-95.6,0L459.3,860a351.3,351.3,0,0,0,105.4,0Zm209-126.2a318.1,318.1,0,0,1-67.6,67.5l19.6,26.6A355.1,355.1,0,0,0,795.4,721Zm-67.6-446a318.6,318.6,0,0,1,67.6,67.6L795.4,303A354.6,354.6,0,0,0,721,228.6Zm-446,67.6a318.6,318.6,0,0,1,67.6-67.6L303,228.6A354.6,354.6,0,0,0,228.6,303ZM813.4,330l-28.3,17a317.8,317.8,0,0,1,36.6,88.3l32-7.9A348.9,348.9,0,0,0,813.4,330ZM464.2,196.6a319.1,319.1,0,0,1,95.6,0l4.9-32.6a351.3,351.3,0,0,0-105.4,0ZM272.1,804.1,204,819.9l15.9-68.1-32.1-7.5-15.9,68.1a33,33,0,0,0,24.6,39.7,34.5,34.5,0,0,0,15,0l68.1-15.7Zm-77.5-89.2,32.2,7.4,11-47.2a316.2,316.2,0,0,1-35.5-86.6l-32,7.9a353.3,353.3,0,0,0,32.4,83.7Zm154,71.4-47.2,11,7.5,32.2,34.7-8.1a349,349,0,0,0,83.7,32.4l7.9-32a316.7,316.7,0,0,1-86.3-35.7ZM512,226c-158,.1-285.9,128.2-285.9,286.1a286.7,286.7,0,0,0,43.9,152L242.5,781.5,359.8,754c133.7,84.1,310.3,44,394.4-89.6S798.3,354.2,664.7,270A286.7,286.7,0,0,0,512,226s"/>
+        </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2025 . All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/">Windows Drivers Series Part 6 - Debugging and Basic Rev</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      
+      <time datetime=" 2025-08-06T11:35:29-0400" class="post-date">
+        August 6, 2025
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>14 mins read</span>
+      </span>
+    </div>
+
+    
+    <ul class="tags">
+      
+      <li class="tag-series">
+        <a href="https://stolenfootball.github.io/tags/series">series</a>
+      </li>
+      
+      <li class="tag-pwn">
+        <a href="https://stolenfootball.github.io/tags/pwn">pwn</a>
+      </li>
+      
+      <li class="tag-rev">
+        <a href="https://stolenfootball.github.io/tags/rev">rev</a>
+      </li>
+      
+      <li class="tag-windows">
+        <a href="https://stolenfootball.github.io/tags/windows">windows</a>
+      </li>
+      
+      <li class="tag-drivers">
+        <a href="https://stolenfootball.github.io/tags/drivers">drivers</a>
+      </li>
+      
+    </ul>
+    
+  </div>
+
+  
+  
+
+  
+</div>
+
+  <p>Finally, time to get to what I promised in the first place - reversing a driver!</p>
+<p>The first step, of course, will be to set up a debugger.  Then we&rsquo;ll put our driver into IDA, rebase the <code>.text</code> segment, and look at some IRPs flowing through it.</p>
+<h2 id="install-the-vm">Install the VM</h2>
+<p>I&rsquo;ll be using <a href="https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion" target="_blank">VMWare Workstation Pro</a> as my hypervisor for this.  It&rsquo;s the most ubiquitous hypervisor out there (and in my opinion the easiest to use).</p>
+<blockquote>
+<p>A lot of people use Hyper-V when doing kernel debugging as well, and if you want to take that route there&rsquo;s plenty of tutorials online.</p>
+</blockquote>
+<p>First, set up and install a new Windows VM.  It doesn&rsquo;t need a license, the unlicensed version is more than adequate as a debugee.</p>
+<p>Kernel offsets and mitigations change all the time in Windows, so make sure you&rsquo;re installing the correct verion of the operating system.  If the exploit you are looking at doesn&rsquo;t work, it&rsquo;s possible that the version of Windows you&rsquo;re running doesn&rsquo;t match the exploit.</p>
+<p>For this post, the most recent version of either Windows 10 or 11 will be fine.  I will be using the most recent version of Windows 11, which can be obtained from <a href="https://www.microsoft.com/en-us/software-download/windows11" target="_blank">the Microsoft download page</a>.</p>
+<blockquote>
+<p>Windows 11 doesn&rsquo;t let you add a local account by default.  To bypass this and create a local account anyways, do the following:</p>
+<ol>
+<li>When you get to the screen that says &ldquo;How would you like to set up this device?&rdquo;, press <code>SHIFT+F10</code></li>
+<li>In the command prompt that opens, run <code>start ms-cxh://setaddlocalonly</code></li>
+<li>Create the local account like normal</li>
+</ol>
+<p>The computer should reboot when the account is created.  If it doesn&rsquo;t, just use the VMWare menu to reboot the VM.</p>
+</blockquote>
+<h2 id="install-windbg-on-the-host">Install WinDbg on the host</h2>
+<p>The first step to take is to install WinDbg on your host computer, which is the bare metal OS running your hypervisor.</p>
+<blockquote>
+<p>Yes, that means you should be running Windows while doing Windows development work.  It is possible to do all of this from MacOS or Linux, but your life will be more difficult than it needs to be, and exploit development is difficult enough as it is.</p>
+<p>If you&rsquo;re daily driving Linux I&rsquo;ll assume you know enough to either set up dual boot or figure this out with multiple VMs rather than VM to host.  If you&rsquo;re using an ARM Mac, I&rsquo;d recommend getting a cheap x64 computer you can write exploits on.  A decent used Thinkpad should be less than $100 on eBay, or you could take a dumpster diving trip to your local office park if that isn&rsquo;t feasible for some reason.  Dumpster diving for parts is a well respected pastime in the security world.</p>
+</blockquote>
+<p>If you followed along from <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">part 3 of this series</a>, you may already have installed WinDbg along with the Windows SDK.</p>
+<p>If not, you can download the Windows 11 SDK by navigating to <a href="https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/" target="_blank">the official download page</a> and clicking &ldquo;Download the installer&rdquo;.</p>
+<p><img src="./images/1_win11_sdk_download_site.png" alt="Windows 11 SDK Download site"></p>
+<p>Make sure to &ldquo;install the SDK on this computer&rdquo;.</p>
+<p><img src="./images/2_win11_sdk_install_1.png" alt="Install SDK location screenshot"></p>
+<p>When it comes time to select which features to install, I suggest installing all of them.  In particular, make sure the <strong>Debugging Tools for Windows</strong> get installed, as that is where WinDbg is located.  If you just want WinDbg, uncheck all of the other boxes and continue the installation.</p>
+<p><img src="./images/3_win11_sdk_install_2.png" alt="Install SDK features"></p>
+<h2 id="copy-files-to-the-guest-vm">Copy files to the guest VM</h2>
+<p>On the guest VM, create a directory called <code>C:\KDNET</code>.  We&rsquo;ll need to copy two files from the host computer to that directory:</p>
+<ul>
+<li><code>kdnet.exe</code></li>
+<li><code>VerifiedNICList.xml</code></li>
+</ul>
+<p>Both of these will be located on the host machine at <code>C:\Program Files (x86)\Windows Kits\10\Debuggers\x64</code>.</p>
+<p>When you&rsquo;re done, the <code>KDNET</code> directory on the VM should look like the following:</p>
+<p><img src="./images/4_kdnet_directory.png" alt="KDNET Directory"></p>
+<h2 id="set-up-networking-on-the-debugee">Set up networking on the debugee</h2>
+<p>The next thing we need to do is establish a way for our VM and host machine to communicate.  This is typically done over a network connection these days.</p>
+<p>To keep things simple, we&rsquo;ll keep the VM on the VMware internal NAT network, which is what it should be on by default.  To confirm this, right click on the VM and select &ldquo;Settings&rdquo;:</p>
+<p><img src="./images/5_vmware_settings.png" alt="VMWare settings"></p>
+<p>Then make sure &ldquo;NAT&rdquo; is selected.</p>
+<p><img src="./images/6_vmware_nat.png" alt="VMWare NAT"></p>
+<p>Now we need to make sure that the network on the VM is trusted.  Open the Windows Settings menu on the VM, click on &ldquo;Network &amp; internet&rdquo; in the left hand menu bar, then click on &ldquo;Ethernet&rdquo;.  Make sure that the network is set as a &ldquo;Private network&rdquo;.</p>
+<p><img src="./images/7_private_network.png" alt="Private network"></p>
+<h2 id="get-the-hosts-ip-address">Get the Host&rsquo;s IP address</h2>
+<p>We&rsquo;ll need an IP address so we can ping the host from the VM.  The VMware NAT network is set up on VMnet8 by default, which can be confirmed by navigating to &ldquo;Edit&rdquo; -&gt; &ldquo;Virtual Network Editor&rdquo; in VMWare Workstation.</p>
+<p><img src="./images/8.1_vmnet_settings.png" alt="Virtual network editor"></p>
+<p>In this screenshot you can see NAT is VMnet8, as expected.</p>
+<p><img src="./images/8.2_nat_settings.png" alt="NAT Settings"></p>
+<p>Now on the host machine, run <code>ipconfig</code> and scroll until you find the entry for VMnet8.  Write down the host IP - in my case it&rsquo;s <code>192.168.225.1</code>.</p>
+<pre tabindex="0"><code>C:\Users\jerem&gt;ipconfig
+
+Windows IP Configuration
+
+
+Ethernet adapter Ethernet:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : hsd1.nh.comcast.net
+
+...
+
+Ethernet adapter VMware Network Adapter VMnet8:
+
+   Connection-specific DNS Suffix  . :
+   Link-local IPv6 Address . . . . . : fe80::7357:15af:c3ca:2d3b%24
+   IPv4 Address. . . . . . . . . . . : 192.168.225.1
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . :
+</code></pre><h2 id="set-up-debugging-on-the-vm">Set up debugging on the VM</h2>
+<p>On the VM, open up an <strong>Administrative</strong> command prompt and <code>cd</code> into the <code>C:\KDNET</code> directory.</p>
+<p>Run <code>kdnet.exe</code>.  You should see something along the lines of the following output, which means debugging is supported on your adapter.</p>
+<pre tabindex="0"><code>C:\KDNET&gt;kdnet.exe
+
+Network debugging is supported on the following NICs:
+busparams=3.0.0, Intel(R) 82574L Gigabit Network Connection, Plugged in.
+
+Network debugging is not supported on any of this machine&#39;s USB controllers.
+</code></pre><p>Next, we&rsquo;ll open a port for network debugging using <code>kdnet.exe</code>.  The port number typically used for this is between <code>50000-50039</code>.  For this, I arbitrarily chose <code>50017</code>.</p>
+<p>The command to enable debugging to be run on the VM is:</p>
+<pre tabindex="0"><code>kdnet.exe [HOST IP ADDRESS] [PORT NUMBER]
+</code></pre><p>Using my IP and port, a run of the command looks like this:</p>
+<pre tabindex="0"><code>C:\KDNET&gt;kdnet.exe 192.168.225.1 50017
+
+Enabling network debugging on Intel(R) 82574L Gigabit Network Connection.
+
+To debug this machine, run the following command on your debugger host machine.
+windbg -k net:port=50017,key=10p145zzlg28h.8rtmc2s2tujk.6f4kt1ekmx9t.1pnjw2uxvjpk4
+
+Then reboot this machine by running shutdown -r -t 0 from this command prompt.
+</code></pre><p>Copy the command that starts with <strong>windbg</strong> to a safe place.  <strong>Your key will be different from mine.  Use the one from your machine</strong>.</p>
+<h2 id="connect-to-the-vm-with-windbg">Connect to the VM with WinDbg</h2>
+<p>Open WinDbg on the host machine, then click on &ldquo;File&rdquo; -&gt; &ldquo;Attach to kernel&rdquo; -&gt; &ldquo;Net&rdquo;</p>
+<p><img src="./images/9_windbg_connect.png" alt="WinDbg Connect"></p>
+<p>Make sure to set the port number to the number we chose earlier, and the &ldquo;Key&rdquo; should be the key from the output from the VM.</p>
+<p>If everything went right, WinDbg should open a window that looks like the following:</p>
+<p><img src="./images/10_windbg_connected.png" alt="Windbg waiting"></p>
+<p>Now reboot the VM.  This can be accomplished through running <code>shutdown -r -t 0</code> from the same Administrative command prompt as earlier, or simply from the start menu.</p>
+<p>Once the VM reboots, you should see it connect to the debugger.  WinDbg will output some messages that look like the following:</p>
+<p><img src="./images/11_windbg_connected_full.png" alt="Windbg Connected"></p>
+<h2 id="basic-windbg-functionality">Basic WinDbg Functionality</h2>
+<p>Let&rsquo;s load our driver from <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" target="_blank">the last post</a> into our new debugee VM and take a look at it.  For those of you joining now, you can download the sample from <a href="./example/MyDriver1.sys">here</a>.</p>
+<p>To enable test signing on the VM so the driver loads, run <code>bcdedit /set testsigning on</code> in an Administrative command prompt the reboot the VM again.</p>
+<p>Now drop the driver on the Desktop of the VM and run the following in an Administrative command prompt:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>sc create MyDriver1 type= kernel start= auto binPath= C:\Users\[YOUR USERNAME]\Desktop\MyDriver1.sys
+</span></span></code></pre></div><p>Then run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-cmd" data-lang="cmd"><span style="display:flex;"><span>sc start MyDriver1
+</span></span></code></pre></div><p>Now connect with WinDbg again and click the &ldquo;Break&rdquo; button in the upper left hand corner.  You should see something like the following:</p>
+<p><img src="./images/12_windbg_break.gif" alt="First breakpoint"></p>
+<p>The VM should now be frozen, as we have hit a breakpoint in the kernel.</p>
+<p>Windows has a bunch of publically available debugging symbols, but they are not loaded by WinDbg by default.  One of the first things you should do when starting a kernel debugging session is to resolve those symbols.</p>
+<p>To do this, go to the <code>kd&gt;</code> prompt in the debugger, and run the following:</p>
+<pre tabindex="0"><code>.sympath srv*
+</code></pre><p><img src="./images/13_sympath.gif" alt="sympath"></p>
+<p>Then:</p>
+<pre tabindex="0"><code>.reload
+</code></pre><p><img src="./images/14_reload.gif" alt="reload"></p>
+<p>Once the symbols finish loading, type <code>lm</code> to get a list of loaded modules.  <code>MyDriver1</code> should be among them.</p>
+<p><img src="./images/15_loaded_modules.png" alt="loaded modules"></p>
+<p>Now let&rsquo;s get some information about the module.  Run the command <code>lmDvm MyDriver1</code>.</p>
+<p>This is the <code>lm</code> (List Loaded Modules) command with the following options:</p>
+<ul>
+<li><code>D</code>: use debugger markup language.  Makes clickable links and prettier output</li>
+<li><code>v</code>: give more verbose output</li>
+<li><code>m</code>: only list modules that match the pattern given</li>
+</ul>
+<p><img src="./images/16_driver_module.png" alt="Driver Module"></p>
+<p>You can also click on the <code>MyDriver1</code> link in the <code>lm</code> output to get the same result.</p>
+<p>To examine all symbols for the module, we can use the following command:</p>
+<pre tabindex="0"><code>x /D MyDriver1!*
+</code></pre><ul>
+<li><code>x</code>: Examine symbols</li>
+<li><code>/D</code>: Use debugger markup language</li>
+<li><code>MyDriver1!*</code>: Takes the form [Module]![Symbol].  This gives us all symbols associated with the MyDriver1 module.  If we wanted all symbols in MyDriver1 that start with the letter &ldquo;a&rdquo;, we could run <code>x /D MyDriver1!a*</code></li>
+</ul>
+<p>This is a stripped binary, so there are no symbols for it.  We&rsquo;ll go over how to work around that in a second.</p>
+<p>The last command to check out is:</p>
+<pre tabindex="0"><code>!lmi MyDriver1
+</code></pre><p>This will give detailed information about a loaded module.  An example of the output is below:</p>
+<p><img src="./images/17_lmi.png" alt="lmi output"></p>
+<p>The big thing to note down here is the <em>base address</em>.  In my case it is <code>fffff80043db0000</code>.</p>
+<h2 id="starting-rev-in-ida">Starting rev in IDA</h2>
+<p>Now let&rsquo;s open <code>MyDriver1.sys</code> in IDA.  Keep the default options when opening it, and let IDA do it&rsquo;s autoanalysis.</p>
+<p>The first thing I usually do in IDA is open the pseudocode window.  This can be done by pressing <code>F5</code>.</p>
+<p>IDA typically identifies an initializer function as DriverEntry.  As a result, your window probably looks like this:</p>
+<p><img src="./images/18_ida_init.png" alt="IDA initial view"></p>
+<p>Click on the second function (in this case <code>sub_140001150</code>) and you&rsquo;ll see something that looks more familiar.</p>
+<p><img src="./images/19_ida_driverentry_prerev.png" alt="IDA Driver Entry Pre-rev"></p>
+<p>Now is the time to do rev.  I&rsquo;m going to get on my soapbox for a second. <strong>Do not skip doing rev</strong>.  There are so many posts online of people doing pwn with the default decompilation, and it makes life so much more difficult than it needs to be.</p>
+<p>For those of you new to this, here are some tips for reverse engineering with a decompiler.</p>
+<ul>
+<li>Let the decompiler do most of the work.  Your job is mostly to apply structs and types.  When you apply a correct type, the decompiler will fix itself and look nicer.</li>
+<li>Do not rely only on the pseudo-c.  Unless the correct types are applied, the decompilation can be incorrect.  Read the assembly, its not as bad as you think.</li>
+<li>Use API calls to infer types.  For example, we know <code>IoCreateDevice</code> returns a <code>PDEVICE_OBJECT</code> as it&rsquo;s 6th parameter.  If that wasn&rsquo;t already set, we could apply the type in IDA.</li>
+</ul>
+<p>The following options should be your best friend.</p>
+<ul>
+<li><code>N</code>: Rename variable</li>
+<li><code>Y</code>: Set variable type</li>
+<li><code>M</code>: Set enum varient</li>
+<li><code>ALT+Y</code>: Select union field</li>
+</ul>
+<p>Continue doing this to the point where you <strong>thoroughly</strong> understand the function.  Do it to the point where a college freshman could read the pseudo-c.  When it doubt, <strong>do more rev</strong>.</p>
+<p>For this DriverEntry function, I did the following:</p>
+<ul>
+<li>Use <code>N</code> to rename the function to <code>DriverEntry_0</code> to better represent its function.</li>
+<li>Use <code>N</code> to rename <code>DestinationString</code> to <code>DeviceName</code></li>
+<li>Use <code>N</code> to rename <code>result</code> to <code>status</code></li>
+<li>Use <code>=</code> to map <code>v3</code> to <code>status</code>.  Sometimes IDA will create multiple variables where the source only used one.  This is usually due to something the compiler did. Be careful when using this option, only do it when you&rsquo;re sure.</li>
+<li>Use <code>M</code> to change the MajorFunction codes to their respective enums.  If you don&rsquo;t see the correct enum in the first window, select <code>&lt;NEW&gt;</code> and search for it.</li>
+</ul>
+<p><img src="./images/20_ida_enum.gif" alt="IDA Enum select"></p>
+<ul>
+<li>Use <code>N</code> to rename all of the dispatch functions</li>
+<li>Use <code>\</code> to hide casts (sometimes helpful, but usually just makes the decompilation harder to read)</li>
+<li>Right click on the declarations at the top and select &ldquo;Collapse declarations&rdquo;</li>
+</ul>
+<p>Now, the decompilation looks like this:</p>
+<p><img src="./images/21_driverentry_fixed.png" alt="DriverEntry Fixed"></p>
+<p>In this case, it&rsquo;s not that dramatic (although we have located our handler functions).  But what happens with a more complex function?</p>
+<h2 id="reversing-devicecontrolhandler">Reversing DeviceControlHandler</h2>
+<p>Let&rsquo;s open the <code>DeviceControlHandler</code> function, which is what handles main program logic.  The default decompilation looks like this:</p>
+<p><img src="./images/22_devcontrol_default.png" alt="DevControl Default decomp"></p>
+<p>I&rsquo;m going to leave fixing the decompilation as an exercise to the reader.  When you are done however, it should look like this:</p>
+<p><img src="./images/23_devcontrol_revved.png" alt="DevControl Fixed decomp"></p>
+<p>If any of that code looks confusing, refer back to <a href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" target="_blank">part 5 of this series</a> and review the source of this driver and its explanation there.</p>
+<h2 id="using-ida-with-windbg">Using IDA with WinDbg</h2>
+<p>Now it&rsquo;s time to make use of our module&rsquo;s base address we got from WinDbg earlier.</p>
+<p>Due to <a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization" target="_blank">KASLR</a>, the Windows kernel is loaded at a different base address each time the computer is rebooted.  This is very analagous to user space ASLR, which loads a process at a different address each time it runs.</p>
+<p>Because of this, IDA will have all of the offsets right, but has no way of knowing the base address the driver was loaded at.</p>
+<p>We can provide it that information.  Go to &ldquo;Edit&rdquo; -&gt; &ldquo;Segments&rdquo; -&gt; &ldquo;Rebase Program&rdquo;</p>
+<p><img src="./images/24_rebase_1.png" alt="Rebase program"></p>
+<p>Set the value to the value we got from the <code>!lmi</code> command in WinDbg.</p>
+<p><img src="./images/25_rebase_2.png" alt="Rebase 2"></p>
+<p>This makes it so that the absolute addresses in IDA are the same as they are in WinDbg.</p>
+<p>Once you do that, I&rsquo;d also recommend enabling line prefixes in the graph view so you can see the addresses.  You can do this by clicking on the graph view, then selection &ldquo;Options&rdquo; -&gt; &ldquo;General&rdquo; then clicking &ldquo;Line prefixes (graph)&rdquo;.</p>
+<p><img src="./images/26_graph_prefixes.png" alt="Graph line prefixes"></p>
+<p>Now your graph view should look something like this:</p>
+<p><img src="./images/28_graph_view_example.png" alt="Graph view example"></p>
+<p>The last thing I recommend is putting the graph view next to the psuedocode and synchronizing them.  Putting them next to each other can be done with a drag and drop in IDA:</p>
+<p><img src="./images/29_ida_side_by_side.gif" alt="IDA side by side"></p>
+<p>Finally, to see where you are in the pseudocode and assembly at the same time, right click on the assembly, select &ldquo;Synchronize with&rdquo; then select &ldquo;Pseudocode-A&rdquo;.</p>
+<p><img src="./images/27_synchronize.png" alt="Syncronize IDA views"></p>
+<p>Now IDA will highlight both the pseudocode and the section of the assembly that corresponds to it when you click on it.</p>
+<p>Let&rsquo;s check to make sure all of the addresses line up.  My rebased DeviceControlHandler function starts at address <code>FFFFF80043DB1070</code>, as you can see in the graph view:</p>
+<p><img src="./images/30_rebased_devcontrol.png" alt="Rebased decontrol handler"></p>
+<p>Let&rsquo;s use WinDbg to disassemble 0x10 lines of assembly at that address in our test VM.  The command is:</p>
+<pre tabindex="0"><code>u FFFFF80043DB1070 L10
+</code></pre><p>Remember, your base address will be different.</p>
+<p>The output of that looks like this:</p>
+<p><img src="./images/31_windbg_devcontrol.png" alt="WinDbg DevControl"></p>
+<p>The assembly matches!  Now we can use the decompilation in IDA to set breakpoints and generally know where we are when executing our driver.</p>
+<p>As a last important note: <strong>Take a snapshot of your VM now.</strong> Every time you reboot, the kernel will be loaded at a different offset and you&rsquo;ll have to rebase your program in IDA again.  When you want to roll back, just use the snapshot from now on.</p>
+<h2 id="debugging-irps">Debugging IRPs</h2>
+<p>The main thing we will want to debug when developing exploits for our driver is the IRP handlers.  In this driver, IRPs are handled by the DeviceControlHandler function.</p>
+<p>Let&rsquo;s set a breakpoint in DeviceControlHandler.  We know it&rsquo;s address, so let&rsquo;s set a breakpoint at the entry of the function.</p>
+<p>The command for setting a breakpoint at an address in WinDbg is simply:</p>
+<pre tabindex="0"><code>bp [ADDRESS]
+</code></pre><p>You can also use <code>bl</code> to list your breakpoints.</p>
+<p><img src="./images/32_breakpoint_set.png" alt="Breakpoint set"></p>
+<p>Now hit &ldquo;Go&rdquo; in the upper right hand corner to resume execution of the VM (you could also type <code>g</code> in the <code>kd&gt;</code> prompt). We&rsquo;ll need it running so we can send the IRP.</p>
+<p><img src="./images/33_resume_execution.gif" alt="Resume execution"></p>
+<p>To send an IRP to the driver, we&rsquo;ll use the same client program from the last post.  If you don&rsquo;t have that for whatever reason, it can be downloaded from <a href="./example/ioctlDriverClient.exe">here</a>.</p>
+<p>Drop the client on the Desktop of the VM and run it.  You should see WinDbg hit a breakpoint.</p>
+<p><img src="./images/34_breakpoint_hit.png" alt="Breakpoint hit"></p>
+<p>Now we can step through instructions, examine memory, and even change variables on the fly.  Everything you&rsquo;re used to from a user land debugger.  I&rsquo;m not going to go into exact WinDbg functionality now as I&rsquo;ll be spending a lot of time with it throughout the next several posts, but a good cheat sheet can be found <a href="https://blog.lamarranet.com/wp-content/uploads/2021/09/WinDbg-Cheat-Sheet.pdf" target="_blank">here</a>.</p>
+<h2 id="final-thoughts">Final thoughts</h2>
+<p>This is the last of the &ldquo;setup&rdquo; posts.  From here on out, I&rsquo;ll be covering exploits and how to write them.</p>
+<p>If you&rsquo;re starting with this post, I <em>highly</em> recommend going through the rest of this series and following all of the exercises.  It will take more time to get started, but with a good base foundation you&rsquo;ll be able to do the more advanced exercises much faster and with a better understanding.</p>
+<h2 id="more-reading">More reading</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/debug-universal-drivers---step-by-step-lab--echo-kernel-mode-" target="_blank">Debug Windows drivers step-by-step lab (echo kernel mode)</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/getting-started-with-windows-debugging" target="_blank">Get started with Windows debugging</a></li>
+<li><a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/debugger-download-tools" target="_blank">Debugging Tools for Windows</a></li>
+<li><a href="https://cra0.net/blog/posts/debugging-the-windows-kernel-vmware-p2/" target="_blank">Debugging the Windows kernel on VMware</a></li>
+</ul>
+<h2 id="series-index">Series Index</h2>
+<ul>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p1_overview/index.html" target="_blank">Part 1 - Overview</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p2_whats_a_driver/index.html" target="_blank">Part 2 - What&rsquo;s a Driver Anyways?</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p3_minimum_viable_driver/index.html" target="_blank">Part 3 - The Minimum Viable Driver</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/" target="_blank">Part 4 - Interacting with the Driver</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/" target="_blank">Part 5 - Basic Driver Functionality</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/" target="_blank">Part 6 - Debugging and Basic Rev</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/" target="_blank">Part 7 - Buffer Overflow on Windows 7</a></li>
+<li><a href="https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/" target="_blank">Part 8 - Bypassing SMEP</a></li>
+</ul>
+
+  
+  <hr>
+<div class="footer">
+    
+	    
+            <a class="previous-post" href="https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/?ref=footer"><span style="font-weight:bold;">« Previous</span><br>Windows Drivers Series Part 5 - Basic Driver...</a>
+        
+	    
+            <div class="next-post">
+                <a href="https://stolenfootball.github.io/posts/research/2025/windows_kernel_debugger/?ref=footer"><span style="font-weight:bold;">Next »</span><br>HowTo - Set up Windows Kernel Debugging in VMware</a>
+            </div>
+        
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#install-the-vm">Install the VM</a></li>
+    <li><a href="#install-windbg-on-the-host">Install WinDbg on the host</a></li>
+    <li><a href="#copy-files-to-the-guest-vm">Copy files to the guest VM</a></li>
+    <li><a href="#set-up-networking-on-the-debugee">Set up networking on the debugee</a></li>
+    <li><a href="#get-the-hosts-ip-address">Get the Host&rsquo;s IP address</a></li>
+    <li><a href="#set-up-debugging-on-the-vm">Set up debugging on the VM</a></li>
+    <li><a href="#connect-to-the-vm-with-windbg">Connect to the VM with WinDbg</a></li>
+    <li><a href="#basic-windbg-functionality">Basic WinDbg Functionality</a></li>
+    <li><a href="#starting-rev-in-ida">Starting rev in IDA</a></li>
+    <li><a href="#reversing-devicecontrolhandler">Reversing DeviceControlHandler</a></li>
+    <li><a href="#using-ida-with-windbg">Using IDA with WinDbg</a></li>
+    <li><a href="#debugging-irps">Debugging IRPs</a></li>
+    <li><a href="#final-thoughts">Final thoughts</a></li>
+    <li><a href="#more-reading">More reading</a></li>
+    <li><a href="#series-index">Series Index</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>

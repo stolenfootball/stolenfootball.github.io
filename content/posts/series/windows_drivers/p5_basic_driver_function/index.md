@@ -1,7 +1,7 @@
 ---
 title: "Windows Drivers Series Part 5 - Basic Driver Functionality"
 date: 2025-07-22 13:20:31.155 -0400
-draft: true
+draft: false
 toc: false
 images:
 tags:
@@ -125,7 +125,7 @@ For the non-Apple world, this was changed in 1985 with the release of the i386, 
 
 ![After Virtual Memory](./images/4_after_virtual_memory.gif)
 
-In Windows, the kernel always exists in the lower half of the virtual address space (0x000000 to 0x7FFFFF) and the currently in context process exists in the upper half of the process space (0x800000 to 0xFFFFFF).
+In Windows, the kernel always exists in the upper half of the virtual address space (0x800000 to 0xFFFFFF) and the currently in context process exists in the lower half of the process space (0x000000 to 0x7FFFFF).
 
 ### Pages and Page Tables
 Virtual memory was accomplished through pages and [page tables](https://en.wikipedia.org/wiki/Page_table).  The physical memory of the computer is separated into 4096 byte blocks called pages, which is the smallest unit of memory a process can request.
@@ -558,3 +558,5 @@ If you've taken an interest and want to learn more about building drivers, [Pave
 - [Part 4 - Interacting with the Driver](https://stolenfootball.github.io/posts/series/windows_drivers/p4_interacting_with_driver/)
 - [Part 5 - Basic Driver Functionality](https://stolenfootball.github.io/posts/series/windows_drivers/p5_basic_driver_function/)
 - [Part 6 - Debugging and Basic Rev](https://stolenfootball.github.io/posts/series/windows_drivers/p6_debugging_drivers/)
+- [Part 7 - Buffer Overflow on Windows 7](https://stolenfootball.github.io/posts/series/windows_drivers/p7_buffer_overflow_win7/)
+- [Part 8 - Bypassing SMEP](https://stolenfootball.github.io/posts/series/windows_drivers/p8_smep_bypass/)
